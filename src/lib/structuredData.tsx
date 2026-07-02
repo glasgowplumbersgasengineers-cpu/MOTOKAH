@@ -1,11 +1,9 @@
-import type { ReactNode } from "react";
-
 const SITE_URL = "https://www.motokah.com";
 const LOGO_URL = `${SITE_URL}/pwa-512x512.png`;
 
 type JsonLdValue = Record<string, unknown> | Array<Record<string, unknown>>;
 
-export function JsonLd({ data }: { data: JsonLdValue }) {
+export function jsonLdScript(data: JsonLdValue) {
   return (
     <script type="application/ld+json">
       {JSON.stringify(data).replace(/</g, "\\u003c")}
@@ -122,8 +120,4 @@ export function faqJsonLd(faq: Array<{ q: string; a: string }>) {
       acceptedAnswer: { "@type": "Answer", text: item.a },
     })),
   };
-}
-
-export function withJsonLd(...nodes: ReactNode[]) {
-  return nodes;
 }

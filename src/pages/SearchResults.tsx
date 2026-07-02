@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
-import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
+import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -237,16 +237,16 @@ export default function SearchResults() {
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
         <link rel="canonical" href={seoCanonical} />
-        <JsonLd data={breadcrumbJsonLd([
+        {jsonLdScript(breadcrumbJsonLd([
           { name: "Home", url: "https://www.motokah.com/" },
           { name: "Cars for Sale", url: seoCanonical },
-        ])} />
-        <JsonLd data={collectionPageJsonLd({
+        ]))}
+        {jsonLdScript(collectionPageJsonLd({
           name: seoTitle.replace(" | Motokah", ""),
           description: seoDesc,
           url: seoCanonical,
           itemCount: filtered.length,
-        })} />
+        }))}
       </Helmet>
       <Header />
 

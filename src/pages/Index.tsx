@@ -16,7 +16,7 @@ import StatsBar from "@/components/StatsBar";
 import LocationSection from "@/components/LocationSection";
 import PopularModelsSection from "@/components/PopularModelsSection";
 import Footer from "@/components/Footer";
-import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
+import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
 
 const Index = () => {
   return (
@@ -30,8 +30,8 @@ const Index = () => {
         <meta property="og:url" content="https://www.motokah.com/" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
         <link rel="canonical" href="https://www.motokah.com/" />
-        <JsonLd data={websiteJsonLd()} />
-        <JsonLd data={organizationJsonLd()} />
+        {jsonLdScript(websiteJsonLd())}
+        {jsonLdScript(organizationJsonLd())}
       </Helmet>
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />

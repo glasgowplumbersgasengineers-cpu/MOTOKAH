@@ -6,7 +6,7 @@ import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2, IconMapPin } from "@tabler/icons-react";
-import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
+import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
 
 const countries: Record<string, { name: string; cities: string[]; description: string; guide: string }> = {
   tanzania: {
@@ -76,17 +76,17 @@ export default function CountryLandingPage() {
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
-        <JsonLd data={breadcrumbJsonLd([
+        {jsonLdScript(breadcrumbJsonLd([
           { name: "Home", url: "https://www.motokah.com/" },
           { name: "Cars for Sale", url: "https://www.motokah.com/search" },
           { name: countryName, url: canonicalUrl },
-        ])} />
-        <JsonLd data={collectionPageJsonLd({
+        ]))}
+        {jsonLdScript(collectionPageJsonLd({
           name: `Cars for Sale in ${countryName}`,
           description,
           url: canonicalUrl,
           itemCount: listings.length,
-        })} />
+        }))}
       </Helmet>
 
       <Header />

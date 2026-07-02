@@ -7,7 +7,7 @@ import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2 } from "@tabler/icons-react";
 import { Helmet } from "react-helmet-async";
-import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
+import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
 
 const cityDescriptions: Record<string, string> = {
   "dar-es-salaam": "Browse new and used cars for sale in Dar es Salaam. Find Toyota, Nissan, Honda, Suzuki and more from sellers across Tanzania's biggest car market.",
@@ -93,17 +93,17 @@ export default function CityLandingPage() {
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
-        <JsonLd data={breadcrumbJsonLd([
+        {jsonLdScript(breadcrumbJsonLd([
           { name: "Home", url: "https://www.motokah.com/" },
           { name: "Cars for Sale", url: "https://www.motokah.com/search" },
           { name: cityName, url: canonicalUrl },
-        ])} />
-        <JsonLd data={collectionPageJsonLd({
+        ]))}
+        {jsonLdScript(collectionPageJsonLd({
           name: `Cars for Sale in ${cityName}`,
           description,
           url: canonicalUrl,
           itemCount: listings.length,
-        })} />
+        }))}
       </Helmet>
 
       <Header />

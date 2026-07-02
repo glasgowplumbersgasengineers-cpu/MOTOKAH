@@ -7,7 +7,7 @@ import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2, IconChevronRight } from "@tabler/icons-react";
-import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
+import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
 
 // --- Static SEO content per model ---
 
@@ -412,21 +412,19 @@ export default function ModelLandingPage() {
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
-        <JsonLd data={breadcrumbJsonLd([
+        {jsonLdScript(breadcrumbJsonLd([
           { name: "Home", url: "https://www.motokah.com/" },
           { name: "Cars for Sale", url: "https://www.motokah.com/search" },
           { name: makeTitle, url: `https://www.motokah.com/search?make=${encodeURIComponent(makeTitle)}` },
           { name: `${makeTitle} ${modelTitle}`, url: canonicalUrl },
-        ])} />
-        <JsonLd data={collectionPageJsonLd({
+        ]))}
+        {jsonLdScript(collectionPageJsonLd({
           name: `${makeTitle} ${modelTitle} for Sale in East Africa`,
           description: pageDesc,
           url: canonicalUrl,
           itemCount: listings.length,
-        })} />
-        {info?.faq && (
-          <JsonLd data={faqJsonLd(info.faq)} />
-        )}
+        }))}
+        {info?.faq && jsonLdScript(faqJsonLd(info.faq))}
       </Helmet>
 
       <Header />
