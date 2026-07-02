@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const columns = [
   { title: "For Buyers", links: [
-    { label: "Browse Cars", to: "/search?vehicleType=car" },
+    { label: "Browse Cars", to: "/search" },
     { label: "Browse Bikes", to: "/search?vehicleType=bike" },
     { label: "Advanced Search", to: "/search" },
     { label: "Compare Vehicles", to: "/compare" },

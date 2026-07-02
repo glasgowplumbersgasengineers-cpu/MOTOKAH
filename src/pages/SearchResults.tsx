@@ -38,6 +38,7 @@ export default function SearchResults() {
 
   // Dynamic SEO title/desc/canonical from URL params
   const seoMake = searchParams.get("make") || "";
+  const seoCondition = searchParams.get("condition") || "";
   const seoCity = urlCity;
   const seoCountry = urlCountry;
   const seoVehicleType = searchParams.get("vehicleType") || "";
@@ -52,6 +53,8 @@ export default function SearchResults() {
     ? "Commercial Vehicles"
     : primaryBodyType
     ? `${primaryBodyType}s`
+    : seoCondition === "New"
+    ? "New Cars"
     : "Cars";
   const rawSeoTitle = seoMake && location
     ? `${seoMake} ${vehicleLabel} for Sale in ${location} | Motokah`
@@ -73,12 +76,13 @@ export default function SearchResults() {
   if (seoMake) canonicalParams.set("make", seoMake);
   if (seoCity) canonicalParams.set("city", seoCity);
   if (seoCountry) canonicalParams.set("country", seoCountry);
+  if (seoCondition) canonicalParams.set("condition", seoCondition);
   if (seoVehicleType) canonicalParams.set("vehicleType", seoVehicleType);
   urlBodyTypes.forEach((bodyType) => canonicalParams.append("bodyType", bodyType));
   const seoCanonical = `https://www.motokah.com/search${canonicalParams.toString() ? "?" + canonicalParams.toString() : ""}`;
   const isBoatCategoryUrl = urlBodyTypes.includes("Boat");
 
-  const [filters, setFilters] = useState<Filters>(() => ({
+  const filtersFromUrl = (): Filters => ({
     ...defaultFilters,
     make: searchParams.get("make") || "",
     condition: searchParams.get("condition") || "",
@@ -89,19 +93,22 @@ export default function SearchResults() {
     transmission: searchParams.get("transmission") || "",
     minPrice: searchParams.get("minPrice") || "",
     maxPrice: searchParams.get("maxPrice") || "",
+    yearFrom: searchParams.get("yearFrom") || "",
+    yearTo: searchParams.get("yearTo") || "",
+    maxMileage: searchParams.get("maxMileage") || "",
+    fuelType: searchParams.getAll("fuelType"),
     vehicleType: (searchParams.get("vehicleType") as "car" | "bike" | "commercial" | "spare") || "",
-  }));
+  });
 
-  // Sync filters when the user changes country in the header
-  // Don't override if city URL param already resolved a specific country
+  const [filters, setFilters] = useState<Filters>(() => filtersFromUrl());
+
+  // Search can be reached repeatedly with different query params from nav, footer,
+  // wishlist, and chips. Keep UI state owned by the URL so filters never get stuck.
   useEffect(() => {
-    if (!searchParams.get("country") && !searchParams.get("city") && !isBoatCategoryUrl) {
-      setFilters(prev => ({
-        ...prev,
-        country: locationCountry !== "All" ? locationCountry : "",
-      }));
-    }
-  }, [locationCountry, isBoatCategoryUrl]);
+    setKeyword(searchParams.get("q") || "");
+    setFilters(filtersFromUrl());
+    setPage(1);
+  }, [searchParams.toString(), locationCountry]);
 
   useEffect(() => {
     if (!urlCity || !urlCityCountry || searchParams.get("country") === urlCityCountry) return;
