@@ -104,9 +104,9 @@ export function useLocationDetection() {
         }
       }
 
-      // Method 2: IP-based geolocation (free API)
+      // Method 2: IP-based geolocation via our Vercel proxy.
       try {
-        const response = await fetch("https://ipapi.co/json/", {
+        const response = await fetch("/api/geo", {
           signal: AbortSignal.timeout(5000),
         });
         if (response.ok) {
