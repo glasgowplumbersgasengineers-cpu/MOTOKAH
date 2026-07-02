@@ -42,7 +42,17 @@ export default function SearchResults() {
   const seoCountry = urlCountry;
   const seoVehicleType = searchParams.get("vehicleType") || "";
   const location = seoCity || seoCountry;
-  const vehicleLabel = seoVehicleType === "bike" ? "Bikes" : seoVehicleType === "commercial" ? "Commercial Vehicles" : "Cars";
+  const urlBodyTypes = searchParams.getAll("bodyType").length > 0
+    ? searchParams.getAll("bodyType")
+    : (searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : []);
+  const primaryBodyType = urlBodyTypes[0] || "";
+  const vehicleLabel = seoVehicleType === "bike"
+    ? "Bikes"
+    : seoVehicleType === "commercial"
+    ? "Commercial Vehicles"
+    : primaryBodyType
+    ? `${primaryBodyType}s`
+    : "Cars";
   const rawSeoTitle = seoMake && location
     ? `${seoMake} ${vehicleLabel} for Sale in ${location} | Motokah`
     : seoMake
@@ -64,10 +74,8 @@ export default function SearchResults() {
   if (seoCity) canonicalParams.set("city", seoCity);
   if (seoCountry) canonicalParams.set("country", seoCountry);
   if (seoVehicleType) canonicalParams.set("vehicleType", seoVehicleType);
+  urlBodyTypes.forEach((bodyType) => canonicalParams.append("bodyType", bodyType));
   const seoCanonical = `https://www.motokah.com/search${canonicalParams.toString() ? "?" + canonicalParams.toString() : ""}`;
-  const urlBodyTypes = searchParams.getAll("bodyType").length > 0
-    ? searchParams.getAll("bodyType")
-    : (searchParams.get("bodyType") ? [searchParams.get("bodyType")!] : []);
   const isBoatCategoryUrl = urlBodyTypes.includes("Boat");
 
   const [filters, setFilters] = useState<Filters>(() => ({
@@ -205,6 +213,8 @@ export default function SearchResults() {
     ? `Bikes for Sale in ${locationLabel}`
     : filters.vehicleType === "commercial"
     ? `Commercial Vehicles for Sale in ${locationLabel}`
+    : filters.bodyType[0]
+    ? `${filters.bodyType[0]}s for Sale in ${locationLabel}`
     : `Used Cars for Sale in ${locationLabel}`;
 
   const handleSaveSearch = async () => {
