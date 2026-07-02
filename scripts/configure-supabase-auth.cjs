@@ -80,8 +80,10 @@ const payload = {
   site_url: APP_URL,
   uri_allow_list: redirectUrls,
   external_email_enabled: true,
+  password_min_length: 8,
   mailer_autoconfirm: false,
   mailer_secure_email_change_enabled: true,
+  mailer_notifications_password_changed_enabled: true,
   mailer_subjects_confirmation: "Confirm your Motokah account",
   mailer_subjects_magic_link: "Your Motokah login link",
   mailer_subjects_recovery: "Reset your Motokah password",
@@ -113,6 +115,10 @@ const payload = {
     "Accept invitation"
   ),
 };
+
+if (process.env.ENABLE_LEAKED_PASSWORD_PROTECTION === "true") {
+  payload.password_hibp_enabled = true;
+}
 
 if (smtpComplete) {
   Object.assign(payload, {
