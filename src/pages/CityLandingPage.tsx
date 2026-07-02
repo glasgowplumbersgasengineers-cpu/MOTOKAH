@@ -7,6 +7,7 @@ import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2 } from "@tabler/icons-react";
 import { Helmet } from "react-helmet-async";
+import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
 
 const cityDescriptions: Record<string, string> = {
   "dar-es-salaam": "Browse new and used cars for sale in Dar es Salaam. Find Toyota, Nissan, Honda, Suzuki and more from sellers across Tanzania's biggest car market.",
@@ -64,6 +65,7 @@ export default function CityLandingPage() {
   const cityName = slug?.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()) || "";
   const description = cityDescriptions[slug || ""] || `Find cars for sale in ${cityName}. Browse new and used vehicles from local sellers.`;
   const guideContent = cityGuideContent[slug || ""] || null;
+  const canonicalUrl = `https://www.motokah.com/city/${slug}`;
 
   const { listings, loading } = useSearchListings(
     { city: cityName },
@@ -85,12 +87,23 @@ export default function CityLandingPage() {
       <Helmet>
         <title>{`Cars for Sale in ${cityName} | Motokah`}</title>
         <meta name="description" content={description} />
-        <link rel="canonical" href={`https://www.motokah.com/city/${slug}`} />
+        <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={`Cars for Sale in ${cityName} — Motokah`} />
         <meta property="og:description" content={description} />
-        <meta property="og:url" content={`https://www.motokah.com/city/${slug}`} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
+        <JsonLd data={breadcrumbJsonLd([
+          { name: "Home", url: "https://www.motokah.com/" },
+          { name: "Cars for Sale", url: "https://www.motokah.com/search" },
+          { name: cityName, url: canonicalUrl },
+        ])} />
+        <JsonLd data={collectionPageJsonLd({
+          name: `Cars for Sale in ${cityName}`,
+          description,
+          url: canonicalUrl,
+          itemCount: listings.length,
+        })} />
       </Helmet>
 
       <Header />
@@ -153,6 +166,14 @@ export default function CityLandingPage() {
           <div className="container mx-auto py-10 px-4 max-w-3xl">
             <h2 className="text-2xl font-bold text-foreground mb-4">{guideContent.heading}</h2>
             <p className="text-muted-foreground leading-relaxed">{guideContent.body}</p>
+            <h2 className="text-xl font-bold text-foreground mt-8 mb-3">
+              Popular Used Cars in {cityName}
+            </h2>
+            <p className="text-muted-foreground leading-relaxed">
+              Motokah helps buyers compare Toyota, Nissan, Subaru, Mazda, Honda, Mitsubishi and Mercedes-Benz
+              listings in {cityName}. Use filters for price, year, mileage, fuel type, transmission and body style,
+              then call or WhatsApp the seller directly before arranging an inspection.
+            </p>
           </div>
         )}
 

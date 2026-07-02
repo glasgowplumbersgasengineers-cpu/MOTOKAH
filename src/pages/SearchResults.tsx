@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
+import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -236,6 +237,16 @@ export default function SearchResults() {
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
         <link rel="canonical" href={seoCanonical} />
+        <JsonLd data={breadcrumbJsonLd([
+          { name: "Home", url: "https://www.motokah.com/" },
+          { name: "Cars for Sale", url: seoCanonical },
+        ])} />
+        <JsonLd data={collectionPageJsonLd({
+          name: seoTitle.replace(" | Motokah", ""),
+          description: seoDesc,
+          url: seoCanonical,
+          itemCount: filtered.length,
+        })} />
       </Helmet>
       <Header />
 
@@ -371,6 +382,39 @@ export default function SearchResults() {
             )}
           </div>
         </div>
+
+        <section className="mt-12 border-t border-border pt-8">
+          <div className="max-w-3xl">
+            <h2 className="text-xl font-bold text-foreground">
+              {seoMake
+                ? `${seoMake} ${vehicleLabel.toLowerCase()}${location ? ` in ${location}` : " in East Africa"}`
+                : `${vehicleLabel} for sale${location ? ` in ${location}` : " in East Africa"}`}
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Motokah helps buyers compare launch-quality listings by price, mileage, year, transmission,
+              fuel type and seller location. {location ? `For ${location}, ` : "Across East Africa, "}
+              browse dealer and private stock, shortlist vehicles, then call or WhatsApp the seller directly
+              before arranging an inspection.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2 text-sm">
+              {["Toyota", "Nissan", "Subaru", "Mazda", "Honda", "Mitsubishi"].filter(make => make !== seoMake).map((make) => {
+                const params = new URLSearchParams();
+                params.set("make", make);
+                if (seoCity) params.set("city", seoCity);
+                if (seoCountry) params.set("country", seoCountry);
+                return (
+                  <a
+                    key={make}
+                    href={`/search?${params.toString()}`}
+                    className="rounded-full border border-border px-3 py-1.5 hover:border-primary hover:text-primary"
+                  >
+                    {make}{location ? ` in ${location}` : ""}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Mobile filter drawer */}

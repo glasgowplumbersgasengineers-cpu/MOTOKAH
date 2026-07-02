@@ -101,11 +101,28 @@ const cities = [
   { slug: "dire-dawa",      pri: 0.5 },
 ];
 
-// Removed: make search pages (?make=) and city+make combo pages (?city=&make=)
-// These are dynamic query-param pages with no unique canonical content.
-// Google discovers them via internal links; sitemap should only list canonical pages.
-const makePages = [];
-const cityMakePages = [];
+// Curated search landing pages. Keep this intentionally small and high-intent:
+// these URLs have crawlable copy in SearchResults and target real buyer searches.
+const priorityMakes = ["Toyota", "Nissan", "Subaru", "Mazda", "Honda", "Mitsubishi"];
+const priorityCities = ["Nairobi", "Mombasa", "Dar es Salaam", "Arusha", "Kampala", "Kigali", "Addis Ababa"];
+const makePages = priorityMakes.map((make) => ({
+  path: `/search?make=${encodeURIComponent(make)}`,
+  freq: "daily",
+  pri: 0.75,
+}));
+const cityMakePages = priorityCities.flatMap((city) =>
+  priorityMakes.map((make) => ({
+    path: `/search?make=${encodeURIComponent(make)}&city=${encodeURIComponent(city)}`,
+    freq: "daily",
+    pri: city === "Nairobi" || city === "Dar es Salaam" ? 0.8 : 0.7,
+  }))
+);
+const categorySearchPages = [
+  { path: "/search?condition=New", freq: "daily", pri: 0.7 },
+  { path: "/search?vehicleType=commercial", freq: "weekly", pri: 0.65 },
+  { path: "/search?vehicleType=bike", freq: "weekly", pri: 0.65 },
+  { path: "/search?bodyType=Boat", freq: "weekly", pri: 0.65 },
+];
 
 // Model landing pages — /cars/:make/:model (high-volume keyword targets)
 const modelPages = [
@@ -183,6 +200,11 @@ const lines = [
   "  <!-- City landing pages -->",
   ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
   "",
+  "  <!-- Curated search landing pages -->",
+  ...makePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  "",
   "  <!-- Country landing pages -->",
   ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
@@ -199,4 +221,4 @@ const out = lines.join("\n");
 const dest = path.join(__dirname, "../public/sitemap.xml");
 fs.writeFileSync(dest, out, "utf8");
 console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + countryPages.length + modelPages.length + blogPostPages.length}`);
+console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + categorySearchPages.length + countryPages.length + modelPages.length + blogPostPages.length}`);

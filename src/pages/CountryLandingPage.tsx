@@ -6,6 +6,7 @@ import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2, IconMapPin } from "@tabler/icons-react";
+import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
 
 const countries: Record<string, { name: string; cities: string[]; description: string; guide: string }> = {
   tanzania: {
@@ -62,18 +63,30 @@ export default function CountryLandingPage() {
   const countryName = country?.name || slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
   const { listings, loading } = useSearchListings({ country: countryName }, "newest");
   const description = country?.description || `Browse cars for sale in ${countryName}. Find used vehicles from sellers on Motokah.`;
+  const canonicalUrl = `https://www.motokah.com/country/${slug}`;
 
   return (
     <>
       <Helmet>
         <title>{`Cars for Sale in ${countryName} | Motokah`}</title>
         <meta name="description" content={description} />
-        <link rel="canonical" href={`https://www.motokah.com/country/${slug}`} />
+        <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={`Cars for Sale in ${countryName} | Motokah`} />
         <meta property="og:description" content={description} />
-        <meta property="og:url" content={`https://www.motokah.com/country/${slug}`} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
+        <JsonLd data={breadcrumbJsonLd([
+          { name: "Home", url: "https://www.motokah.com/" },
+          { name: "Cars for Sale", url: "https://www.motokah.com/search" },
+          { name: countryName, url: canonicalUrl },
+        ])} />
+        <JsonLd data={collectionPageJsonLd({
+          name: `Cars for Sale in ${countryName}`,
+          description,
+          url: canonicalUrl,
+          itemCount: listings.length,
+        })} />
       </Helmet>
 
       <Header />
@@ -150,6 +163,12 @@ export default function CountryLandingPage() {
             <div className="container mx-auto max-w-3xl px-4 py-10">
               <h2 className="mb-3 text-2xl font-bold">Buying a Car in {countryName}</h2>
               <p className="leading-relaxed text-muted-foreground">{country.guide}</p>
+              <h2 className="mb-3 mt-8 text-xl font-bold">Popular Searches in {countryName}</h2>
+              <p className="leading-relaxed text-muted-foreground">
+                Motokah is built for high-intent local searches including used cars in {countryName},
+                Toyota for sale in {countryName}, Japanese import cars, affordable SUVs, pickups,
+                vans and dealer stock. Browse by city, compare prices and contact verified sellers directly.
+              </p>
             </div>
           </section>
         )}

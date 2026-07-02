@@ -7,6 +7,7 @@ import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2, IconChevronRight } from "@tabler/icons-react";
+import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
 
 // --- Static SEO content per model ---
 
@@ -398,53 +399,33 @@ export default function ModelLandingPage() {
 
   const related = RELATED_MODELS[key] ?? [];
 
-  const faqSchema = info?.faq
-    ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: info.faq.map((item) => ({
-          "@type": "Question",
-          name: item.q,
-          acceptedAnswer: { "@type": "Answer", text: item.a },
-        })),
-      }
-    : null;
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.motokah.com/" },
-      { "@type": "ListItem", position: 2, name: "Search", item: "https://www.motokah.com/search" },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: makeTitle,
-        item: `https://www.motokah.com/search?make=${encodeURIComponent(makeTitle)}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 4,
-        name: `${makeTitle} ${modelTitle}`,
-        item: `https://www.motokah.com/cars/${make}/${model}`,
-      },
-    ],
-  };
+  const canonicalUrl = `https://www.motokah.com/cars/${make}/${model}`;
 
   return (
     <>
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
-        <link rel="canonical" href={`https://www.motokah.com/cars/${make}/${model}`} />
+        <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDesc} />
-        <meta property="og:url" content={`https://www.motokah.com/cars/${make}/${model}`} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />
-        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
-        {faqSchema && (
-          <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+        <JsonLd data={breadcrumbJsonLd([
+          { name: "Home", url: "https://www.motokah.com/" },
+          { name: "Cars for Sale", url: "https://www.motokah.com/search" },
+          { name: makeTitle, url: `https://www.motokah.com/search?make=${encodeURIComponent(makeTitle)}` },
+          { name: `${makeTitle} ${modelTitle}`, url: canonicalUrl },
+        ])} />
+        <JsonLd data={collectionPageJsonLd({
+          name: `${makeTitle} ${modelTitle} for Sale in East Africa`,
+          description: pageDesc,
+          url: canonicalUrl,
+          itemCount: listings.length,
+        })} />
+        {info?.faq && (
+          <JsonLd data={faqJsonLd(info.faq)} />
         )}
       </Helmet>
 
