@@ -21,6 +21,7 @@ dist
 /public/instagram-cars
 # Generated Instagram post images (local only, serve from Supabase)
 content/instagram/generated/
+content/instagram/auto-tmp/
 
 # Rendered video artifacts
 /out
@@ -76,3 +77,4 @@ public/instagram-cars/livy_motors_tz/
 public/instagram-cars/expert_motors_tz/
 public/instagram-cars/mgayamotors/DY*.jpg
 .vercel
+.env*

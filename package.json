@@ -16,6 +16,12 @@
     "open:android": "npx cap open android",
     "open:ios": "npx cap open ios",
     "sync": "npx cap sync"
+    ,"social:seed": "node scripts/seed-social-content.mjs --days=365"
+    ,"social:seed:apply": "node scripts/seed-social-content.mjs --days=365 --apply --replace-pending"
+    ,"social:audit": "node scripts/audit-social-content.mjs"
+    ,"social:generate": "node content/instagram/generate-images.mjs"
+    ,"social:post:dry": "node scripts/auto-post.mjs --dry-run"
+    ,"social:post": "node scripts/auto-post.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",

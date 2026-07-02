@@ -7,16 +7,14 @@ import fs from "fs";
 import path from "path";
 import https from "https";
 import { fileURLToPath } from "url";
+import { loadEnv, requireEnv } from "./lib/env.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const GENERATED = path.join(ROOT, "content", "instagram", "generated");
 
-const env = Object.fromEntries(
-  fs.readFileSync(path.join(ROOT, ".env"), "utf8").split("\n")
-    .map(l => l.match(/^([A-Z_]+)=["']?(.*?)["']?\s*$/)).filter(Boolean)
-    .map(m => [m[1], m[2]])
-);
+const env = loadEnv(ROOT);
+requireEnv(env, ["VITE_SUPABASE_URL", "SUPABASE_SERVICE_ROLE_KEY", "IG_GRAPH_TOKEN", "IG_USER_ID"]);
 const SUPA_URL = env.VITE_SUPABASE_URL;
 const SUPA_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
 const IG_TOKEN = env.IG_GRAPH_TOKEN;
@@ -78,7 +76,7 @@ function igPost(endpoint, params) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// First 3 posts: brand reveal, live news, car listing CTA
+// Clean launch posts only. Do not add generic news/fuel/holiday filler here.
 const POSTS = [
   {
     file: "01-brand-reveal-welcome-to-motokah.png",
@@ -91,15 +89,19 @@ motokah.com
 #motokah #eastafrica #cars #marketplace #kenya #tanzania #uganda #nairobi #daressalaam`,
   },
   {
-    file: "01-thunder-strikes-ksh-10m-sponsorship-deal.png",
-    caption: `Kenya: Nairobi City Thunder lands a massive Ksh.10M sponsorship deal with I M Bank. Sport and business growing together in East Africa.
+    file: "02-what-is-motokah.png",
+    caption: `Motokah helps buyers compare real cars, bikes, commercial vehicles and boats across East Africa.
 
-Habari za leo kutoka Afrika Mashariki.
+Search by city, make, model and price. Then call or WhatsApp sellers directly.
 
-#kenya #nairobi #eastafrica #motokah #sports #business`,
+Tafuta gari kwa city, bei, make na model. Rahisi, clear, direct.
+
+motokah.com
+
+#motokah #eastafrica #usedcars #carsforsale #kenya #tanzania #uganda`,
   },
   {
-    file: "09-list-free-seller-cta.png",
+    file: "04-list-free-seller-cta.png",
     caption: `Got a car to sell? List it on Motokah FREE. No commission. Add photos, set your price, post - done.
 
 Weka gari lako Motokah bure. Bila commission. Rahisi.

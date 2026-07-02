@@ -15,6 +15,8 @@ import path from 'path';
 import https from 'https';
 import { fileURLToPath } from 'url';
 import { buildHtml } from '../content/instagram/templates.mjs';
+import { loadEnv, requireEnv } from './lib/env.mjs';
+import { HASHTAGS, isSafeMotokahPost, safetyReason } from '../content/instagram/content-strategy.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
@@ -22,13 +24,14 @@ const CARS_JSON = path.join(ROOT, 'content', 'instagram', 'cars.json');
 const TMP = path.join(ROOT, 'content', 'instagram', 'auto-tmp');
 fs.mkdirSync(TMP, { recursive: true });
 
-const EXE = 'C:/Users/rapid/AppData/Local/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-win64/chrome-headless-shell.exe';
+const CHROME_CANDIDATES = [
+  'C:/Users/rapid/AppData/Local/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-win64/chrome-headless-shell.exe',
+  'C:/Users/rapid/AppData/Local/ms-playwright/chromium-1228/chrome-win64/chrome.exe',
+];
+const EXE = CHROME_CANDIDATES.find((candidate) => fs.existsSync(candidate));
 
-const env = Object.fromEntries(
-  fs.readFileSync(path.join(ROOT, '.env'), 'utf8').split('\n')
-    .map(l => l.match(/^([A-Z_]+)=["']?(.*?)["']?\s*$/)).filter(Boolean)
-    .map(m => [m[1], m[2]])
-);
+const env = loadEnv(ROOT);
+requireEnv(env, ['VITE_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY']);
 
 const supabase = createClient(env.VITE_SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 const IG_TOKEN = env.IG_GRAPH_TOKEN;
@@ -36,6 +39,7 @@ const IG_UID   = env.IG_USER_ID;
 const BUCKET   = 'ig-posts';
 
 const DRY_RUN  = process.argv.includes('--dry-run');
+const INCLUDE_PENDING = process.argv.includes('--include-pending');
 const countArg = process.argv.find(a => a.startsWith('--count='));
 const COUNT    = parseInt(countArg?.split('=')[1] || '1');
 
@@ -53,17 +57,7 @@ function buildCaption(p) {
   if (sw) lines.push(`\n${sw}`);
   lines.push('\nmotokah.com');
 
-  // hashtags based on pillar
-  const tags = {
-    'News':         '#eastafrica #motokah #africannews #nairobi #daressalaam',
-    'Regional News':'#eastafrica #motokah #africannews #kenya #tanzania #uganda',
-    'Brand':        '#motokah #eastafrica #cars #marketplace #kenya #tanzania',
-    'Listings':     '#motokah #carsforsale #eastafrica #usedcars #nairobi #daressalaam',
-    'Culture':      '#motokah #eastafrica #carculture #africa #nairobi #daressalaam',
-    'Education':    '#motokah #carbuyingtips #eastafrica #kenya #tanzania #caradvice',
-    'Promotion':    '#motokah #sellcar #eastafrica #freelist #carmarketplace',
-  };
-  lines.push(`\n${tags[p.pillar] || '#motokah #eastafrica #cars'}`);
+  lines.push(`\n${HASHTAGS[p.pillar] || '#motokah #eastafrica #cars #usedcars'}`);
   return lines.join('\n');
 }
 
@@ -94,26 +88,39 @@ function igPost(endpoint, params) {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function main() {
+  if (!EXE) throw new Error('No Playwright Chromium executable found. Run npx playwright install chromium.');
+  if (!DRY_RUN) requireEnv(env, ['IG_GRAPH_TOKEN', 'IG_USER_ID']);
+
   // Fetch pending posts
+  const allowedStatuses = INCLUDE_PENDING ? ['approved', 'pending'] : ['approved'];
   const { data: pending, error } = await supabase
     .from('content_posts')
     .select('*')
-    .eq('status', 'pending')
+    .in('status', allowedStatuses)
     .order('scheduled_date', { ascending: true })
-    .limit(COUNT);
+    .limit(Math.max(COUNT * 3, COUNT));
 
   if (error) { console.error('DB fetch error:', error.message); process.exit(1); }
-  if (!pending?.length) { console.log('No pending posts found.'); return; }
+  const safePending = (pending || []).filter((post) => {
+    const safe = isSafeMotokahPost(post);
+    if (!safe) console.log(`Skipping unsafe post "${post.title}": ${safetyReason(post)}`);
+    return safe;
+  }).slice(0, COUNT);
 
-  console.log(`Found ${pending.length} pending post(s). DRY_RUN=${DRY_RUN}`);
+  if (!safePending.length) {
+    console.log(`No safe ${allowedStatuses.join('/')} posts found.`);
+    return;
+  }
+
+  console.log(`Found ${safePending.length} safe post(s). DRY_RUN=${DRY_RUN}`);
 
   const browser = await chromium.launch({ headless: true, executablePath: EXE });
   const page = await browser.newPage({ viewport: { width: 1080, height: 1080 } });
 
-  for (let idx = 0; idx < pending.length; idx++) {
-    const p = pending[idx];
+  for (let idx = 0; idx < safePending.length; idx++) {
+    const p = safePending[idx];
     const car = cars[idx % cars.length];
-    console.log(`\n[${idx+1}/${pending.length}] "${p.title}" (${p.pillar})`);
+    console.log(`\n[${idx+1}/${safePending.length}] "${p.title}" (${p.pillar})`);
 
     // 1. Generate image
     const html = buildHtml(p, car);
@@ -179,7 +186,7 @@ async function main() {
     if (dbErr) console.error('  DB update error:', dbErr.message);
     else console.log(`  Marked published in DB. IG media: ${pub.data.id}`);
 
-    if (idx < pending.length - 1) await sleep(4000);
+    if (idx < safePending.length - 1) await sleep(4000);
   }
 
   await browser.close();

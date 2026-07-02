@@ -27,7 +27,7 @@ const BASE_CSS = `
 `;
 
 // ─────────────────────────────────────────────────────────────
-//  NEWS  1080×1350 — content in safe zone
+//  MARKET UPDATE  1080x1350 — no random news/filler
 // ─────────────────────────────────────────────────────────────
 export function newsHtml(p) {
   const headline = esc(clean(p.title.replace(/^[A-Za-z\s]+:\s*/,'')));
@@ -62,7 +62,7 @@ ${BASE_CSS}
   <div class="safe">
     <div class="topbar">
       <div class="logo">Motokah<span class="logo-dot"></span></div>
-      <div class="news-badge">NEWS</div>
+      <div class="news-badge">MOTOKAH</div>
       <div class="country-tag">${country}</div>
     </div>
     <div class="middle">
@@ -191,7 +191,7 @@ ${BASE_CSS}
 }
 
 export function buildHtml(p, car) {
-  if (p.post_type==='news') return newsHtml(p);
+  if (p.post_type==='update') return newsHtml(p);
   if (isCarCard(p))         return listingHtml(p,car);
   return brandHtml(p);
 }

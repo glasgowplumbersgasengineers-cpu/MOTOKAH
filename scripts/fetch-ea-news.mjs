@@ -1,5 +1,8 @@
 /**
- * Fetch live East African news from RSS feeds → insert into Supabase content_posts
+ * Disabled by default.
+ *
+ * This used to fetch live East African news into content_posts. That created off-brand
+ * filler for Motokah, so it now refuses to run unless --allow-news is passed.
  * Sources: The Citizen TZ, Nation Africa KE, Monitor UG, KBC KE, AllAfrica EA
  * Run: node scripts/fetch-ea-news.mjs
  */
@@ -11,6 +14,11 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
+if (!process.argv.includes("--allow-news")) {
+  console.error("Refusing to fetch/post generic news. Use scripts/seed-social-content.mjs for Motokah marketplace content.");
+  console.error("If you really need this old behaviour, re-run with --allow-news.");
+  process.exit(1);
+}
 
 const env = Object.fromEntries(
   fs.readFileSync(path.join(ROOT, ".env"), "utf8").split("\n")
