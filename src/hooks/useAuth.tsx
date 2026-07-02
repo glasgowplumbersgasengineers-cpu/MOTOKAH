@@ -67,16 +67,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async (userId: string) => {
     try {
-      const [{ data: profileData }, { data: adminRole }] = await Promise.all([
+      const [{ data: profileData }, { data: roleRows }] = await Promise.all([
         supabase
           .from("profiles")
           .select("seller_type, display_name, verified_at, phone, city, avatar_url")
           .eq("user_id", userId)
           .single(),
-        supabase.rpc("has_role", { _user_id: userId, _role: "admin" }),
+        supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .eq("role", "admin"),
       ]);
       if (profileData) setProfile(profileData as UserProfile);
-      setIsAdmin(!!adminRole);
+      setIsAdmin(Array.isArray(roleRows) && roleRows.length > 0);
     } catch {
       // Supabase unavailable — profile stays null, not admin
     }

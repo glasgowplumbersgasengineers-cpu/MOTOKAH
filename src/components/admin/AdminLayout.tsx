@@ -14,8 +14,12 @@ export default function AdminLayout() {
       if (!user) return false;
       // Demo admin — skip Supabase RPC
       if (user.id.startsWith("demo-")) return demoIsAdmin;
-      const { data } = await supabase.rpc("has_role", { _user_id: user.id, _role: "admin" });
-      return !!data;
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin");
+      return Array.isArray(data) && data.length > 0;
     },
     enabled: !!user,
   });
