@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconZoomIn } from "@tabler/icons-react";
+import { normalizeImageUrl } from "@/lib/imageUrls";
 
 interface ImageGalleryProps {
   images: string[];
@@ -9,8 +10,9 @@ interface ImageGalleryProps {
 export default function ImageGallery({ images, title }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
+  const normalizedImages = (images || []).map(normalizeImageUrl);
 
-  if (!images || images.length === 0) {
+  if (!normalizedImages || normalizedImages.length === 0) {
     return (
       <div className="aspect-[4/3] rounded-xl overflow-hidden bg-muted flex items-center justify-center">
         <span className="text-muted-foreground text-sm">No images available</span>
@@ -20,7 +22,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
 
   const navigate = (dir: "prev" | "next") => {
     setActiveIndex((i) =>
-      dir === "prev" ? (i === 0 ? images.length - 1 : i - 1) : (i === images.length - 1 ? 0 : i + 1)
+      dir === "prev" ? (i === 0 ? normalizedImages.length - 1 : i - 1) : (i === normalizedImages.length - 1 ? 0 : i + 1)
     );
   };
 
@@ -29,7 +31,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
       {/* Main Image */}
       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted group select-none">
         <img
-          src={images[activeIndex]}
+          src={normalizedImages[activeIndex]}
           alt={`${title} - Image ${activeIndex + 1}`}
           className={`w-full h-full object-cover transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
           onClick={() => setZoomed(!zoomed)}
@@ -51,13 +53,13 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
         </button>
         <div className="absolute bottom-3 right-3 flex items-center gap-1 text-xs bg-background/70 backdrop-blur-sm px-2 py-1 rounded-full">
           <IconZoomIn size={14} stroke={2} />
-          {activeIndex + 1}/{images.length}
+          {activeIndex + 1}/{normalizedImages.length}
         </div>
       </div>
 
       {/* Thumbnails */}
       <div className="flex gap-2 overflow-x-auto pb-1">
-        {images.map((img, i) => (
+        {normalizedImages.map((img, i) => (
           <button
             key={i}
             onClick={() => setActiveIndex(i)}

@@ -6,6 +6,7 @@ import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { usePriceFormatter } from "@/lib/prices";
+import { normalizeImageUrl } from "@/lib/imageUrls";
 
 function thumbUrl(src: string, width = 560): string {
   if (!src.includes("eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/")) return src;
@@ -25,7 +26,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [useOriginalSrc, setUseOriginalSrc] = useState(false);
-  const primaryImage = listing.image || listing.images?.[0] || "";
+  const primaryImage = normalizeImageUrl(listing.image || listing.images?.[0] || "");
 
   useEffect(() => {
     setImgLoaded(false);

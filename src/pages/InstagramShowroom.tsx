@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import VehicleCard from "@/components/VehicleCard";
 import { Button } from "@/components/ui/button";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
+import { normalizeImageUrl } from "@/lib/imageUrls";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { BLOCKED_SHOWROOM_USERS, DEALER_CITY, getShowroomListings } from "@/data/mockData";
 import {
@@ -40,7 +41,14 @@ const _mods = import.meta.glob("../data/showrooms/*.json", { eager: true }) as R
 const SHOWROOMS: Record<string, DealerData> = Object.fromEntries(
   Object.entries(_mods).map(([path, mod]) => {
     const username = path.split("/").pop()!.replace(".json", "");
-    return [username, mod.default as DealerData];
+    const dealer = mod.default as DealerData;
+    return [username, {
+      ...dealer,
+      posts: (dealer.posts || []).map((post) => ({
+        ...post,
+        images: (post.images || []).map(normalizeImageUrl),
+      })),
+    }];
   }).filter(([username]) => !BLOCKED_SHOWROOM_USERS.has(username))
 );
 
