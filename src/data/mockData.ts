@@ -82,7 +82,8 @@ export const DEALER_CURRENCY: Record<string, string> = {
 
 const LOCAL_SHOWROOM_IMAGE_USERS = new Set(["mgayamotors"]);
 export const BLOCKED_SHOWROOM_USERS = new Set(["servemarinekenya", "ukajapantz", "twenderide", "toyota.tanzania"]);
-const SUPABASE_STORAGE_BASE = "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images";
+const OLD_SUPABASE_LISTING_IMAGES_BASE = "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images";
+const IMAGE_CDN_BASE = (import.meta.env.VITE_IMAGE_CDN_BASE || "https://pub-cc57e4688ac040d4bd2525d4db978c41.r2.dev").replace(/\/$/, "");
 
 function _dealerCountry(username: string): string {
   return DEALER_CITY[username]?.match(/\b([A-Z]{2})$/)?.[1] || "TZ";
@@ -100,7 +101,14 @@ function _hasUsableDealerPhone(phone?: string | null): boolean {
 }
 
 function _supabaseImage(username: string, filename: string): string {
-  return `${SUPABASE_STORAGE_BASE}/${username}/${filename}`;
+  return `${IMAGE_CDN_BASE}/${username}/${filename}`;
+}
+
+function _normalizeImageUrl(image: string): string {
+  if (image.startsWith(`${OLD_SUPABASE_LISTING_IMAGES_BASE}/`)) {
+    return `${IMAGE_CDN_BASE}/${image.slice(OLD_SUPABASE_LISTING_IMAGES_BASE.length + 1)}`;
+  }
+  return image;
 }
 
 function _postImagePrefix(username: string, shortcode: string): string {
@@ -114,7 +122,7 @@ function _postImages(username: string, post: { shortcode?: string; images?: stri
 
   if (sourceImages.length > 0) {
     return sourceImages.map((image, imageIndex) => {
-      if (image.includes("supabase.co/storage")) return image;
+      if (image.includes("supabase.co/storage")) return _normalizeImageUrl(image);
       if (/^https?:\/\//i.test(image)) return image;
       if (LOCAL_SHOWROOM_IMAGE_USERS.has(username) && image.startsWith("/")) return image;
       return _supabaseImage(username, `${prefix}_${imageIndex + 1}.jpg`);

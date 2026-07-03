@@ -84,8 +84,15 @@ for delete
 using (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 -- These are trigger-only SECURITY DEFINER functions; they should not be callable via RPC.
-revoke execute on function public.on_listing_submitted() from public, anon, authenticated;
-revoke execute on function public.on_user_signup() from public, anon, authenticated;
+do $$
+begin
+  if to_regprocedure('public.on_listing_submitted()') is not null then
+    revoke execute on function public.on_listing_submitted() from public, anon, authenticated;
+  end if;
+  if to_regprocedure('public.on_user_signup()') is not null then
+    revoke execute on function public.on_user_signup() from public, anon, authenticated;
+  end if;
+end $$;
 
 -- Public buckets still serve known public URLs; these broad SELECT policies allowed object listing.
 drop policy if exists "Public read listing images" on storage.objects;

@@ -9,7 +9,8 @@ import { usePriceFormatter } from "@/lib/prices";
 
 function thumbUrl(src: string, width = 560): string {
   if (!src.includes("eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/")) return src;
-  return src.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + `?width=${width}&height=${Math.round(width * 0.75)}&quality=62&resize=cover`;
+  const separator = src.includes("?") ? "&" : "?";
+  return src.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + `${separator}width=${width}&height=${Math.round(width * 0.75)}&quality=62&resize=cover`;
 }
 
 export default function VehicleCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
@@ -24,6 +25,19 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [useOriginalSrc, setUseOriginalSrc] = useState(false);
+  const primaryImage = listing.image || listing.images?.[0] || "";
+
+  useEffect(() => {
+    setImgLoaded(false);
+    setImgError(false);
+    setUseOriginalSrc(false);
+  }, [listing.id, primaryImage]);
+
+  useEffect(() => {
+    if (!primaryImage || imgLoaded || imgError) return;
+    const timeout = window.setTimeout(() => setImgError(true), priority ? 7000 : 10000);
+    return () => window.clearTimeout(timeout);
+  }, [primaryImage, imgLoaded, imgError, priority]);
 
   // Sync isCompared when other cards update localStorage
   useEffect(() => {
@@ -86,16 +100,26 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
             <IconCar size={48} className="text-muted-foreground/30" stroke={1.5} />
           </div>
         )}
-        {listing.image && !imgError ? (
+        {primaryImage && !imgError ? (
           <img
-            src={useOriginalSrc ? listing.image : thumbUrl(listing.image, priority ? 720 : 560)}
+            src={useOriginalSrc ? primaryImage : thumbUrl(primaryImage, priority ? 720 : 560)}
             alt={listing.title}
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
-            fetchpriority={priority ? "high" : "low"}
-            onLoad={() => setImgLoaded(true)}
-            onError={() => useOriginalSrc ? setImgError(true) : setUseOriginalSrc(true)}
+            fetchPriority={priority ? "high" : "auto"}
+            onLoad={() => {
+              setImgLoaded(true);
+              setImgError(false);
+            }}
+            onError={() => {
+              if (useOriginalSrc) {
+                setImgError(true);
+                return;
+              }
+              setUseOriginalSrc(true);
+              setImgLoaded(false);
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

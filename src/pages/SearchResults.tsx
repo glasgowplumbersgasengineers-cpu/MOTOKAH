@@ -81,6 +81,7 @@ export default function SearchResults() {
   urlBodyTypes.forEach((bodyType) => canonicalParams.append("bodyType", bodyType));
   const seoCanonical = `https://www.motokah.com/search${canonicalParams.toString() ? "?" + canonicalParams.toString() : ""}`;
   const isBoatCategoryUrl = urlBodyTypes.includes("Boat");
+  const hasExplicitLocationFilter = searchParams.has("country") || searchParams.has("city");
 
   const filtersFromUrl = (): Filters => ({
     ...defaultFilters,
@@ -154,9 +155,7 @@ export default function SearchResults() {
     setFilters({ ...defaultFilters, country: resetCountry });
     setKeyword("");
     setPage(1);
-    const params = new URLSearchParams();
-    if (resetCountry) params.set("country", resetCountry);
-    setSearchParams(params);
+    setSearchParams(new URLSearchParams());
   };
 
   // Convert Filters to SearchFilters for the hook
@@ -186,7 +185,7 @@ export default function SearchResults() {
     if (filters.condition) chips.push({ key: "condition", label: filters.condition });
     if (filters.transmission) chips.push({ key: "transmission", label: filters.transmission });
     if (filters.city) chips.push({ key: "city", label: `${filters.city}${filters.country ? `, ${filters.country}` : ""}` });
-    else if (filters.country) chips.push({ key: "country", label: filters.country });
+    else if (filters.country && hasExplicitLocationFilter) chips.push({ key: "country", label: filters.country });
     if (filters.vehicleType) chips.push({ key: "vehicleType", label: filters.vehicleType.charAt(0).toUpperCase() + filters.vehicleType.slice(1) });
     filters.bodyType.forEach(bt => chips.push({ key: `bodyType-${bt}`, label: bt }));
     filters.fuelType.forEach(ft => chips.push({ key: `fuelType-${ft}`, label: ft }));
@@ -196,7 +195,7 @@ export default function SearchResults() {
     if (filters.yearTo) chips.push({ key: "yearTo", label: `To ${filters.yearTo}` });
     if (filters.maxMileage) chips.push({ key: "maxMileage", label: `≤${Number(filters.maxMileage).toLocaleString()} km` });
     return chips;
-  }, [filters]);
+  }, [filters, hasExplicitLocationFilter]);
 
   const removeChip = (key: string) => {
     let newFilters;
@@ -247,7 +246,7 @@ export default function SearchResults() {
   const paged = filtered.slice((page - 1) * perPage, page * perPage);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />
@@ -267,19 +266,19 @@ export default function SearchResults() {
       </Helmet>
       <Header />
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 pt-5 pb-28 lg:py-6">
         {/* Top bar */}
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-xl font-bold">{pageHeading}</h1>
+        <div className="mb-4 space-y-3 sm:flex sm:items-start sm:justify-between sm:gap-4 sm:space-y-0">
+          <div className="min-w-0">
+            <h1 className="break-words text-lg font-bold leading-tight sm:text-xl">{pageHeading}</h1>
             <p className="text-sm text-muted-foreground">
               {loading ? "Searching..." : `${filtered.length} launch-quality vehicles found`}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="-mx-1 flex w-[calc(100%+0.5rem)] items-center gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:w-auto sm:shrink-0 sm:overflow-visible sm:pb-0">
             {isMobile && (
               <button onClick={() => setDrawerOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm font-medium">
+                className="flex shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm font-medium">
                 <IconFilter size={16} stroke={2.5} /> Filters
               </button>
             )}
@@ -287,15 +286,17 @@ export default function SearchResults() {
               <button
                 onClick={() => { if (!user) { toast.error("Sign in to save searches"); return; } setSaveDialogOpen(true); }}
                 title="Save this search"
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-primary/50 text-primary text-sm font-medium hover:bg-primary/5 transition-colors"
+                className="flex shrink-0 items-center gap-1.5 rounded-lg border border-primary/50 px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/5"
               >
-                <IconBookmark size={15} stroke={2.5} /> Save Search
+                <IconBookmark size={15} stroke={2.5} />
+                <span className="sm:hidden">Save</span>
+                <span className="hidden sm:inline">Save Search</span>
               </button>
             )}
-            <div className="flex items-center gap-2">
-              <IconSortDescending size={16} stroke={2.5} className="text-muted-foreground" />
+            <div className="flex shrink-0 items-center gap-2">
+              <IconSortDescending size={16} stroke={2.5} className="shrink-0 text-muted-foreground" />
               <select value={sort} onChange={e => { setSort(e.target.value as SortOption); setPage(1); }}
-                className="h-9 rounded-md border border-input bg-background px-2 text-sm">
+                className="h-9 w-[126px] rounded-md border border-input bg-background px-2 text-sm sm:w-auto">
                 <option value="newest">Newest First</option>
                 <option value="price-low">Price: Low → High</option>
                 <option value="price-high">Price: High → Low</option>
@@ -331,15 +332,15 @@ export default function SearchResults() {
 
         {/* Active filter chips */}
         {activeChips.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="-mx-1 mb-4 flex flex-nowrap gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
             {activeChips.map(chip => (
               <span key={chip.key}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+                className="inline-flex shrink-0 items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
                 {chip.label}
                 <button onClick={() => removeChip(chip.key)}><IconX size={12} stroke={3} /></button>
               </span>
             ))}
-            <button onClick={clearFilters} className="text-xs text-muted-foreground hover:text-foreground underline">
+            <button onClick={clearFilters} className="shrink-0 text-xs text-muted-foreground underline hover:text-foreground">
               Clear all
             </button>
           </div>
@@ -363,8 +364,8 @@ export default function SearchResults() {
               </div>
             ) : paged.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {paged.map(listing => (
-                  <VehicleCard key={listing.id} listing={listing} />
+                {paged.map((listing, index) => (
+                  <VehicleCard key={listing.id} listing={listing} priority={page === 1 && index < 3} />
                 ))}
               </div>
             ) : (
