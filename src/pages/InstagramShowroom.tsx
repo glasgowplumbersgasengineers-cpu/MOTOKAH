@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
 import { normalizeImageUrl } from "@/lib/imageUrls";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { BLOCKED_SHOWROOM_USERS, DEALER_CITY, getShowroomListings } from "@/data/mockData";
+import { DEALER_CITY, LAUNCH_SHOWROOM_USERS, getShowroomListings } from "@/data/mockData";
 import {
   IconBrandWhatsapp,
   IconPhone,
@@ -49,7 +49,7 @@ const SHOWROOMS: Record<string, DealerData> = Object.fromEntries(
         images: (post.images || []).map(normalizeImageUrl),
       })),
     }];
-  }).filter(([username]) => !BLOCKED_SHOWROOM_USERS.has(username))
+  }).filter(([username]) => LAUNCH_SHOWROOM_USERS.has(username))
 );
 
 function formatFollowers(n: number) {

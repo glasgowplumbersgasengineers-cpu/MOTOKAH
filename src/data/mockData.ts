@@ -83,6 +83,49 @@ export const DEALER_CURRENCY: Record<string, string> = {
 
 const LOCAL_SHOWROOM_IMAGE_USERS = new Set(["mgayamotors"]);
 export const BLOCKED_SHOWROOM_USERS = new Set(["servemarinekenya", "ukajapantz", "twenderide", "toyota.tanzania"]);
+export const LAUNCH_SHOWROOM_USERS = new Set([
+  "al_husnainmotors",
+  "khushimotorsdaressalaam",
+  "mgayamotors",
+  "nairobidrive",
+  "gariguruske",
+  "rakincars.tz",
+  "ethiocarsmarket",
+  "used_cars_in_kampala",
+  "kk_magic_cars_",
+  "hm.autodeals",
+  "breemotors",
+  "peachcarske",
+  "smartautoske",
+  "house_of_cars_kenya",
+  "aminicar_",
+]);
+
+function _isLaunchShowroom(username: string): boolean {
+  return LAUNCH_SHOWROOM_USERS.has(username) && !BLOCKED_SHOWROOM_USERS.has(username);
+}
+
+function _dealerListingLimit(username: string): number {
+  const limits: Record<string, number> = {
+    khushimotorsdaressalaam: 32,
+    al_husnainmotors: 28,
+    mgayamotors: 24,
+    nairobidrive: 24,
+    gariguruske: 24,
+    rakincars: 20,
+    "rakincars.tz": 20,
+    ethiocarsmarket: 18,
+    used_cars_in_kampala: 18,
+    "kk_magic_cars_": 18,
+    "hm.autodeals": 16,
+    breemotors: 16,
+    peachcarske: 12,
+    smartautoske: 12,
+    house_of_cars_kenya: 12,
+    aminicar_: 10,
+  };
+  return limits[username] ?? 12;
+}
 
 function _dealerCountry(username: string): string {
   return DEALER_CITY[username]?.match(/\b([A-Z]{2})$/)?.[1] || "TZ";
@@ -499,7 +542,8 @@ function _convertMgayaToListings(): Listing[] {
     .filter((p, i, arr) => {
       const key = p.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase();
       return arr.findIndex((x) => x.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase() === key) === i;
-    });
+    })
+    .slice(0, _dealerListingLimit("mgayamotors"));
   return posts.map((post, i) => {
     const info = _parseMgayaCaption(post.caption);
     const images = _postImages("mgayamotors", post, i);
@@ -541,7 +585,7 @@ function _convertAllShowroomsToListings(): Listing[] {
   for (const [path, mod] of Object.entries(_showroomMods)) {
     const username = path.split("/").pop()!.replace(".json", "");
     if (username === "mgayamotors") continue; // already handled separately
-    if (BLOCKED_SHOWROOM_USERS.has(username)) continue;
+    if (!_isLaunchShowroom(username)) continue;
     const dealer = mod.default;
     if (!_hasUsableDealerPhone(dealer.phone)) continue;
     const city = DEALER_CITY[username] ?? "Dar es Salaam, TZ";
@@ -552,7 +596,8 @@ function _convertAllShowroomsToListings(): Listing[] {
       .filter((p, i, arr) => {
         const key = p.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase();
         return arr.findIndex((x) => x.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase() === key) === i;
-      });
+      })
+      .slice(0, _dealerListingLimit(username));
     for (const post of carPosts) {
       const info = _parseMgayaCaption(post.caption);
       const images = _postImages(username, post);
@@ -1105,7 +1150,7 @@ function _generateMissingDealers(existingIds: Set<string>): MockDealer[] {
   return Object.entries(_showroomMods)
     .filter(([path]) => {
       const username = path.split("/").pop()!.replace(".json", "");
-      return !existingIds.has(`dealer-${username}`) && !BLOCKED_SHOWROOM_USERS.has(username);
+      return !existingIds.has(`dealer-${username}`) && _isLaunchShowroom(username);
     })
     .map(([path, mod]) => {
       const username = path.split("/").pop()!.replace(".json", "");
@@ -1589,7 +1634,13 @@ const _hardcodedIds = new Set(mockDealers.map(d => d.user_id));
 mockDealers.push(..._generateMissingDealers(_hardcodedIds));
 for (let i = mockDealers.length - 1; i >= 0; i -= 1) {
   const username = mockDealers[i].instagram || mockDealers[i].user_id.replace(/^dealer-/, "");
-  if (BLOCKED_SHOWROOM_USERS.has(username) || mockDealers[i].user_id === "dealer-ibaraki" || !_hasUsableDealerPhone(mockDealers[i].phone)) {
+  const isLaunchDealer = mockDealers[i].user_id === "dealer-nicolette-boats" || LAUNCH_SHOWROOM_USERS.has(username);
+  if (
+    !isLaunchDealer ||
+    BLOCKED_SHOWROOM_USERS.has(username) ||
+    mockDealers[i].user_id === "dealer-ibaraki" ||
+    !_hasUsableDealerPhone(mockDealers[i].phone)
+  ) {
     mockDealers.splice(i, 1);
   }
 }
@@ -1599,7 +1650,7 @@ for (let i = mockDealers.length - 1; i >= 0; i -= 1) {
  * Filters non-car posts and deduplicates by caption prefix.
  */
 export function getShowroomListings(username: string): Listing[] {
-  if (BLOCKED_SHOWROOM_USERS.has(username)) return [];
+  if (!_isLaunchShowroom(username)) return [];
   const key = Object.keys(_showroomMods).find(k => k.includes(`/${username}.json`));
   if (!key) return [];
   const dealer = (_showroomMods[key] as any).default;
@@ -1617,7 +1668,8 @@ export function getShowroomListings(username: string): Listing[] {
       if (seenCaptions.has(dedupeKey)) return false;
       seenCaptions.add(dedupeKey);
       return true;
-    });
+    })
+    .slice(0, _dealerListingLimit(username));
 
   return carPosts.map((post: any, i: number) => {
     const info = _parseMgayaCaption(post.caption || "");
