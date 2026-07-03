@@ -53,7 +53,7 @@ const vehiclePairs = [
   ["BMW", "320i"],
   ["Mercedes-Benz", "C-Class"],
 ];
-const dealerNames = ["Al-Husnain Motors", "Mgaya Motors TZ", "Expert Motors TZ", "Urassa Motors", "Ibaraki Motors"];
+const dealerNames = ["Al-Husnain Motors", "Mgaya Motors TZ", "Khushi Motors", "Nairobi Drive", "Gari Gurus Kenya"];
 
 function addDays(date, offset) {
   const d = new Date(`${date}T09:00:00Z`);
@@ -75,7 +75,7 @@ function postForDay(index) {
   const buyerTips = [
     ["Check mileage before you fall in love", "Quick buyer tip: before paying a deposit, compare the mileage with the service history, tyres, interior wear and import documents. A clean listing should make inspection easier, not harder."],
     ["Ask for the logbook before deposit", "A serious seller should be comfortable showing ownership documents and matching details before you send money. View the car, verify the paperwork, then negotiate."],
-    ["Photos tell you where to inspect first", "Look closely at bumper gaps, tyres, dashboard lights, seat wear and paint tone before visiting. Good photos save time and help you ask better questions."],
+    ["Photos tell you where to inspect first", "Motokah buyer tip: look closely at bumper gaps, tyres, dashboard lights, seat wear and paint tone before visiting a car. Good listing photos save time and help you ask better questions."],
     ["Compare similar cars before calling", "One price alone does not tell the full story. Compare year, mileage, condition, fuel type and location before deciding which seller deserves your time."],
   ];
   const dealerAngles = [

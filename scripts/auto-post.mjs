@@ -1,14 +1,13 @@
 /**
  * Auto-post to Instagram.
- * Picks next pending post from content_posts, generates image, uploads to Supabase,
+ * Picks next approved post from content_posts, generates image, uploads to Supabase,
  * posts to IG Graph API, marks status = 'published'.
  *
  * Usage:
- *   node scripts/auto-post.mjs              -- post next 1 pending
+ *   node scripts/auto-post.mjs              -- post next 1 approved
  *   node scripts/auto-post.mjs --count=3    -- post next 3
  *   node scripts/auto-post.mjs --dry-run    -- generate images only, no IG post
  */
-import { chromium } from 'playwright';
 import { createClient } from '@supabase/supabase-js';
 import fs from 'fs';
 import path from 'path';
@@ -27,6 +26,8 @@ fs.mkdirSync(TMP, { recursive: true });
 const CHROME_CANDIDATES = [
   'C:/Users/rapid/AppData/Local/ms-playwright/chromium_headless_shell-1223/chrome-headless-shell-win64/chrome-headless-shell.exe',
   'C:/Users/rapid/AppData/Local/ms-playwright/chromium-1228/chrome-win64/chrome.exe',
+  'C:/Program Files/Google/Chrome/Application/chrome.exe',
+  'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
 ];
 const EXE = CHROME_CANDIDATES.find((candidate) => fs.existsSync(candidate));
 
@@ -39,7 +40,6 @@ const IG_UID   = env.IG_USER_ID;
 const BUCKET   = 'ig-posts';
 
 const DRY_RUN  = process.argv.includes('--dry-run');
-const INCLUDE_PENDING = process.argv.includes('--include-pending');
 const countArg = process.argv.find(a => a.startsWith('--count='));
 const COUNT    = parseInt(countArg?.split('=')[1] || '1');
 
@@ -88,15 +88,13 @@ function igPost(endpoint, params) {
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 async function main() {
-  if (!EXE) throw new Error('No Playwright Chromium executable found. Run npx playwright install chromium.');
   if (!DRY_RUN) requireEnv(env, ['IG_GRAPH_TOKEN', 'IG_USER_ID']);
 
-  // Fetch pending posts
-  const allowedStatuses = INCLUDE_PENDING ? ['approved', 'pending'] : ['approved'];
+  // Only approved posts can publish. Pending posts must be reviewed first.
   const { data: pending, error } = await supabase
     .from('content_posts')
     .select('*')
-    .in('status', allowedStatuses)
+    .eq('status', 'approved')
     .order('scheduled_date', { ascending: true })
     .limit(Math.max(COUNT * 3, COUNT));
 
@@ -108,9 +106,12 @@ async function main() {
   }).slice(0, COUNT);
 
   if (!safePending.length) {
-    console.log(`No safe ${allowedStatuses.join('/')} posts found.`);
+    console.log('No safe approved posts found.');
     return;
   }
+
+  if (!EXE) throw new Error('No Chrome executable found. Install Chrome or run npx playwright install chromium.');
+  const { chromium } = await import('playwright');
 
   console.log(`Found ${safePending.length} safe post(s). DRY_RUN=${DRY_RUN}`);
 
