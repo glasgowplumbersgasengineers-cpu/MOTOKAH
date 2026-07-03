@@ -346,7 +346,7 @@ export default function SearchResults() {
           </div>
         )}
 
-        <div className="flex gap-6">
+        <div className="flex min-w-0 gap-6">
           {/* Desktop sidebar */}
           {!isMobile && (
             <aside className="w-64 shrink-0">
@@ -357,13 +357,13 @@ export default function SearchResults() {
           )}
 
           {/* Results */}
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             {loading ? (
               <div className="flex items-center justify-center py-20">
                 <IconLoader2 size={32} className="animate-spin text-primary" />
               </div>
             ) : paged.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {paged.map((listing, index) => (
                   <VehicleCard key={listing.id} listing={listing} priority={page === 1 && index < 3} />
                 ))}

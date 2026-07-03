@@ -92,7 +92,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   const showPlaceholder = !imgLoaded || imgError;
 
   return (
-    <Link to={`/listing/${listing.id}`} className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02] transition-all duration-300 block">
+    <Link to={`/listing/${listing.id}`} className="group block w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02]">
       {/* Image */}
       <div className="relative aspect-[4/3] overflow-hidden bg-muted">
         {/* Skeleton placeholder */}
@@ -158,7 +158,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
       </div>
 
       {/* Details */}
-      <div className="p-3">
+        <div className="min-w-0 p-3">
         <h3 className="font-semibold text-sm text-foreground line-clamp-2 mb-1 group-hover:text-primary transition-colors">{listing.title}</h3>
 
         <div className="flex items-baseline gap-2 mb-2">
@@ -188,10 +188,10 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
           )}
         </div>
 
-        <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-          <span className="flex items-center gap-1"><IconGauge size={14} stroke={2.5} />{listing.mileage > 0 ? `${listing.mileage.toLocaleString()} km` : listing.condition === "New" ? "0 km" : "N/A"}</span>
-          <span className="flex items-center gap-1"><IconCalendar size={14} stroke={2.5} />{listing.year}</span>
-          <span className="flex items-center gap-1"><IconManualGearbox size={14} stroke={2.5} />{listing.transmission || "N/A"}</span>
+        <div className="grid min-w-0 grid-cols-3 gap-2 text-xs text-muted-foreground mb-2">
+          <span className="flex min-w-0 items-center gap-1 truncate"><IconGauge size={14} stroke={2.5} className="shrink-0" />{listing.mileage > 0 ? `${listing.mileage.toLocaleString()} km` : listing.condition === "New" ? "0 km" : "N/A"}</span>
+          <span className="flex min-w-0 items-center justify-center gap-1 truncate"><IconCalendar size={14} stroke={2.5} className="shrink-0" />{listing.year}</span>
+          <span className="flex min-w-0 items-center justify-end gap-1 truncate"><IconManualGearbox size={14} stroke={2.5} className="shrink-0" />{listing.transmission || "N/A"}</span>
         </div>
 
         <div className="flex items-center gap-2 mb-1">
