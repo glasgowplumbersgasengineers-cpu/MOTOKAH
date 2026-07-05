@@ -6,13 +6,7 @@ import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { usePriceFormatter } from "@/lib/prices";
-import { normalizeImageUrl } from "@/lib/imageUrls";
-
-function thumbUrl(src: string, width = 560): string {
-  if (!src.includes("eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/")) return src;
-  const separator = src.includes("?") ? "&" : "?";
-  return src.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + `${separator}width=${width}&height=${Math.round(width * 0.75)}&quality=62&resize=cover`;
-}
+import { cardImageUrl, fullImageUrl, normalizeImageUrl } from "@/lib/imageUrls";
 
 export default function VehicleCard({ listing, priority }: { listing: Listing; priority?: boolean }) {
   const { user } = useAuth();
@@ -27,6 +21,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   const [imgError, setImgError] = useState(false);
   const [useOriginalSrc, setUseOriginalSrc] = useState(false);
   const primaryImage = normalizeImageUrl(listing.image || listing.images?.[0] || "");
+  const displayImage = useOriginalSrc ? fullImageUrl(primaryImage) : cardImageUrl(primaryImage);
 
   useEffect(() => {
     setImgLoaded(false);
@@ -103,7 +98,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
         )}
         {primaryImage && !imgError ? (
           <img
-            src={useOriginalSrc ? primaryImage : thumbUrl(primaryImage, priority ? 720 : 560)}
+            src={displayImage}
             alt={listing.title}
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={priority ? "eager" : "lazy"}

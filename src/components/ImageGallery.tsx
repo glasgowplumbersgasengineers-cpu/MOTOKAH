@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { IconChevronLeft, IconChevronRight, IconZoomIn } from "@tabler/icons-react";
-import { normalizeImageUrl } from "@/lib/imageUrls";
+import { fullImageUrl, galleryImageUrl, normalizeImageUrl } from "@/lib/imageUrls";
 
 interface ImageGalleryProps {
   images: string[];
@@ -11,6 +11,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
   const normalizedImages = (images || []).map(normalizeImageUrl);
+  const activeImage = normalizedImages[activeIndex];
 
   if (!normalizedImages || normalizedImages.length === 0) {
     return (
@@ -31,9 +32,12 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
       {/* Main Image */}
       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted group select-none">
         <img
-          src={normalizedImages[activeIndex]}
+          src={zoomed ? fullImageUrl(activeImage) : galleryImageUrl(activeImage)}
           alt={`${title} - Image ${activeIndex + 1}`}
           className={`w-full h-full object-cover transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
           onClick={() => setZoomed(!zoomed)}
           draggable={false}
         />
@@ -67,7 +71,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
               i === activeIndex ? "border-primary" : "border-transparent opacity-60 hover:opacity-90"
             }`}
           >
-            <img src={img} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" />
+            <img src={galleryImageUrl(img)} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
           </button>
         ))}
       </div>

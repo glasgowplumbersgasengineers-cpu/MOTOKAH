@@ -13,8 +13,11 @@ Optional env:
   MAX_IMAGES_PER_POST=8
   JPEG_QUALITY=78
   MAX_EDGE=1400
+  VARIANT_WIDTHS=640,960,1400
   DEALERS=comma,separated,usernames
   DRY_RUN=1
+  SKIP_EXISTING=1
+  FUZZY_SOURCE_DIRS=0
 """
 
 from __future__ import annotations
@@ -37,9 +40,12 @@ SHOWROOM_DIR = ROOT / "src" / "data" / "showrooms"
 SOURCE_DIR = Path(os.environ.get("IMAGE_SOURCE_DIR", r"D:\cars for motokah"))
 BUCKET = os.environ.get("R2_BUCKET", "motokah-images")
 DRY_RUN = os.environ.get("DRY_RUN", "0") == "1"
+SKIP_EXISTING = os.environ.get("SKIP_EXISTING", "1") == "1"
+FUZZY_SOURCE_DIRS = os.environ.get("FUZZY_SOURCE_DIRS", "0") == "1"
 MAX_IMAGES_PER_POST = int(os.environ.get("MAX_IMAGES_PER_POST", "8"))
 JPEG_QUALITY = int(os.environ.get("JPEG_QUALITY", "78"))
 MAX_EDGE = int(os.environ.get("MAX_EDGE", "1400"))
+VARIANT_WIDTHS = [int(item) for item in os.environ.get("VARIANT_WIDTHS", "640,960,1400").split(",") if item.strip()]
 
 DEFAULT_DEALERS = {
     "al_husnainmotors",
@@ -121,7 +127,7 @@ def image_key(username: str, image: str, shortcode: str, index: int) -> str:
 def dealer_source_dirs(username: str) -> list[Path]:
     exact = SOURCE_DIR / username
     candidates = [exact] if exact.exists() else []
-    if SOURCE_DIR.exists():
+    if FUZZY_SOURCE_DIRS and SOURCE_DIR.exists():
         lower = username.lower()
         for path in SOURCE_DIR.iterdir():
             if path.is_dir() and lower in path.name.lower() and path not in candidates:
@@ -178,10 +184,10 @@ def iter_referenced_images(dealers: Iterable[str]):
                 yield username, key, Path(key).name
 
 
-def optimize_image(path: Path) -> bytes:
+def optimize_image(path: Path, max_edge: int = MAX_EDGE) -> bytes:
     with Image.open(path) as image:
         image = ImageOps.exif_transpose(image)
-        image.thumbnail((MAX_EDGE, MAX_EDGE), Image.Resampling.LANCZOS)
+        image.thumbnail((max_edge, max_edge), Image.Resampling.LANCZOS)
         if image.mode not in ("RGB", "L"):
             image = image.convert("RGB")
         output = io.BytesIO()
@@ -205,6 +211,14 @@ def r2_client():
     )
 
 
+def object_exists(client, key: str) -> bool:
+    try:
+        client.head_object(Bucket=BUCKET, Key=key)
+        return True
+    except Exception:
+        return False
+
+
 def main() -> int:
     dealers = selected_dealers()
     client = None if DRY_RUN else r2_client()
@@ -218,19 +232,26 @@ def main() -> int:
             continue
         found += 1
         try:
-            body = optimize_image(source)
-            total_bytes += len(body)
-            if not DRY_RUN:
-                assert client is not None
-                client.put_object(
-                    Bucket=BUCKET,
-                    Key=key,
-                    Body=body,
-                    ContentType="image/jpeg",
-                    CacheControl="public, max-age=31536000, immutable",
-                )
+            uploaded_keys = []
+            for width in VARIANT_WIDTHS:
+                variant_key = key if width == 1400 else f"_variants/w{width}/{key}"
+                if not DRY_RUN and SKIP_EXISTING and object_exists(client, variant_key):
+                    uploaded_keys.append(f"{variant_key}:exists")
+                    continue
+                body = optimize_image(source, width)
+                total_bytes += len(body)
+                if not DRY_RUN:
+                    assert client is not None
+                    client.put_object(
+                        Bucket=BUCKET,
+                        Key=variant_key,
+                        Body=body,
+                        ContentType="image/jpeg",
+                        CacheControl="public, max-age=31536000, immutable",
+                    )
+                uploaded_keys.append(f"{variant_key}:{len(body)}")
             uploaded += 1
-            print(f"{'would-upload' if DRY_RUN else 'uploaded'} {key} {len(body)}", flush=True)
+            print(f"{'would-upload' if DRY_RUN else 'uploaded'} {key} {' '.join(uploaded_keys)}", flush=True)
         except Exception as exc:
             failed += 1
             print(f"failed {key}: {exc}", file=sys.stderr, flush=True)
