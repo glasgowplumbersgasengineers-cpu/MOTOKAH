@@ -142,7 +142,7 @@ export default function CountryLandingPage() {
           ) : listings.length > 0 ? (
             <>
               <p className="mb-4 text-sm text-muted-foreground">
-                Showing {listings.length} launch-quality {listings.length === 1 ? "listing" : "listings"} in {countryName}
+                Showing {listings.length} {listings.length === 1 ? "listing" : "listings"} in {countryName}
               </p>
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {listings.map((listing) => (
@@ -152,8 +152,8 @@ export default function CountryLandingPage() {
             </>
           ) : (
             <div className="rounded-xl border border-border bg-card p-8 text-center">
-              <p className="text-lg font-semibold">No launch listings found in {countryName} yet.</p>
-              <p className="mt-2 text-sm text-muted-foreground">Dealer inventory is being cleaned before launch.</p>
+              <p className="text-lg font-semibold">No listings found in {countryName} yet.</p>
+              <p className="mt-2 text-sm text-muted-foreground">Try another city or browse all available vehicles.</p>
             </div>
           )}
         </section>

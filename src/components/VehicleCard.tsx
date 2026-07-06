@@ -31,9 +31,15 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
 
   useEffect(() => {
     if (!primaryImage || imgLoaded || imgError) return;
-    const timeout = window.setTimeout(() => setImgError(true), priority ? 7000 : 10000);
+    const timeout = window.setTimeout(() => {
+      if (!useOriginalSrc) {
+        setUseOriginalSrc(true);
+        return;
+      }
+      setImgError(true);
+    }, priority ? 2500 : 4000);
     return () => window.clearTimeout(timeout);
-  }, [primaryImage, imgLoaded, imgError, priority]);
+  }, [primaryImage, imgLoaded, imgError, priority, useOriginalSrc]);
 
   // Sync isCompared when other cards update localStorage
   useEffect(() => {

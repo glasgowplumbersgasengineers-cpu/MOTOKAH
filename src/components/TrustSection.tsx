@@ -2,7 +2,7 @@ import { IconBrandWhatsapp, IconShieldCheck, IconInfoCircle, IconSearch } from "
 
 const trustItems = [
   { icon: IconBrandWhatsapp, title: "Direct Seller Contact", desc: "Call or WhatsApp sellers from the listing page", stat: "No middleman" },
-  { icon: IconShieldCheck, title: "Dealer-Focused Listings", desc: "Launch inventory prioritizes reachable showrooms and cleaner car data", stat: "Quality first" },
+  { icon: IconShieldCheck, title: "Dealer-Focused Listings", desc: "Browse reachable showrooms with cleaner vehicle data and direct seller contacts", stat: "Quality first" },
   { icon: IconInfoCircle, title: "Clear Listing Details", desc: "Photos, location, specs and seller details are kept together for faster checks", stat: "Easy to compare" },
   { icon: IconSearch, title: "Inspect Before Buying", desc: "Use trusted mechanics and original documents before paying any seller", stat: "Buyer safety" },
 ];

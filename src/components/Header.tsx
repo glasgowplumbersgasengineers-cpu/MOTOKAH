@@ -17,6 +17,7 @@ const navLinks = [
   { key: "nav.newCars", href: "/search?condition=New" },
   { key: "nav.commercial", href: "/search?vehicleType=commercial" },
   { key: "nav.bikes", href: "/search?vehicleType=bike" },
+  { key: "nav.boats", href: "/search?vehicleType=boat" },
   { key: "nav.dealers", href: "/dealers" },
   { key: "nav.compare", href: "/compare" },
   { key: "nav.blog", href: "/blog" },

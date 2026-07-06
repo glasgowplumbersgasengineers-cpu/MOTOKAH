@@ -201,7 +201,7 @@ export default function InstagramShowroom() {
         {listings.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <IconPhoto size={40} className="mx-auto mb-3 opacity-30" />
-            <p className="text-sm">No launch-ready listings found for this dealer yet.</p>
+            <p className="text-sm">No listings found for this dealer yet.</p>
             <a href={`https://www.instagram.com/${dealer.username}/`} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline mt-1 block">
               View on Instagram →
             </a>

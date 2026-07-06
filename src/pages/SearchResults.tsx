@@ -51,6 +51,8 @@ export default function SearchResults() {
     ? "Bikes"
     : seoVehicleType === "commercial"
     ? "Commercial Vehicles"
+    : seoVehicleType === "boat"
+    ? "Boats"
     : primaryBodyType
     ? `${primaryBodyType}s`
     : seoCondition === "New"
@@ -98,7 +100,7 @@ export default function SearchResults() {
     yearTo: searchParams.get("yearTo") || "",
     maxMileage: searchParams.get("maxMileage") || "",
     fuelType: searchParams.getAll("fuelType"),
-    vehicleType: (searchParams.get("vehicleType") as "car" | "bike" | "commercial" | "spare") || "",
+    vehicleType: (searchParams.get("vehicleType") as "car" | "bike" | "commercial" | "boat" | "spare") || "",
   });
 
   const [filters, setFilters] = useState<Filters>(() => filtersFromUrl());
@@ -219,6 +221,8 @@ export default function SearchResults() {
     ? `Bikes for Sale in ${locationLabel}`
     : filters.vehicleType === "commercial"
     ? `Commercial Vehicles for Sale in ${locationLabel}`
+    : filters.vehicleType === "boat"
+    ? `Boats for Sale in ${locationLabel}`
     : filters.bodyType[0]
     ? `${filters.bodyType[0]}s for Sale in ${locationLabel}`
     : `Used Cars for Sale in ${locationLabel}`;
@@ -272,7 +276,7 @@ export default function SearchResults() {
           <div className="min-w-0">
             <h1 className="break-words text-lg font-bold leading-tight sm:text-xl">{pageHeading}</h1>
             <p className="text-sm text-muted-foreground">
-              {loading ? "Searching..." : `${filtered.length} launch-quality vehicles found`}
+              {loading ? "Searching..." : `${filtered.length} ${filtered.length === 1 ? "vehicle" : "vehicles"} found`}
             </p>
           </div>
           <div className="-mx-1 flex w-[calc(100%+0.5rem)] items-center gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:w-auto sm:shrink-0 sm:overflow-visible sm:pb-0">
@@ -409,7 +413,7 @@ export default function SearchResults() {
                 : `${vehicleLabel} for sale${location ? ` in ${location}` : " in East Africa"}`}
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-              Motokah helps buyers compare launch-quality listings by price, mileage, year, transmission,
+              Motokah helps buyers compare vehicle listings by price, mileage, year, transmission,
               fuel type and seller location. {location ? `For ${location}, ` : "Across East Africa, "}
               browse dealer and private stock, shortlist vehicles, then call or WhatsApp the seller directly
               before arranging an inspection.

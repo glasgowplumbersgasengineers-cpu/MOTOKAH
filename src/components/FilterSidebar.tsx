@@ -15,7 +15,7 @@ export interface Filters {
   maxMileage: string;
   city: string;
   country: string;
-  vehicleType: "" | "car" | "bike" | "commercial" | "spare";
+  vehicleType: "" | "car" | "bike" | "commercial" | "boat" | "spare";
 }
 
 export const defaultFilters: Filters = {
@@ -79,6 +79,7 @@ export default function FilterSidebar({ filters, onChange, onClear }: FilterSide
           <option value="car">Cars</option>
           <option value="bike">Motorcycles</option>
           <option value="commercial">Commercial</option>
+          <option value="boat">Boats</option>
         </select>
       </div>
 

@@ -19,7 +19,20 @@ export interface SearchFilters {
   yearFrom?: string;
   yearTo?: string;
   maxMileage?: string;
-  vehicleType?: "car" | "bike" | "commercial" | "spare";
+  vehicleType?: "car" | "bike" | "commercial" | "boat" | "spare";
+}
+
+const BIKE_TYPES = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
+const BOAT_TYPES = ["Boat", "Yacht", "Powerboat", "Sailboat", "Catamaran"];
+
+function matchesVehicleType(listing: Listing, vehicleType?: SearchFilters["vehicleType"]) {
+  if (!vehicleType || vehicleType === "spare") return true;
+  const bodyType = listing.bodyType || "";
+  if (vehicleType === "bike") return BIKE_TYPES.includes(bodyType);
+  if (vehicleType === "commercial") return COMMERCIAL_TYPES.includes(bodyType);
+  if (vehicleType === "boat") return BOAT_TYPES.includes(bodyType);
+  if (vehicleType === "car") return !BIKE_TYPES.includes(bodyType) && !COMMERCIAL_TYPES.includes(bodyType) && !BOAT_TYPES.includes(bodyType);
+  return true;
 }
 
 const countryCurrencyMap: Record<string, string[]> = {
@@ -89,13 +102,14 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       // Vehicle type filtering
       if (filters.vehicleType) {
-        const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
         if (filters.vehicleType === "bike") {
-          query = query.in("body_type", bikeTypes);
+          query = query.in("body_type", BIKE_TYPES);
         } else if (filters.vehicleType === "commercial") {
           query = query.in("body_type", COMMERCIAL_TYPES);
+        } else if (filters.vehicleType === "boat") {
+          query = query.in("body_type", BOAT_TYPES);
         } else if (filters.vehicleType === "car") {
-          query = query.not("body_type", "in", [...bikeTypes, ...COMMERCIAL_TYPES]);
+          query = query.not("body_type", "in", [...BIKE_TYPES, ...COMMERCIAL_TYPES, ...BOAT_TYPES]);
         }
       }
 
@@ -152,6 +166,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           if (filters.maxPrice) arr = arr.filter(m => m.price <= Number(filters.maxPrice));
           if (filters.yearFrom) arr = arr.filter(m => m.year >= Number(filters.yearFrom));
           if (filters.yearTo) arr = arr.filter(m => m.year <= Number(filters.yearTo));
+          if (filters.vehicleType) arr = arr.filter(m => matchesVehicleType(m, filters.vehicleType));
           return arr.filter(l => l.price > 0);
         };
         errMocks = applyCommon(errMocks);
@@ -239,6 +254,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.yearTo) jijiFiltered = jijiFiltered.filter(m => m.year <= Number(filters.yearTo));
       if (filters.bodyType?.length) jijiFiltered = jijiFiltered.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
       if (filters.fuelType?.length) jijiFiltered = jijiFiltered.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
+      if (filters.vehicleType) jijiFiltered = jijiFiltered.filter(m => matchesVehicleType(m, filters.vehicleType));
       if (filters.country && filters.country !== "All") {
         const cities = countryCitiesMap[filters.country] || [];
         // Jiji country field is corrupted (e.g. Lagos tagged as TZ) — city name only
@@ -275,17 +291,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
       if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
       if (filters.fuelType?.length) mocks = mocks.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
-      // Vehicle type filtering for mocks
-      if (filters.vehicleType) {
-        const bikeTypes = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
-        if (filters.vehicleType === "bike") {
-          mocks = mocks.filter(m => bikeTypes.includes(m.bodyType || ""));
-        } else if (filters.vehicleType === "commercial") {
-          mocks = mocks.filter(m => COMMERCIAL_TYPES.includes(m.bodyType || ""));
-        } else if (filters.vehicleType === "car") {
-          mocks = mocks.filter(m => !bikeTypes.includes(m.bodyType || "") && !COMMERCIAL_TYPES.includes(m.bodyType || ""));
-        }
-      }
+      if (filters.vehicleType) mocks = mocks.filter(m => matchesVehicleType(m, filters.vehicleType));
       
       // Apply validation to mock data
       mocks = mocks.filter(l => validateListing(l, true));
