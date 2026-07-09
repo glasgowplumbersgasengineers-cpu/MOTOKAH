@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings, commercialTypes as COMMERCIAL_TYPES } from "@/data/mockData";
 import { getJijiListings } from "@/data/jijiListings";
-import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
+import { hasUsablePhone, isContactPendingListing, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
 
 export interface SearchFilters {
   q?: string;
@@ -223,7 +223,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       });
 
       const validateListing = (l: Listing, isMock = false) => {
-        if (!l.price || l.price <= 0) return false;
+        if ((!l.price || l.price <= 0) && !isContactPendingListing(l)) return false;
         if (!isMock) return true;
         if (l.bodyType === "Boat") return true;
         if (l.mileage === 0 && l.condition !== "New") return false;
@@ -302,7 +302,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         if (!validateListing(l, false)) return false;
         if (isJijiImage(l.image) || l.images?.some(isJijiImage)) return false;
         if (isGenericScraperSeller(l.sellerName)) return false;
-        if (!hasUsablePhone(l.sellerPhone)) return false;
+        if (!hasUsablePhone(l.sellerPhone) && !isContactPendingListing(l)) return false;
         return isLaunchQualityListing(l);
       });
       const shouldInjectMocks = filters.bodyType?.includes("Boat") || !filters.bodyType?.length || validMapped.length < 5;

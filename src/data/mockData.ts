@@ -84,6 +84,7 @@ export const DEALER_CURRENCY: Record<string, string> = {
 const LOCAL_SHOWROOM_IMAGE_USERS = new Set(["mgayamotors"]);
 export const BLOCKED_SHOWROOM_USERS = new Set(["servemarinekenya", "ukajapantz", "twenderide", "toyota.tanzania"]);
 export const LAUNCH_SHOWROOM_USERS = new Set([
+  "ibaraki",
   "al_husnainmotors",
   "khushimotorsdaressalaam",
   "mgayamotors",
@@ -640,13 +641,13 @@ function _convertAllShowroomsToListings(): Listing[] {
 function _isLaunchQualityListing(listing: Listing): boolean {
   const title = (listing.title || "").replace(/\s+/g, " ").trim();
   const images = listing.images?.filter(Boolean) || (listing.image ? [listing.image] : []);
-  if (listing.sellerId === "ibaraki" || listing.sellerId === "dealer-ibaraki") return false;
+  const contactPending = listing.sellerId === "ibaraki" || listing.sellerId === "dealer-ibaraki" || listing.id.startsWith("ib-");
   if (listing.id.startsWith("jiji-")) return false;
-  if (!listing.price || listing.price <= 0) return false;
-  if (listing.currency === "KES" && (listing.price < 100_000 || listing.price > 60_000_000)) return false;
-  if (listing.currency === "TZS" && (listing.price < 1_000_000 || listing.price > 1_500_000_000)) return false;
-  if (listing.currency === "UGX" && (listing.price < 5_000_000 || listing.price > 2_500_000_000)) return false;
-  if (listing.currency === "USD" && (listing.price < 1_000 || listing.price > 1_000_000)) return false;
+  if ((!listing.price || listing.price <= 0) && !contactPending) return false;
+  if (listing.price > 0 && listing.currency === "KES" && (listing.price < 100_000 || listing.price > 60_000_000)) return false;
+  if (listing.price > 0 && listing.currency === "TZS" && (listing.price < 1_000_000 || listing.price > 1_500_000_000)) return false;
+  if (listing.price > 0 && listing.currency === "UGX" && (listing.price < 5_000_000 || listing.price > 2_500_000_000)) return false;
+  if (listing.price > 0 && listing.currency === "USD" && (listing.price < 1_000 || listing.price > 1_000_000)) return false;
   if (!listing.make || /unknown|select|n\/a/i.test(listing.make)) return false;
   if (!listing.model || /unknown|select|n\/a|^na$|^ine$|^model$|alloy|rims?|tyres?|tires?|spare|magari|agiza|kuagiza|carsforsale|carmarket|dreamcars|reliable/i.test(listing.model)) return false;
   if (!listing.year || (listing.bodyType !== "Boat" && listing.year < 2000) || listing.year > new Date().getFullYear() + 1) return false;
@@ -658,7 +659,7 @@ function _isLaunchQualityListing(listing: Listing): boolean {
   if (/\b(on sale|for sale|negotiable|buyanddrive|buy\s*and\s*drive|combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa|unregistered|alloy rims?|rims?|tyres?|tires?|spare parts?)\b/i.test(title)) return false;
   if (/\bmodel\b$/i.test(title)) return false;
   if (/^(price|bei|engine|mileage|transmission|fuel|color|colour|location)\b/i.test(title)) return false;
-  if (listing.id.startsWith("ig-") && images.length < 2) return false;
+  if (listing.id.startsWith("ig-") && images.length < 2 && !contactPending) return false;
   if (images.length < 1) return false;
   if ((listing.description || "").length < 40 && listing.id.startsWith("ig-")) return false;
   return true;
@@ -1043,64 +1044,48 @@ export const mockListings: Listing[] = [
   },
   // ─── Ibaraki Motors (Nairobi, Kenya) ────────────────────────────────────────
   {
-    id: "ib-1", title: "2019 Toyota Land Cruiser V8 4.5 Diesel", price: 12_500_000, currency: "KES",
-    condition: "Used", year: 2019, mileage: 67000, transmission: "Automatic",
-    location: "Nairobi, Kenya", image: "/cars/hilux-white-2019-1.jpg", images: ["/cars/hilux-white-2019-1.jpg"],
-    views: 890, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 18, sellerPhone: "+254700000000", badge: "hot" as const,
-    make: "Toyota", model: "Land Cruiser", bodyType: "SUV", fuelType: "Diesel", cc: 4500, dutyPaid: true,
+    id: "ib-1", title: "2015 Mazda CX-3 Pearl White", price: 0, currency: "KES",
+    condition: "Foreign Used", year: 2015, mileage: 80000, transmission: "Automatic",
+    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_001_1.jpg"),
+    images: [1, 2, 3, 4, 5].map((n) => cdnImagePath("ibaraki", `wa_001_${n}.jpg`)),
+    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
+    sellerListingCount: 4, sellerPhone: "+254 700 000 000", badge: "featured" as const,
+    make: "Mazda", model: "CX-3", bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
     country: "KE", sellerId: "ibaraki",
-    description: "Toyota Land Cruiser V8 4.5 Diesel 2019. Full options, sunroof, leather interior. Clean title. Well maintained.",
+    description: "Mazda CX-3 Pearl White from Ibaraki Motors in Nairobi. Compact Japanese import SUV with petrol engine, automatic transmission, clean showroom photos and dealer-sourced listing details. Contact the dealer for the current asking price and inspection time.",
   },
   {
-    id: "ib-2", title: "2020 Toyota Harrier 2.0 Turbo", price: 5_800_000, currency: "KES",
-    condition: "Foreign Used", year: 2020, mileage: 28000, transmission: "Automatic",
-    location: "Nairobi, Kenya", image: "/cars/fortuner-white-2019-3.jpg", images: ["/cars/fortuner-white-2019-3.jpg"],
-    views: 543, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 18, sellerPhone: "+254700000000",
-    make: "Toyota", model: "Harrier", bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
+    id: "ib-2", title: "2010 BMW 320i Black Sedan", price: 0, currency: "KES",
+    condition: "Foreign Used", year: 2010, mileage: 130000, transmission: "Automatic",
+    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_002_1.jpg"),
+    images: [cdnImagePath("ibaraki", "wa_002_1.jpg")],
+    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
+    sellerListingCount: 4, sellerPhone: "+254 700 000 000",
+    make: "BMW", model: "320i", bodyType: "Sedan", fuelType: "Petrol", cc: 2000, dutyPaid: true,
     country: "KE", sellerId: "ibaraki",
-    description: "Toyota Harrier 2020 2.0 Turbo. Push start, JBL sound, panoramic roof. Low mileage ex-Japan import.",
+    description: "BMW 320i Black sedan listed by Ibaraki Motors in Nairobi. Petrol automatic unit with showroom-sourced photo and dealer-provided details. Contact the dealer for current price, inspection timing and updated availability.",
   },
   {
-    id: "ib-3", title: "2018 Subaru Forester 2.0 XT Turbo", price: 3_200_000, currency: "KES",
-    condition: "Used", year: 2018, mileage: 72000, transmission: "CVT",
-    location: "Nairobi, Kenya", image: "/cars/wrangler-2016-3.jpg", images: ["/cars/wrangler-2016-3.jpg"],
-    views: 378, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 18, sellerPhone: "+254700000000",
-    make: "Subaru", model: "Forester", bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
+    id: "ib-3", title: "2006 Toyota Spacio Black", price: 0, currency: "KES",
+    condition: "Foreign Used", year: 2006, mileage: 170000, transmission: "Automatic",
+    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_003_1.jpg"),
+    images: [1, 2, 3, 4].map((n) => cdnImagePath("ibaraki", `wa_003_${n}.jpg`)),
+    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
+    sellerListingCount: 4, sellerPhone: "+254 700 000 000",
+    make: "Toyota", model: "Spacio", bodyType: "Hatchback", fuelType: "Petrol", cc: 1500, dutyPaid: true,
     country: "KE", sellerId: "ibaraki",
-    description: "Subaru Forester XT Turbo 2018 2.0L. AWD, EyeSight driver assist, heated seats. Great condition.",
+    description: "Toyota Spacio Black from Ibaraki Motors in Nairobi. Petrol automatic family hatchback with multiple showroom images and Japanese import styling. Contact the dealer for the latest asking price and viewing appointment.",
   },
   {
-    id: "ib-4", title: "2021 Nissan X-Trail 2.5 4WD", price: 6_200_000, currency: "KES",
-    condition: "Foreign Used", year: 2021, mileage: 19000, transmission: "CVT",
-    location: "Nairobi, Kenya", image: "/cars/navara-2017-1.jpg", images: ["/cars/navara-2017-1.jpg"],
-    views: 421, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 18, sellerPhone: "+254700000000",
-    make: "Nissan", model: "X-Trail", bodyType: "SUV", fuelType: "Petrol", cc: 2500, dutyPaid: true,
+    id: "ib-4", title: "2011 Toyota Vanguard 4WD", price: 0, currency: "KES",
+    condition: "Foreign Used", year: 2011, mileage: 130000, transmission: "Automatic",
+    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_004_1.jpg"),
+    images: [1, 2].map((n) => cdnImagePath("ibaraki", `wa_004_${n}.jpg`)),
+    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
+    sellerListingCount: 4, sellerPhone: "+254 700 000 000",
+    make: "Toyota", model: "Vanguard", bodyType: "SUV", fuelType: "Petrol", cc: 2400, dutyPaid: true,
     country: "KE", sellerId: "ibaraki",
-    description: "Nissan X-Trail 2021 2.5L 4WD. 7-seater, 360 camera, ProPilot Assist. Ex-Japan, very low mileage.",
-  },
-  {
-    id: "ib-5", title: "2017 Mercedes-Benz C200 AMG Line", price: 4_500_000, currency: "KES",
-    condition: "Used", year: 2017, mileage: 88000, transmission: "Automatic",
-    location: "Nairobi, Kenya", image: "/cars/patrol-2022-4.jpg", images: ["/cars/patrol-2022-4.jpg"],
-    views: 312, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 18, sellerPhone: "+254700000000",
-    make: "Mercedes-Benz", model: "C200", bodyType: "Sedan", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    country: "KE", sellerId: "ibaraki",
-    description: "Mercedes-Benz C200 AMG Line 2017. Leather interior, MBUX, parking sensors. Elegant sedan well cared for.",
-  },
-  {
-    id: "ib-6", title: "2022 Toyota RAV4 2.5 Hybrid AWD", price: 8_900_000, currency: "KES",
-    condition: "Foreign Used", year: 2022, mileage: 14000, transmission: "CVT",
-    location: "Nairobi, Kenya", image: "/cars/hilux-white-2019-1.jpg", images: ["/cars/hilux-white-2019-1.jpg"],
-    views: 654, sellerName: "Ibaraki Motors", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 18, sellerPhone: "+254700000000", badge: "featured" as const,
-    make: "Toyota", model: "RAV4", bodyType: "SUV", fuelType: "Hybrid", cc: 2500, dutyPaid: true,
-    country: "KE", sellerId: "ibaraki",
-    description: "Toyota RAV4 2022 2.5 Hybrid AWD. Toyota Safety Sense, digital mirrors, wireless charging. Nearly new.",
+    description: "Toyota Vanguard 4WD from Ibaraki Motors in Nairobi. Petrol automatic SUV with showroom images and practical Japanese import specification. Contact the dealer for current asking price, documents and inspection details.",
   },
 ].filter(_isLaunchQualityListing);
 
@@ -1638,8 +1623,7 @@ for (let i = mockDealers.length - 1; i >= 0; i -= 1) {
   if (
     !isLaunchDealer ||
     BLOCKED_SHOWROOM_USERS.has(username) ||
-    mockDealers[i].user_id === "dealer-ibaraki" ||
-    !_hasUsableDealerPhone(mockDealers[i].phone)
+    (!_hasUsableDealerPhone(mockDealers[i].phone) && mockDealers[i].user_id !== "dealer-ibaraki")
   ) {
     mockDealers.splice(i, 1);
   }
@@ -1655,7 +1639,7 @@ export function getShowroomListings(username: string): Listing[] {
   if (!key) return [];
   const dealer = (_showroomMods[key] as any).default;
   if (!dealer?.posts?.length) return [];
-  if (!_hasUsableDealerPhone(dealer.phone)) return [];
+  if (!_hasUsableDealerPhone(dealer.phone) && username !== "ibaraki") return [];
 
   // Filter to car posts only + deduplicate + sort newest-first (fresh CDN URLs float to top)
   const seenCaptions = new Set<string>();

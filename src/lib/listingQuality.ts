@@ -20,6 +20,10 @@ export function isGenericScraperSeller(name?: string | null): boolean {
   return /^(motokah verified seller|jiji listing|private seller)$/i.test((name || "").trim());
 }
 
+export function isContactPendingListing(listing: Listing): boolean {
+  return listing.sellerId === "ibaraki" || listing.sellerId === "dealer-ibaraki" || listing.id.startsWith("ib-");
+}
+
 function cleanText(value?: string | null): string {
   return (value || "").replace(/\s+/g, " ").trim();
 }
@@ -52,7 +56,7 @@ export function hasPremiumImages(listing: Listing): boolean {
   const images = listing.images?.filter(Boolean) || (listing.image ? [listing.image] : []);
   if (images.some(isJijiImage)) return false;
   if (images.some(isPlaceholderImage)) return false;
-  if (listing.id.startsWith("ig-")) return images.length >= 2;
+  if (listing.id.startsWith("ig-")) return isContactPendingListing(listing) ? images.length >= 1 : images.length >= 2;
   return images.length >= 1;
 }
 
@@ -60,12 +64,12 @@ export function isLaunchQualityListing(listing: Listing): boolean {
   if (listing.id.startsWith("jiji-")) return false;
   if (isJijiImage(listing.image) || listing.images?.some(isJijiImage)) return false;
   if (isGenericScraperSeller(listing.sellerName)) return false;
-  if (listing.sellerType === "dealer" && !hasUsablePhone(listing.sellerPhone)) return false;
-  if (!listing.price || listing.price <= 0) return false;
-  if (listing.currency === "KES" && (listing.price < 100_000 || listing.price > 60_000_000)) return false;
-  if (listing.currency === "TZS" && (listing.price < 1_000_000 || listing.price > 1_500_000_000)) return false;
-  if (listing.currency === "UGX" && (listing.price < 5_000_000 || listing.price > 2_500_000_000)) return false;
-  if (listing.currency === "USD" && (listing.price < 1_000 || listing.price > 1_000_000)) return false;
+  if (listing.sellerType === "dealer" && !hasUsablePhone(listing.sellerPhone) && !isContactPendingListing(listing)) return false;
+  if ((!listing.price || listing.price <= 0) && !isContactPendingListing(listing)) return false;
+  if (listing.price > 0 && listing.currency === "KES" && (listing.price < 100_000 || listing.price > 60_000_000)) return false;
+  if (listing.price > 0 && listing.currency === "TZS" && (listing.price < 1_000_000 || listing.price > 1_500_000_000)) return false;
+  if (listing.price > 0 && listing.currency === "UGX" && (listing.price < 5_000_000 || listing.price > 2_500_000_000)) return false;
+  if (listing.price > 0 && listing.currency === "USD" && (listing.price < 1_000 || listing.price > 1_000_000)) return false;
   if (!hasPremiumVehicleIdentity(listing)) return false;
   if (!hasPremiumTitle(listing)) return false;
   if (!hasPremiumImages(listing)) return false;
