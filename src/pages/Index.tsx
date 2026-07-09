@@ -22,10 +22,10 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Used Cars for Sale in Kenya, Tanzania & East Africa | Motokah</title>
-        <meta name="description" content="Buy used cars in Kenya, Tanzania, Uganda and East Africa. Browse dealer listings for Toyota, Nissan, Subaru, Mazda and more by city, then call or WhatsApp sellers directly." />
+        <title>Used Cars for Sale in Tanzania, Kenya & East Africa | Motokah</title>
+        <meta name="description" content="Buy used cars in Tanzania, Kenya, Uganda and East Africa. Browse dealer listings for Toyota, Nissan, Subaru, Mazda and more by city, then call or WhatsApp sellers directly." />
         <meta property="og:title" content="Used Cars for Sale in East Africa | Motokah" />
-        <meta property="og:description" content="East Africa's car marketplace for used cars in Nairobi, Dar es Salaam, Kampala and beyond. Browse by city and contact sellers directly." />
+        <meta property="og:description" content="East Africa's car marketplace for used cars in Dar es Salaam, Nairobi, Kampala and beyond. Browse by city and contact sellers directly." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.motokah.com/" />
         <meta property="og:image" content="https://www.motokah.com/pwa-512x512.png" />

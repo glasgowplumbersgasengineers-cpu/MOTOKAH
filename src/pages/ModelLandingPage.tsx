@@ -27,11 +27,11 @@ const MODEL_DATA: Record<string, ModelInfo> = {
   "toyota|alphard": {
     displayMake: "Toyota",
     displayModel: "Alphard",
-    title: "Toyota Alphard for Sale in Kenya, Tanzania & East Africa | Motokah",
+    title: "Toyota Alphard for Sale in Tanzania, Kenya & East Africa | Motokah",
     description:
-      "Buy a used Toyota Alphard in Kenya, Tanzania, Uganda and East Africa. Browse Alphard listings from dealers and sellers. Find prices, specs and contact sellers directly on Motokah.",
+      "Buy a used Toyota Alphard in Tanzania, Kenya, Uganda and East Africa. Browse Alphard listings from dealers and sellers. Find prices, specs and contact sellers directly on Motokah.",
     heroText:
-      "The Toyota Alphard is East Africa's most sought-after luxury MPV — find your perfect unit across Kenya, Tanzania, Uganda and beyond.",
+      "The Toyota Alphard is East Africa's most sought-after luxury MPV — find your perfect unit across Tanzania, Kenya, Uganda and beyond.",
     guide: {
       heading: "Toyota Alphard Price in Kenya & East Africa — Buying Guide",
       body:
@@ -121,9 +121,9 @@ const MODEL_DATA: Record<string, ModelInfo> = {
   "toyota|harrier": {
     displayMake: "Toyota",
     displayModel: "Harrier",
-    title: "Toyota Harrier for Sale in Kenya, Tanzania & East Africa | Motokah",
+    title: "Toyota Harrier for Sale in Tanzania, Kenya & East Africa | Motokah",
     description:
-      "Find a Toyota Harrier for sale in Kenya, Tanzania and Uganda. Browse Harrier prices and listings from dealers and sellers. Luxury SUV comfort at Japanese-used-car value.",
+      "Find a Toyota Harrier for sale in Tanzania, Kenya and Uganda. Browse Harrier prices and listings from dealers and sellers. Luxury SUV comfort at Japanese-used-car value.",
     heroText:
       "The Toyota Harrier is East Africa's premium crossover of choice — combining Land Cruiser reliability with executive-class comfort at an accessible price.",
     guide: {
@@ -241,9 +241,9 @@ const MODEL_DATA: Record<string, ModelInfo> = {
   "toyota|land-cruiser": {
     displayMake: "Toyota",
     displayModel: "Land Cruiser",
-    title: "Toyota Land Cruiser for Sale in Kenya, Tanzania & East Africa | Motokah",
+    title: "Toyota Land Cruiser for Sale in Tanzania, Kenya & East Africa | Motokah",
     description:
-      "Find a Toyota Land Cruiser for sale in Kenya, Tanzania, Uganda and East Africa. Browse Land Cruiser prices and listings — the most capable 4x4 in Africa.",
+      "Find a Toyota Land Cruiser for sale in Tanzania, Kenya, Uganda and East Africa. Browse Land Cruiser prices and listings — the most capable 4x4 in Africa.",
     heroText:
       "The Toyota Land Cruiser is Africa's ultimate 4x4 — trusted by safari operators, NGOs, and families across East Africa for generations.",
     guide: {
@@ -267,9 +267,9 @@ const MODEL_DATA: Record<string, ModelInfo> = {
   "toyota|hilux": {
     displayMake: "Toyota",
     displayModel: "Hilux",
-    title: "Toyota Hilux for Sale in Kenya, Tanzania & East Africa | Motokah",
+    title: "Toyota Hilux for Sale in Tanzania, Kenya & East Africa | Motokah",
     description:
-      "Buy a Toyota Hilux in Kenya, Tanzania, Uganda and East Africa. Browse Hilux prices from sellers — one of Africa's most reliable pickup trucks.",
+      "Buy a Toyota Hilux in Tanzania, Kenya, Uganda and East Africa. Browse Hilux prices from sellers — one of Africa's most reliable pickup trucks.",
     heroText:
       "The Toyota Hilux is Africa's most popular and trusted pickup truck — built for every road and every job across East Africa.",
     guide: {
@@ -368,11 +368,11 @@ const RELATED_MODELS: Record<string, { make: string; model: string }[]> = {
 };
 
 const TOP_CITIES = [
-  { name: "Nairobi", slug: "nairobi" },
   { name: "Dar es Salaam", slug: "dar-es-salaam" },
+  { name: "Arusha", slug: "arusha" },
+  { name: "Nairobi", slug: "nairobi" },
   { name: "Kampala", slug: "kampala" },
   { name: "Mombasa", slug: "mombasa" },
-  { name: "Arusha", slug: "arusha" },
   { name: "Kigali", slug: "kigali" },
 ];
 
@@ -387,7 +387,7 @@ export default function ModelLandingPage() {
   const pageTitle = info?.title ?? `${makeTitle} ${modelTitle} for Sale in East Africa | Motokah`;
   const pageDesc =
     info?.description ??
-    `Browse used ${makeTitle} ${modelTitle} cars for sale in Kenya, Tanzania, Uganda and East Africa. Compare prices and contact sellers on Motokah.`;
+    `Browse used ${makeTitle} ${modelTitle} cars for sale in Tanzania, Kenya, Uganda and East Africa. Compare prices and contact sellers on Motokah.`;
   const heroText =
     info?.heroText ??
     `Find your perfect ${makeTitle} ${modelTitle} across East Africa. Compare prices and contact sellers directly.`;

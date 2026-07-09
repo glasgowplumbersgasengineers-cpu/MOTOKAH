@@ -71,7 +71,7 @@ export default function SearchResults() {
     ? `Find ${seoMake} ${vehicleLabel.toLowerCase()} for sale across East Africa. Compare prices, check mileage and contact sellers on Motokah.`
     : location
     ? `Browse ${vehicleLabel.toLowerCase()} for sale in ${location}. Find dealer and private listings with photos, specs and seller contact details.`
-    : `Search ${vehicleLabel.toLowerCase()} for sale across Kenya, Tanzania, Uganda, Rwanda and East Africa on Motokah.`;
+    : `Search ${vehicleLabel.toLowerCase()} for sale across Tanzania, Kenya, Uganda, Rwanda and East Africa on Motokah.`;
   const seoTitle = sanitizeCalloutPricingText(rawSeoTitle);
   const seoDesc = sanitizeCalloutPricingText(rawSeoDesc);
   const canonicalParams = new URLSearchParams();

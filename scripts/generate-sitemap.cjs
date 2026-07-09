@@ -68,7 +68,21 @@ const staticPages = [
   { path: "/safety",         freq: "monthly", pri: 0.4 },
   { path: "/terms",          freq: "monthly", pri: 0.3 },
   { path: "/privacy",        freq: "monthly", pri: 0.3 },
-  ...igShowrooms.map(u => ({ path: `/showroom/${u}`, freq: "weekly", pri: 0.7 })),
+];
+
+const showroomPages = igShowrooms.map(u => ({ path: `/showroom/${u}`, freq: "weekly", pri: 0.65 }));
+
+const dealerPages = [
+  { path: "/dealer/dealer-khushimotorsdaressalaam", freq: "weekly", pri: 0.8 },
+  { path: "/dealer/dealer-al_husnainmotors", freq: "weekly", pri: 0.8 },
+  { path: "/dealer/dealer-mgayamotors", freq: "weekly", pri: 0.8 },
+  { path: "/dealer/dealer-expert_motors_tz", freq: "weekly", pri: 0.75 },
+  { path: "/dealer/dealer-njari_motors", freq: "weekly", pri: 0.75 },
+  { path: "/dealer/dealer-breemotors", freq: "weekly", pri: 0.75 },
+  { path: "/dealer/dealer-magari_empire1", freq: "weekly", pri: 0.7 },
+  { path: "/dealer/dealer-nicolette-boats", freq: "weekly", pri: 0.7 },
+  { path: "/dealer/dealer-kk_magic_cars_", freq: "weekly", pri: 0.7 },
+  { path: "/dealer/dealer-ibaraki", freq: "weekly", pri: 0.7 },
 ];
 
 const cities = [
@@ -104,7 +118,17 @@ const cities = [
 // Curated search landing pages. Keep this intentionally small and high-intent:
 // these URLs have crawlable copy in SearchResults and target real buyer searches.
 const priorityMakes = ["Toyota", "Nissan", "Subaru", "Mazda", "Honda", "Mitsubishi"];
-const priorityCities = ["Nairobi", "Mombasa", "Dar es Salaam", "Arusha", "Kampala", "Kigali", "Addis Ababa"];
+const priorityCities = ["Dar es Salaam", "Arusha", "Mwanza", "Dodoma", "Nairobi", "Mombasa", "Kampala", "Kigali", "Addis Ababa"];
+const countrySearchPages = [
+  { path: "/search?country=Tanzania", freq: "daily", pri: 0.85 },
+  { path: "/search?country=Kenya", freq: "daily", pri: 0.8 },
+  { path: "/search?country=Tanzania&condition=New", freq: "daily", pri: 0.75 },
+  { path: "/search?country=Tanzania&vehicleType=commercial", freq: "weekly", pri: 0.7 },
+  { path: "/search?country=Tanzania&vehicleType=bike", freq: "weekly", pri: 0.7 },
+  { path: "/search?country=Tanzania&vehicleType=boat", freq: "weekly", pri: 0.65 },
+  { path: "/search?country=Kenya&condition=New", freq: "daily", pri: 0.7 },
+  { path: "/search?country=Kenya&vehicleType=commercial", freq: "weekly", pri: 0.65 },
+];
 const makePages = priorityMakes.map((make) => ({
   path: `/search?make=${encodeURIComponent(make)}`,
   freq: "daily",
@@ -121,7 +145,7 @@ const categorySearchPages = [
   { path: "/search?condition=New", freq: "daily", pri: 0.7 },
   { path: "/search?vehicleType=commercial", freq: "weekly", pri: 0.65 },
   { path: "/search?vehicleType=bike", freq: "weekly", pri: 0.65 },
-  { path: "/search?bodyType=Boat", freq: "weekly", pri: 0.65 },
+  { path: "/search?vehicleType=boat", freq: "weekly", pri: 0.65 },
 ];
 
 // Model landing pages — /cars/:make/:model (high-volume keyword targets)
@@ -171,10 +195,18 @@ const blogPostPages = blogPostSlugs.map(slug => ({
 }));
 
 // Country-level landing pages
-const countryPages = ["Kenya","Tanzania","Uganda","Rwanda","Ethiopia","Nigeria","Burundi"].map(c => ({
-  path: `/country/${c.toLowerCase().replace(/\s+/g, "-")}`,
+const countryPages = [
+  { country: "Tanzania", pri: 0.95 },
+  { country: "Kenya", pri: 0.9 },
+  { country: "Uganda", pri: 0.82 },
+  { country: "Rwanda", pri: 0.78 },
+  { country: "Ethiopia", pri: 0.78 },
+  { country: "Burundi", pri: 0.7 },
+  { country: "Nigeria", pri: 0.65 },
+].map(({ country, pri }) => ({
+  path: `/country/${country.toLowerCase().replace(/\s+/g, "-")}`,
   freq: "daily",
-  pri: 0.85,
+  pri,
 }));
 
 function url(loc, changefreq, priority, lastmod = TODAY) {
@@ -182,7 +214,7 @@ function url(loc, changefreq, priority, lastmod = TODAY) {
     <loc>${loc.replace(/&/g, "&amp;")}</loc>
     <lastmod>${lastmod}</lastmod>
     <changefreq>${changefreq}</changefreq>
-    <priority>${priority.toFixed(1)}</priority>
+    <priority>${priority.toFixed(2)}</priority>
   </url>`;
 }
 
@@ -197,16 +229,23 @@ const lines = [
   "  <!-- Static pages -->",
   ...staticPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
-  "  <!-- City landing pages -->",
-  ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
+  "  <!-- Country landing pages -->",
+  ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
   "  <!-- Curated search landing pages -->",
+  ...countrySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...makePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
-  "  <!-- Country landing pages -->",
-  ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  "  <!-- City landing pages -->",
+  ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
+  "",
+  "  <!-- Dealer landing pages -->",
+  ...dealerPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  "",
+  "  <!-- Instagram showroom pages -->",
+  ...showroomPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
   "  <!-- Model landing pages -->",
   ...modelPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
@@ -221,4 +260,4 @@ const out = lines.join("\n");
 const dest = path.join(__dirname, "../public/sitemap.xml");
 fs.writeFileSync(dest, out, "utf8");
 console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + cities.length + makePages.length + cityMakePages.length + categorySearchPages.length + countryPages.length + modelPages.length + blogPostPages.length}`);
+console.log(`URLs: ${staticPages.length + countryPages.length + countrySearchPages.length + makePages.length + cityMakePages.length + categorySearchPages.length + cities.length + dealerPages.length + showroomPages.length + modelPages.length + blogPostPages.length}`);
