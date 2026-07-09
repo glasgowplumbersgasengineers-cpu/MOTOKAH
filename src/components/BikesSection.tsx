@@ -6,8 +6,7 @@ import { type Listing } from "@/data/mockData";
 import { bikeTypes } from "@/data/mockData";
 import { useLocation } from "@/contexts/LocationContext";
 import { Link } from "react-router-dom";
-
-const defaultImage = "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop";
+import { hasUsablePhone, isLaunchQualityListing } from "@/lib/listingQuality";
 
 const countryCurrencyMap: Record<string, string[]> = {
   Tanzania: ["TZS"],
@@ -71,7 +70,7 @@ export default function BikesSection() {
       const sellerIds = [...new Set(rows.map((r) => r.seller_id))];
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, display_name, seller_type")
+        .select("user_id, display_name, seller_type, phone")
         .in("user_id", sellerIds);
       const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
 
@@ -89,12 +88,13 @@ export default function BikesSection() {
           mileage: r.mileage || 0,
           transmission: r.transmission || "Manual",
           location: r.city || "Africa",
-          image: sorted[0]?.image_url || defaultImage,
+          image: sorted[0]?.image_url || "",
           views: r.views || 0,
           sellerName: profile?.display_name || "Private Seller",
           sellerRating: 4.5,
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
+          sellerPhone: profile?.phone || undefined,
           bodyType: r.body_type || undefined,
           fuelType: r.fuel_type || undefined,
           make: r.make,
@@ -103,7 +103,7 @@ export default function BikesSection() {
         };
       });
 
-      setListings(mapped);
+      setListings(mapped.filter((listing) => hasUsablePhone(listing.sellerPhone) && isLaunchQualityListing(listing)));
       setLoading(false);
     };
     fetch();

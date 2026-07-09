@@ -4,8 +4,6 @@ import { type Listing, mockListings } from "@/data/mockData";
 import { getJijiListings } from "@/data/jijiListings";
 import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
 
-const defaultImage = "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop";
-
 // Only select columns we actually need — much faster
 const LISTING_COLUMNS = [
   "id", "title", "price", "currency", "condition", "year", "mileage",
@@ -97,7 +95,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         const profile = profileMap.get(r.seller_id);
         const imgs = (r.listing_images as { image_url: string; display_order: number }[]) || [];
         const sortedImages = [...imgs].sort((a, b) => a.display_order - b.display_order);
-        const mainImage = sortedImages[0]?.image_url || defaultImage;
+        const mainImage = sortedImages[0]?.image_url || "";
         // Deterministic 4.2–4.8 rating per row so cards are not all flat 4.5
         const ratingSeed = r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
 
