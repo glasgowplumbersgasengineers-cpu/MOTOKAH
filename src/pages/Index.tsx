@@ -15,6 +15,7 @@ import SellCTA from "@/components/SellCTA";
 import StatsBar from "@/components/StatsBar";
 import LocationSection from "@/components/LocationSection";
 import PopularModelsSection from "@/components/PopularModelsSection";
+import SEOLinksSection from "@/components/SEOLinksSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
 
@@ -39,6 +40,7 @@ const Index = () => {
       <BrowseSection />
       <LocationSection />
       <PopularModelsSection />
+      <SEOLinksSection />
       <FeaturedListings />
       <LatestListingsGrid />
       <PromoBanner />

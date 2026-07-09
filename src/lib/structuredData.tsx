@@ -22,9 +22,13 @@ export function organizationJsonLd() {
     image: LOGO_URL,
     description:
       "Motokah is an East Africa vehicle marketplace for buying and selling used cars, dealer stock, SUVs, pickups, vans, bikes and boats.",
+    sameAs: [
+      "https://www.instagram.com/motokahafrica/",
+      "https://www.google.com/maps/place/Motokah/",
+    ],
     areaServed: [
-      { "@type": "Country", name: "Kenya" },
       { "@type": "Country", name: "Tanzania" },
+      { "@type": "Country", name: "Kenya" },
       { "@type": "Country", name: "Uganda" },
       { "@type": "Country", name: "Rwanda" },
       { "@type": "Country", name: "Ethiopia" },
@@ -32,12 +36,14 @@ export function organizationJsonLd() {
       { "@type": "Country", name: "Burundi" },
     ],
     knowsAbout: [
-      "used cars in Kenya",
       "used cars in Tanzania",
+      "used cars in Kenya",
       "Japanese import cars",
       "Toyota cars for sale",
-      "car dealers in Nairobi",
       "car dealers in Dar es Salaam",
+      "car dealers in Nairobi",
+      "commercial vehicles in Tanzania",
+      "boats for sale in Tanzania",
     ],
     contactPoint: {
       "@type": "ContactPoint",

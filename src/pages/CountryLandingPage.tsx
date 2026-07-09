@@ -6,7 +6,7 @@ import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2, IconMapPin } from "@tabler/icons-react";
-import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
+import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
 
 const countries: Record<string, { name: string; cities: string[]; description: string; guide: string }> = {
   tanzania: {
@@ -53,6 +53,37 @@ const countries: Record<string, { name: string; cities: string[]; description: s
   },
 };
 
+const countryFaqs: Record<string, { q: string; a: string }[]> = {
+  tanzania: [
+    {
+      q: "Where can I find used cars for sale in Tanzania?",
+      a: "Motokah lists used cars from dealers and sellers in Dar es Salaam, Arusha, Mwanza, Dodoma, Zanzibar and other Tanzanian cities.",
+    },
+    {
+      q: "What should I check before buying a used car in Tanzania?",
+      a: "Check the registration details, chassis number, import duty status, seller contact information, service condition and inspection history before paying.",
+    },
+    {
+      q: "Which car brands are popular in Tanzania?",
+      a: "Toyota, Nissan, Mazda, Honda, Subaru, Mitsubishi and Suzuki are popular in Tanzania because parts and mechanics are widely available.",
+    },
+  ],
+  kenya: [
+    {
+      q: "Where can I find used cars for sale in Kenya?",
+      a: "Motokah lists used cars in Nairobi, Mombasa, Nakuru, Kisumu, Eldoret and other Kenyan cities, including dealer and private stock.",
+    },
+    {
+      q: "What documents should I check when buying a car in Kenya?",
+      a: "Check the logbook, NTSA status, seller ID, import documents where relevant, mileage consistency and vehicle inspection condition.",
+    },
+    {
+      q: "Which used cars are popular in Kenya?",
+      a: "Toyota Probox, Toyota Harrier, Toyota Prado, Mazda Demio, Subaru Forester, Honda Vezel and Nissan X-Trail are common buyer searches in Kenya.",
+    },
+  ],
+};
+
 function slugify(value: string) {
   return value.toLowerCase().replace(/\s+/g, "-");
 }
@@ -64,6 +95,7 @@ export default function CountryLandingPage() {
   const { listings, loading } = useSearchListings({ country: countryName }, "newest");
   const description = country?.description || `Browse cars for sale in ${countryName}. Find used vehicles from sellers on Motokah.`;
   const canonicalUrl = `https://www.motokah.com/country/${slug}`;
+  const faqs = countryFaqs[slug] || [];
 
   return (
     <>
@@ -87,6 +119,7 @@ export default function CountryLandingPage() {
           url: canonicalUrl,
           itemCount: listings.length,
         }))}
+        {faqs.length > 0 && jsonLdScript(faqJsonLd(faqs))}
       </Helmet>
 
       <Header />
@@ -169,6 +202,19 @@ export default function CountryLandingPage() {
                 Toyota for sale in {countryName}, Japanese import cars, affordable SUVs, pickups,
                 vans and dealer stock. Browse by city, compare prices and contact verified sellers directly.
               </p>
+              {faqs.length > 0 && (
+                <>
+                  <h2 className="mb-3 mt-8 text-xl font-bold">Buying Questions in {countryName}</h2>
+                  <div className="space-y-4">
+                    {faqs.map((item) => (
+                      <div key={item.q}>
+                        <h3 className="font-semibold text-foreground">{item.q}</h3>
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.a}</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </section>
         )}

@@ -134,6 +134,21 @@ const makePages = priorityMakes.map((make) => ({
   freq: "daily",
   pri: 0.75,
 }));
+const modelCountryPages = [
+  ["Toyota", "Harrier", "Tanzania"],
+  ["Toyota", "Land Cruiser", "Tanzania"],
+  ["Toyota", "Hilux", "Tanzania"],
+  ["Toyota", "Prado", "Tanzania"],
+  ["Toyota", "Vitz", "Tanzania"],
+  ["Mazda", "Demio", "Tanzania"],
+  ["Subaru", "Forester", "Kenya"],
+  ["Toyota", "Probox", "Kenya"],
+  ["Honda", "Vezel", "Kenya"],
+].map(([make, model, country]) => ({
+  path: `/search?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&country=${encodeURIComponent(country)}`,
+  freq: "daily",
+  pri: country === "Tanzania" ? 0.78 : 0.72,
+}));
 const cityMakePages = priorityCities.flatMap((city) =>
   priorityMakes.map((make) => ({
     path: `/search?make=${encodeURIComponent(make)}&city=${encodeURIComponent(city)}`,
@@ -235,6 +250,7 @@ const lines = [
   "  <!-- Curated search landing pages -->",
   ...countrySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...makePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  ...modelCountryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
@@ -260,4 +276,4 @@ const out = lines.join("\n");
 const dest = path.join(__dirname, "../public/sitemap.xml");
 fs.writeFileSync(dest, out, "utf8");
 console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + countryPages.length + countrySearchPages.length + makePages.length + cityMakePages.length + categorySearchPages.length + cities.length + dealerPages.length + showroomPages.length + modelPages.length + blogPostPages.length}`);
+console.log(`URLs: ${staticPages.length + countryPages.length + countrySearchPages.length + makePages.length + modelCountryPages.length + cityMakePages.length + categorySearchPages.length + cities.length + dealerPages.length + showroomPages.length + modelPages.length + blogPostPages.length}`);

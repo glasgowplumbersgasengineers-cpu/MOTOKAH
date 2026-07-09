@@ -221,6 +221,60 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Harrier&amp;country=Tanzania</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Land%20Cruiser&amp;country=Tanzania</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Hilux&amp;country=Tanzania</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Prado&amp;country=Tanzania</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Vitz&amp;country=Tanzania</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Mazda&amp;model=Demio&amp;country=Tanzania</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Subaru&amp;model=Forester&amp;country=Kenya</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Probox&amp;country=Kenya</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Honda&amp;model=Vezel&amp;country=Kenya</loc>
+    <lastmod>2026-07-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Dar%20es%20Salaam</loc>
     <lastmod>2026-07-09</lastmod>
     <changefreq>daily</changefreq>
