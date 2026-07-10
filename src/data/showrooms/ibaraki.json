@@ -9,6 +9,8 @@
       "shortcode": "ibaraki_wa_001",
       "date": "2026-04-20T15:19:37+03:00",
       "caption": "Nissan Patrol 2022 TI (Y62)\nEngine: 5.6L V8 Petrol\nMileage: 32,568 KM\nTransmission: Automatic\nFuel Type: Petrol\nKey Features: Full TI specification, 360 camera, front and rear parking sensors, black leather seats with wood trim, electric seats, navigation system, cruise control, keyless entry and push start, premium sound system, alloy rims.\nPrice: 240,000,000 TZS",
+      "price": 240000000,
+      "currency": "TZS",
       "images": [
         "wa_001_1.jpg",
         "wa_001_2.jpg",
@@ -28,6 +30,8 @@
       "shortcode": "ibaraki_wa_002",
       "date": "2026-04-20T15:21:48+03:00",
       "caption": "Toyota Hilux Revo 2019 Double Cabin SR5 4WD\nGrade: SR5\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nColor: Gray\nCondition: Very clean interior and exterior, strong engine and gearbox, well maintained, ready for city and off-road use.\nForeign Used\nPrice: 125,000,000 TZS",
+      "price": 125000000,
+      "currency": "TZS",
       "images": [
         "wa_002_1.jpg",
         "wa_002_2.jpg",
@@ -47,6 +51,8 @@
       "shortcode": "ibaraki_wa_003",
       "date": "2026-04-20T15:24:33+03:00",
       "caption": "Toyota Hilux 2019 SR5 4WD\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nColor: White\nCondition: Very clean interior and exterior, strong engine and gearbox, well maintained, ready for city and off-road use.\nForeign Used\nPrice: 127,000,000 TZS",
+      "price": 127000000,
+      "currency": "TZS",
       "images": [
         "wa_003_1.jpg",
         "wa_003_2.jpg",
@@ -65,6 +71,8 @@
       "shortcode": "ibaraki_wa_004",
       "date": "2026-04-20T15:25:30+03:00",
       "caption": "Toyota Hilux Revo 2019 SR5 4WD ARB Equipped\nGrade: SR5\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nMileage: 83,294 KM\nColor: White\nUpgrades: ARB front bumper, ARB canopy, roof rack.\nPrice: 130,000,000 TZS",
+      "price": 130000000,
+      "currency": "TZS",
       "images": [
         "wa_004_1.jpg",
         "wa_004_2.jpg",
@@ -84,6 +92,8 @@
       "shortcode": "ibaraki_wa_005",
       "date": "2026-04-20T15:35:29+03:00",
       "caption": "Land Rover Discovery 2020\nEngine: 2,993 cc V6 Turbo Diesel\nBody Type: SUV\nMileage: 55,484 KM\nFuel Type: Diesel\nEngine Capacity: 2,993 CC\nEngine Code: 306DT TDV6\nTransmission: Automatic 8-Speed\nDrive: 4WD\nExterior Color: Carpathian Grey\nInterior Color: Black\nSeats: 7\nPrice: 145,000,000 TZS",
+      "price": 145000000,
+      "currency": "TZS",
       "images": [
         "wa_005_1.jpg",
         "wa_005_2.jpg",
@@ -103,6 +113,8 @@
       "shortcode": "ibaraki_wa_006",
       "date": "2026-04-20T15:35:50+03:00",
       "caption": "Toyota Fortuner 2019 4WD\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nColor: White\nForeign used\nComes with roof rack\nBurgundy leather interior\nPrice: 130,000,000 TZS",
+      "price": 130000000,
+      "currency": "TZS",
       "images": [
         "wa_006_1.jpg",
         "wa_006_2.jpg",
@@ -122,6 +134,8 @@
       "shortcode": "ibaraki_wa_007",
       "date": "2026-04-20T15:38:40+03:00",
       "caption": "Subaru Forester SK9 2022\nMileage: 25,000 KM\nModel Code: SK9\nMake: Subaru\nModel: Forester\nEngine: 2,500 cc FB25 Petrol\nFuel Type: Petrol\nTransmission: Automatic\nDrive: AWD\nExterior Color: Light Silver\nInterior Trim: Black\nSeats: 5\nPrice: 95,000,000 TZS",
+      "price": 95000000,
+      "currency": "TZS",
       "images": [
         "wa_007_1.jpg",
         "wa_007_2.jpg",
@@ -141,6 +155,8 @@
       "shortcode": "ibaraki_wa_008",
       "date": "2026-04-20T15:39:38+03:00",
       "caption": "Nissan Navara 2017 Double Cabin Diesel 4WD\nTransmission: Automatic\nWith canopy\nClean condition\nPowerful and reliable\nIdeal for business or personal use\nReady to drive\nPrice: 95,000,000 TZS",
+      "price": 95000000,
+      "currency": "TZS",
       "images": [
         "wa_008_1.jpg",
         "wa_008_2.jpg",
@@ -160,6 +176,8 @@
       "shortcode": "ibaraki_wa_009",
       "date": "2026-04-20T15:43:25+03:00",
       "caption": "Jeep Wrangler Unlimited Sport 2016\nModel Code: JK\nBody Type: SUV\nMake: Jeep\nModel: Wrangler Unlimited\nEngine: V6 2.8L Diesel\nFuel Type: Diesel\nTransmission: Automatic\nDrive: 4WD part-time\nExterior Color: Red\nInterior: Black\nSeats: 5\nDoors: 5\nDrive Side: Right hand drive\nPrice: 150,000,000 TZS",
+      "price": 150000000,
+      "currency": "TZS",
       "images": [
         "wa_009_1.jpg",
         "wa_009_2.jpg",

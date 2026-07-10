@@ -2,7 +2,7 @@ import mgayaJson from "./showrooms/mgayamotors.json";
 import { cdnImagePath, normalizeImageUrl } from "@/lib/imageUrls";
 
 // Load all other showroom JSONs
-const _showroomMods = import.meta.glob("./showrooms/*.json", { eager: true }) as Record<string, { default: { username: string; full_name: string; phone: string; posts: Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string }> } }>;
+const _showroomMods = import.meta.glob("./showrooms/*.json", { eager: true }) as Record<string, { default: { username: string; full_name: string; phone: string; posts: Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; price?: number; currency?: string }> } }>;
 
 export const DEALER_CITY: Record<string, string> = {
   hupa_motors_ltd: "Mwanza, TZ",
@@ -591,7 +591,7 @@ function _convertAllShowroomsToListings(): Listing[] {
     const city = DEALER_CITY[username] ?? "Dar es Salaam, TZ";
     const currency = _dealerCurrency(username);
     const country = _dealerCountry(username);
-    const carPosts = (dealer.posts as Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; is_video?: boolean }>)
+    const carPosts = (dealer.posts as Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; price?: number; currency?: string; is_video?: boolean }>)
       .filter((p) => _isMgayaCarPost(p.caption, p.is_video))
       .filter((p, i, arr) => {
         const key = p.caption.slice(0, 120).replace(/\s+/g, " ").toLowerCase();
@@ -601,7 +601,8 @@ function _convertAllShowroomsToListings(): Listing[] {
     for (const post of carPosts) {
       const info = _parseMgayaCaption(post.caption);
       const images = _postImages(username, post);
-      const price = _normalizePriceForCurrency(info.price, currency);
+      const postPrice = typeof post.price === "number" && post.price > 0 ? post.price : 0;
+      const price = postPrice || _normalizePriceForCurrency(info.price, currency);
       results.push({
         id: `ig-${username}-${post.shortcode}`,
         title: info.title,
