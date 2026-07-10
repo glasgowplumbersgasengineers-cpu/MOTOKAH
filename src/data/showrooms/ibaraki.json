@@ -1,57 +1,179 @@
 {
   "username": "ibaraki",
   "full_name": "Ibaraki Motors",
-  "bio": "Car dealer in Dar es Salaam",
-  "phone": "",
+  "bio": "Verified used-car dealer in Dar es Salaam, Tanzania with dealer-sourced 4x4s, SUVs and Japanese imports.",
+  "phone": "+255 798 785 871",
   "followers": 0,
   "posts": [
     {
       "shortcode": "ibaraki_wa_001",
-      "caption": "2015 MAZDA CX-3 PEARL WHITE",
+      "date": "2026-04-20T15:19:37+03:00",
+      "caption": "Nissan Patrol 2022 TI (Y62)\nEngine: 5.6L V8 Petrol\nMileage: 32,568 KM\nTransmission: Automatic\nFuel Type: Petrol\nKey Features: Full TI specification, 360 camera, front and rear parking sensors, black leather seats with wood trim, electric seats, navigation system, cruise control, keyless entry and push start, premium sound system, alloy rims.\nPrice: 240,000,000 TZS",
       "images": [
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_1.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_2.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_3.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_4.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_001_5.jpg"
+        "wa_001_1.jpg",
+        "wa_001_2.jpg",
+        "wa_001_3.jpg",
+        "wa_001_4.jpg",
+        "wa_001_5.jpg",
+        "wa_001_6.jpg",
+        "wa_001_7.jpg",
+        "wa_001_8.jpg"
       ],
-      "timestamp": 0,
-      "likes": 0,
-      "year": 2015
+      "timestamp": 1776698377,
+      "likes": 80,
+      "year": 2022,
+      "url": ""
     },
     {
       "shortcode": "ibaraki_wa_002",
-      "caption": "2010 BMW 320i BLACK",
+      "date": "2026-04-20T15:21:48+03:00",
+      "caption": "Toyota Hilux Revo 2019 Double Cabin SR5 4WD\nGrade: SR5\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nColor: Gray\nCondition: Very clean interior and exterior, strong engine and gearbox, well maintained, ready for city and off-road use.\nForeign Used\nPrice: 125,000,000 TZS",
       "images": [
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_002_1.jpg"
+        "wa_002_1.jpg",
+        "wa_002_2.jpg",
+        "wa_002_3.jpg",
+        "wa_002_4.jpg",
+        "wa_002_5.jpg",
+        "wa_002_6.jpg",
+        "wa_002_7.jpg",
+        "wa_002_8.jpg"
       ],
-      "timestamp": 0,
-      "likes": 0,
-      "year": 2010
+      "timestamp": 1776698508,
+      "likes": 72,
+      "year": 2019,
+      "url": ""
     },
     {
       "shortcode": "ibaraki_wa_003",
-      "caption": "2006 TOYOTA SPACIO BLACK",
+      "date": "2026-04-20T15:24:33+03:00",
+      "caption": "Toyota Hilux 2019 SR5 4WD\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nColor: White\nCondition: Very clean interior and exterior, strong engine and gearbox, well maintained, ready for city and off-road use.\nForeign Used\nPrice: 127,000,000 TZS",
       "images": [
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_1.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_2.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_3.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_003_4.jpg"
+        "wa_003_1.jpg",
+        "wa_003_2.jpg",
+        "wa_003_3.jpg",
+        "wa_003_4.jpg",
+        "wa_003_5.jpg",
+        "wa_003_6.jpg",
+        "wa_003_7.jpg"
       ],
-      "timestamp": 0,
-      "likes": 0,
-      "year": 2006
+      "timestamp": 1776698673,
+      "likes": 69,
+      "year": 2019,
+      "url": ""
     },
     {
       "shortcode": "ibaraki_wa_004",
-      "caption": "2011 Toyota Vanguard 4WD",
+      "date": "2026-04-20T15:25:30+03:00",
+      "caption": "Toyota Hilux Revo 2019 SR5 4WD ARB Equipped\nGrade: SR5\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nMileage: 83,294 KM\nColor: White\nUpgrades: ARB front bumper, ARB canopy, roof rack.\nPrice: 130,000,000 TZS",
       "images": [
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_004_1.jpg",
-        "https://eiofmomywxcsezbyzjth.supabase.co/storage/v1/object/public/listing-images/ibaraki/wa_004_2.jpg"
+        "wa_004_1.jpg",
+        "wa_004_2.jpg",
+        "wa_004_3.jpg",
+        "wa_004_4.jpg",
+        "wa_004_5.jpg",
+        "wa_004_6.jpg",
+        "wa_004_7.jpg",
+        "wa_004_8.jpg"
       ],
-      "timestamp": 0,
-      "likes": 0,
-      "year": 2011
+      "timestamp": 1776698730,
+      "likes": 76,
+      "year": 2019,
+      "url": ""
+    },
+    {
+      "shortcode": "ibaraki_wa_005",
+      "date": "2026-04-20T15:35:29+03:00",
+      "caption": "Land Rover Discovery 2020\nEngine: 2,993 cc V6 Turbo Diesel\nBody Type: SUV\nMileage: 55,484 KM\nFuel Type: Diesel\nEngine Capacity: 2,993 CC\nEngine Code: 306DT TDV6\nTransmission: Automatic 8-Speed\nDrive: 4WD\nExterior Color: Carpathian Grey\nInterior Color: Black\nSeats: 7\nPrice: 145,000,000 TZS",
+      "images": [
+        "wa_005_1.jpg",
+        "wa_005_2.jpg",
+        "wa_005_3.jpg",
+        "wa_005_4.jpg",
+        "wa_005_5.jpg",
+        "wa_005_6.jpg",
+        "wa_005_7.jpg",
+        "wa_005_8.jpg"
+      ],
+      "timestamp": 1776699329,
+      "likes": 88,
+      "year": 2020,
+      "url": ""
+    },
+    {
+      "shortcode": "ibaraki_wa_006",
+      "date": "2026-04-20T15:35:50+03:00",
+      "caption": "Toyota Fortuner 2019 4WD\nEngine: 2.8L Diesel\nTransmission: Automatic\nDrive: 4WD\nColor: White\nForeign used\nComes with roof rack\nBurgundy leather interior\nPrice: 130,000,000 TZS",
+      "images": [
+        "wa_006_1.jpg",
+        "wa_006_2.jpg",
+        "wa_006_3.jpg",
+        "wa_006_4.jpg",
+        "wa_006_5.jpg",
+        "wa_006_6.jpg",
+        "wa_006_7.jpg",
+        "wa_006_8.jpg"
+      ],
+      "timestamp": 1776699350,
+      "likes": 74,
+      "year": 2019,
+      "url": ""
+    },
+    {
+      "shortcode": "ibaraki_wa_007",
+      "date": "2026-04-20T15:38:40+03:00",
+      "caption": "Subaru Forester SK9 2022\nMileage: 25,000 KM\nModel Code: SK9\nMake: Subaru\nModel: Forester\nEngine: 2,500 cc FB25 Petrol\nFuel Type: Petrol\nTransmission: Automatic\nDrive: AWD\nExterior Color: Light Silver\nInterior Trim: Black\nSeats: 5\nPrice: 95,000,000 TZS",
+      "images": [
+        "wa_007_1.jpg",
+        "wa_007_2.jpg",
+        "wa_007_3.jpg",
+        "wa_007_4.jpg",
+        "wa_007_5.jpg",
+        "wa_007_6.jpg",
+        "wa_007_7.jpg",
+        "wa_007_8.jpg"
+      ],
+      "timestamp": 1776699520,
+      "likes": 70,
+      "year": 2022,
+      "url": ""
+    },
+    {
+      "shortcode": "ibaraki_wa_008",
+      "date": "2026-04-20T15:39:38+03:00",
+      "caption": "Nissan Navara 2017 Double Cabin Diesel 4WD\nTransmission: Automatic\nWith canopy\nClean condition\nPowerful and reliable\nIdeal for business or personal use\nReady to drive\nPrice: 95,000,000 TZS",
+      "images": [
+        "wa_008_1.jpg",
+        "wa_008_2.jpg",
+        "wa_008_3.jpg",
+        "wa_008_4.jpg",
+        "wa_008_5.jpg",
+        "wa_008_6.jpg",
+        "wa_008_7.jpg",
+        "wa_008_8.jpg"
+      ],
+      "timestamp": 1776699578,
+      "likes": 66,
+      "year": 2017,
+      "url": ""
+    },
+    {
+      "shortcode": "ibaraki_wa_009",
+      "date": "2026-04-20T15:43:25+03:00",
+      "caption": "Jeep Wrangler Unlimited Sport 2016\nModel Code: JK\nBody Type: SUV\nMake: Jeep\nModel: Wrangler Unlimited\nEngine: V6 2.8L Diesel\nFuel Type: Diesel\nTransmission: Automatic\nDrive: 4WD part-time\nExterior Color: Red\nInterior: Black\nSeats: 5\nDoors: 5\nDrive Side: Right hand drive\nPrice: 150,000,000 TZS",
+      "images": [
+        "wa_009_1.jpg",
+        "wa_009_2.jpg",
+        "wa_009_3.jpg",
+        "wa_009_4.jpg",
+        "wa_009_5.jpg",
+        "wa_009_6.jpg",
+        "wa_009_7.jpg",
+        "wa_009_8.jpg"
+      ],
+      "timestamp": 1776699805,
+      "likes": 82,
+      "year": 2016,
+      "url": ""
     }
   ]
 }

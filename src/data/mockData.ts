@@ -7,7 +7,7 @@ const _showroomMods = import.meta.glob("./showrooms/*.json", { eager: true }) as
 export const DEALER_CITY: Record<string, string> = {
   hupa_motors_ltd: "Mwanza, TZ",
   justin_motors_ltd: "Dar es Salaam, TZ",
-  ibaraki: "Nairobi, KE",
+  ibaraki: "Dar es Salaam, TZ",
   al_husnainmotors: "Nairobi, KE",
   kk_magic_cars_: "Dar es Salaam, TZ",
   fau_motors: "Dodoma, TZ",
@@ -63,7 +63,6 @@ export const DEALER_CITY: Record<string, string> = {
 };
 
 export const DEALER_CURRENCY: Record<string, string> = {
-  ibaraki: "KES",
   al_husnainmotors: "KES",
   servemarinekenya: "KES",
   hondamotorcyclekenyaltd: "KES",
@@ -1042,51 +1041,6 @@ export const mockListings: Listing[] = [
     bodyType: "SUV", fuelType: "Petrol", cc: 1500, dutyPaid: true,
     description: "Honda CR-V 2020 1.5T Turbo AWD. Honda Sensing safety suite, wireless CarPlay, panoramic roof. Comfortable family SUV.",
   },
-  // ─── Ibaraki Motors (Nairobi, Kenya) ────────────────────────────────────────
-  {
-    id: "ib-1", title: "2015 Mazda CX-3 Pearl White", price: 0, currency: "KES",
-    condition: "Foreign Used", year: 2015, mileage: 80000, transmission: "Automatic",
-    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_001_1.jpg"),
-    images: [1, 2, 3, 4, 5].map((n) => cdnImagePath("ibaraki", `wa_001_${n}.jpg`)),
-    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+254 700 000 000", badge: "featured" as const,
-    make: "Mazda", model: "CX-3", bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    country: "KE", sellerId: "ibaraki",
-    description: "Mazda CX-3 Pearl White from Ibaraki Motors in Nairobi. Compact Japanese import SUV with petrol engine, automatic transmission, clean showroom photos and dealer-sourced listing details. Contact the dealer for the current asking price and inspection time.",
-  },
-  {
-    id: "ib-2", title: "2010 BMW 320i Black Sedan", price: 0, currency: "KES",
-    condition: "Foreign Used", year: 2010, mileage: 130000, transmission: "Automatic",
-    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_002_1.jpg"),
-    images: [cdnImagePath("ibaraki", "wa_002_1.jpg")],
-    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+254 700 000 000",
-    make: "BMW", model: "320i", bodyType: "Sedan", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    country: "KE", sellerId: "ibaraki",
-    description: "BMW 320i Black sedan listed by Ibaraki Motors in Nairobi. Petrol automatic unit with showroom-sourced photo and dealer-provided details. Contact the dealer for current price, inspection timing and updated availability.",
-  },
-  {
-    id: "ib-3", title: "2006 Toyota Spacio Black", price: 0, currency: "KES",
-    condition: "Foreign Used", year: 2006, mileage: 170000, transmission: "Automatic",
-    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_003_1.jpg"),
-    images: [1, 2, 3, 4].map((n) => cdnImagePath("ibaraki", `wa_003_${n}.jpg`)),
-    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+254 700 000 000",
-    make: "Toyota", model: "Spacio", bodyType: "Hatchback", fuelType: "Petrol", cc: 1500, dutyPaid: true,
-    country: "KE", sellerId: "ibaraki",
-    description: "Toyota Spacio Black from Ibaraki Motors in Nairobi. Petrol automatic family hatchback with multiple showroom images and Japanese import styling. Contact the dealer for the latest asking price and viewing appointment.",
-  },
-  {
-    id: "ib-4", title: "2011 Toyota Vanguard 4WD", price: 0, currency: "KES",
-    condition: "Foreign Used", year: 2011, mileage: 130000, transmission: "Automatic",
-    location: "Nairobi, Kenya", image: cdnImagePath("ibaraki", "wa_004_1.jpg"),
-    images: [1, 2].map((n) => cdnImagePath("ibaraki", `wa_004_${n}.jpg`)),
-    views: 50, sellerName: "Ibaraki Motors", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+254 700 000 000",
-    make: "Toyota", model: "Vanguard", bodyType: "SUV", fuelType: "Petrol", cc: 2400, dutyPaid: true,
-    country: "KE", sellerId: "ibaraki",
-    description: "Toyota Vanguard 4WD from Ibaraki Motors in Nairobi. Petrol automatic SUV with showroom images and practical Japanese import specification. Contact the dealer for current asking price, documents and inspection details.",
-  },
 ].filter(_isLaunchQualityListing);
 
 export const priceRanges = [
@@ -1223,15 +1177,16 @@ export const mockDealers: MockDealer[] = [
   {
     user_id: "dealer-ibaraki",
     display_name: "Ibaraki Motors",
-    city: "Nairobi",
-    phone: "+254 700 000 000",
+    city: "Dar es Salaam",
+    phone: "+255 798 785 871",
     avatar_url: null,
     verified_at: "2026-01-10T00:00:00Z",
-    listing_count: 18,
+    listing_count: 9,
     rating: 4.6,
-    description: "Ibaraki Motors — quality used cars and Japanese imports in Nairobi, Kenya. Wide selection of Toyota, Nissan, Subaru and more.",
-    address: "Nairobi, Kenya",
-    postal_code: "",
+    description: "Ibaraki Motors — verified Dar es Salaam dealer with dealer-sourced SUVs, double-cabin pickups, 4x4s and Japanese imports including Nissan Patrol, Toyota Hilux, Land Rover Discovery, Subaru Forester and Jeep Wrangler stock.",
+    address: "Dar es Salaam, Tanzania",
+    postal_code: "14104",
+    instagram: "ibaraki",
   },
   {
     user_id: "dealer-khushimotorsdaressalaam",
