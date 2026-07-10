@@ -17,8 +17,11 @@
     "open:ios": "npx cap open ios",
     "sync": "npx cap sync"
     ,"social:seed": "node scripts/seed-social-content.mjs"
-    ,"social:seed:apply": "node scripts/seed-social-content.mjs --days=365 --apply --replace-pending"
+    ,"social:seed:apply": "node scripts/seed-social-content.mjs --days=365 --start=2026-07-10 --apply --replace-pending"
     ,"social:audit": "node scripts/audit-social-content.mjs"
+    ,"social:ig:audit": "node scripts/instagram-cleanup.mjs"
+    ,"social:ig:delete-junk": "node scripts/instagram-cleanup.mjs --apply"
+    ,"social:token:setup": "node scripts/setup-instagram-token.mjs"
     ,"social:generate": "node content/instagram/generate-images.mjs"
     ,"social:post:dry": "node scripts/auto-post.mjs --dry-run"
     ,"social:post": "node scripts/auto-post.mjs"
