@@ -4,6 +4,9 @@
 secrets/
 *-sa.json
 service-account*.json
+android/keystore.properties
+android/*.jks
+android/*.keystore
 
 # Logs
 logs

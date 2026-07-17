@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:android": "npm run build && npx cap sync android",
+    "android:release": "npm run build:android && powershell -ExecutionPolicy Bypass -File scripts/android-release.ps1",
     "build:ios": "npm run build && npx cap sync ios",
     "open:android": "npx cap open android",
     "open:ios": "npx cap open ios",
@@ -25,6 +26,7 @@
     ,"social:generate": "node content/instagram/generate-images.mjs"
     ,"social:post:dry": "node scripts/auto-post.mjs --dry-run"
     ,"social:post": "node scripts/auto-post.mjs"
+    ,"store:screenshots": "node scripts/capture-store-screenshots.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",
