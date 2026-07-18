@@ -8,85 +8,91 @@
   <!-- Static pages -->
   <url>
     <loc>https://www.motokah.com/</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.00</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/sell</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealers</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/dealer-leads</loc>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/how-it-works</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/duty-calculator</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/compare</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/blog</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/about</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/contact</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/faq</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.40</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/safety</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.40</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/terms</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.30</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/privacy</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.30</priority>
   </url>
@@ -94,43 +100,43 @@
   <!-- Country landing pages -->
   <url>
     <loc>https://www.motokah.com/country/tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/country/kenya</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/country/uganda</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.82</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/country/rwanda</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/country/ethiopia</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/country/burundi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/country/nigeria</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.65</priority>
   </url>
@@ -138,747 +144,843 @@
   <!-- Curated search landing pages -->
   <url>
     <loc>https://www.motokah.com/search?country=Tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?country=Kenya</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?country=Tanzania&amp;condition=New</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?country=Tanzania&amp;vehicleType=commercial</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?country=Tanzania&amp;vehicleType=bike</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?country=Tanzania&amp;vehicleType=boat</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?country=Kenya&amp;condition=New</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?country=Kenya&amp;vehicleType=commercial</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;model=Harrier&amp;country=Tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;model=Land%20Cruiser&amp;country=Tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;model=Hilux&amp;country=Tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;model=Prado&amp;country=Tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Fortuner&amp;country=Tanzania</loc>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;model=Vitz&amp;country=Tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;model=Demio&amp;country=Tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Mazda&amp;model=CX-5&amp;country=Tanzania</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Nissan&amp;model=Patrol&amp;country=Tanzania</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Nissan&amp;model=Navara&amp;country=Tanzania</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Subaru&amp;model=Forester&amp;country=Tanzania</loc>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.78</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;model=Forester&amp;country=Kenya</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.72</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;model=Probox&amp;country=Kenya</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.72</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;model=Vezel&amp;country=Kenya</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Mazda&amp;model=Demio&amp;country=Kenya</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Harrier&amp;country=Kenya</loc>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.72</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Dar%20es%20Salaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Dar%20es%20Salaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Dar%20es%20Salaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Dar%20es%20Salaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Dar%20es%20Salaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Dar%20es%20Salaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Arusha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Arusha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Arusha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Arusha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Arusha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Arusha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Nairobi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Nairobi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Nairobi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Nairobi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Nairobi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Nairobi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Mombasa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Mombasa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Mombasa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Mombasa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Mombasa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Mombasa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Kigali</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Kigali</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Kigali</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Kigali</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Kigali</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Kigali</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Addis%20Ababa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Nissan&amp;city=Addis%20Ababa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Subaru&amp;city=Addis%20Ababa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mazda&amp;city=Addis%20Ababa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Honda&amp;city=Addis%20Ababa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Addis%20Ababa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?condition=New</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?vehicleType=commercial</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?vehicleType=bike</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/search?vehicleType=boat</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?country=Kenya&amp;vehicleType=bike</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.60</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?country=Kenya&amp;bodyType=SUV</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?country=Tanzania&amp;bodyType=Sedan</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.65</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?country=Tanzania&amp;bodyType=Pickup</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/search?country=Tanzania&amp;bodyType=SUV</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/dealer-leads?country=Tanzania</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.78</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/dealer-leads?country=Kenya</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.72</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/dealer-leads?country=Uganda</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.66</priority>
+  </url>
+  <url>
+    <loc>https://www.motokah.com/dealer-leads?country=Rwanda</loc>
+    <lastmod>2026-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.62</priority>
   </url>
 
   <!-- City landing pages -->
   <url>
     <loc>https://www.motokah.com/city/dar-es-salaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/arusha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/zanzibar</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/mbeya</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/moshi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/tanga</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/morogoro</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/iringa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/kigoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/tabora</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/lindi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/shinyanga</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/kahama</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/musoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/sumbawanga</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.40</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/songea</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.40</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/bukoba</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.40</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/mtwara</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.40</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/nairobi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/mombasa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/nakuru</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/kisumu</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/eldoret</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/thika</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/naivasha</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/nyeri</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/machakos</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/meru</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/kitale</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/malindi</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/entebbe</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/jinja</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/mbarara</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/gulu</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/fort-portal</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/kigali</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/butare</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/addis-ababa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/adama</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/city/dire-dawa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
@@ -886,61 +988,61 @@
   <!-- Dealer landing pages -->
   <url>
     <loc>https://www.motokah.com/dealer/dealer-khushimotorsdaressalaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-al_husnainmotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-mgayamotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-expert_motors_tz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-njari_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-breemotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-magari_empire1</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-nicolette-boats</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-kk_magic_cars_</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/dealer/dealer-ibaraki</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -948,487 +1050,487 @@
   <!-- Instagram showroom pages -->
   <url>
     <loc>https://www.motokah.com/showroom/al_husnainmotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/aminicar_</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/amjad_motors_international_ltd</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/autocomjapantanzaniacars</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/automark.tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/barari_motorstz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/best_truck_tz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/bongoauto_groups</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/bongoland_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/boxerpoa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/breemotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/car_dealers_tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/carpointtanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/chimbo_la_magari_dodoma</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/cholloh_magari_tz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/daressalaam__pikipikiusedtz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/dream_motors_safari</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/dula_magari</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/epicmotors_tz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/ethiocarsmarket</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/evanamotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/expert_motors_tz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/extreme_biketz_</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/ezy_auto_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/faharimotors_sales</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/fam_motors_mwanza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/fau_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/fkmotorstanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/gariguruske</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/gody_motorstz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/hanami.japan</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/harabmotorstzltd</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/helianmotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/hm.autodeals</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/hm.autodealz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/hondamotorcyclekenyaltd</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/house_of_cars_kenya</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/hupa_motors_ltd</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/inspiring_investment_ltd</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/international_cars_dealership</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/jaja_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/jambo_magari</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/justin_motors_ltd</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/kei_cars</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/khushimotorsdaressalaam</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/kk_magic_cars_</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/livy_motors_tz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/lomaautos_</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/magari_empire1</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/magari_motors_co_ltd</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/magarideals</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/manzese_showrooms</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/mapigo_saba_magari</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/mcimotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/mgayamotors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/mighty__rides</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/mottocarsmarket</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/mr_pikipiki</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/msafiri_automobile_expert</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/muu_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/nairobidrive</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/nathan__motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/ndinga_bei_poa</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/njari_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/peachcarske</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/pikipiki_bajaji_used</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/pikipiki_quality_tanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/rakincars.tz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/ruge_magari</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/rwanko_motors</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/smartautoske</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/tajirimfupi_magari</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/tera_automobiles</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/tesha_pikipiki_usedtz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/tgworldimports</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/ufsautotanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/urassa_motors_company_limited</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/used_cars_in_kampala</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/used_cars_magari_used</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/usedcarstanzania</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/showroom/wazirmotor</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.65</priority>
   </url>
@@ -1436,151 +1538,151 @@
   <!-- Model landing pages -->
   <url>
     <loc>https://www.motokah.com/cars/toyota/alphard</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/harrier</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/probox</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/fielder</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/vitz</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/land-cruiser</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/hilux</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/prado</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/noah</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/succeed</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/toyota/axio</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/mazda/demio</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/mazda/cx-5</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/mazda/atenza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/honda/vezel</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/honda/fit</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/honda/crv</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/subaru/forester</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.90</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/subaru/outback</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/subaru/impreza</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/nissan/x-trail</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/nissan/note</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/nissan/navara</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/mitsubishi/pajero</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/cars/mitsubishi/outlander</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -1588,25 +1690,25 @@
   <!-- Blog posts -->
   <url>
     <loc>https://www.motokah.com/blog/how-to-import-a-car-to-kenya-2026</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/blog/best-used-cars-under-2-million-nairobi-2026</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/blog/bei-ya-magari-mitumba-tanzania-2026</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
     <loc>https://www.motokah.com/blog/toyota-alphard-price-kenya-2026</loc>
-    <lastmod>2026-07-09</lastmod>
+    <lastmod>2026-07-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.70</priority>
   </url>

@@ -58,6 +58,7 @@ const staticPages = [
   { path: "/search",         freq: "daily",   pri: 0.9 },
   { path: "/sell",           freq: "weekly",  pri: 0.8 },
   { path: "/dealers",        freq: "weekly",  pri: 0.8 },
+  { path: "/dealer-leads",   freq: "weekly",  pri: 0.8 },
   { path: "/how-it-works",   freq: "monthly", pri: 0.7 },
   { path: "/duty-calculator",freq: "monthly", pri: 0.7 },
   { path: "/compare",        freq: "weekly",  pri: 0.6 },
@@ -139,11 +140,18 @@ const modelCountryPages = [
   ["Toyota", "Land Cruiser", "Tanzania"],
   ["Toyota", "Hilux", "Tanzania"],
   ["Toyota", "Prado", "Tanzania"],
+  ["Toyota", "Fortuner", "Tanzania"],
   ["Toyota", "Vitz", "Tanzania"],
   ["Mazda", "Demio", "Tanzania"],
+  ["Mazda", "CX-5", "Tanzania"],
+  ["Nissan", "Patrol", "Tanzania"],
+  ["Nissan", "Navara", "Tanzania"],
+  ["Subaru", "Forester", "Tanzania"],
   ["Subaru", "Forester", "Kenya"],
   ["Toyota", "Probox", "Kenya"],
   ["Honda", "Vezel", "Kenya"],
+  ["Mazda", "Demio", "Kenya"],
+  ["Toyota", "Harrier", "Kenya"],
 ].map(([make, model, country]) => ({
   path: `/search?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&country=${encodeURIComponent(country)}`,
   freq: "daily",
@@ -161,6 +169,17 @@ const categorySearchPages = [
   { path: "/search?vehicleType=commercial", freq: "weekly", pri: 0.65 },
   { path: "/search?vehicleType=bike", freq: "weekly", pri: 0.65 },
   { path: "/search?vehicleType=boat", freq: "weekly", pri: 0.65 },
+  { path: "/search?country=Kenya&vehicleType=bike", freq: "weekly", pri: 0.6 },
+  { path: "/search?country=Kenya&bodyType=SUV", freq: "weekly", pri: 0.65 },
+  { path: "/search?country=Tanzania&bodyType=Sedan", freq: "weekly", pri: 0.65 },
+  { path: "/search?country=Tanzania&bodyType=Pickup", freq: "weekly", pri: 0.7 },
+  { path: "/search?country=Tanzania&bodyType=SUV", freq: "weekly", pri: 0.75 },
+];
+const dealerLeadPages = [
+  { path: "/dealer-leads?country=Tanzania", freq: "weekly", pri: 0.78 },
+  { path: "/dealer-leads?country=Kenya", freq: "weekly", pri: 0.72 },
+  { path: "/dealer-leads?country=Uganda", freq: "weekly", pri: 0.66 },
+  { path: "/dealer-leads?country=Rwanda", freq: "weekly", pri: 0.62 },
 ];
 
 // Model landing pages — /cars/:make/:model (high-volume keyword targets)
@@ -253,6 +272,7 @@ const lines = [
   ...modelCountryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+  ...dealerLeadPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
   "  <!-- City landing pages -->",
   ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
@@ -276,4 +296,4 @@ const out = lines.join("\n");
 const dest = path.join(__dirname, "../public/sitemap.xml");
 fs.writeFileSync(dest, out, "utf8");
 console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + countryPages.length + countrySearchPages.length + makePages.length + modelCountryPages.length + cityMakePages.length + categorySearchPages.length + cities.length + dealerPages.length + showroomPages.length + modelPages.length + blogPostPages.length}`);
+console.log(`URLs: ${staticPages.length + countryPages.length + countrySearchPages.length + makePages.length + modelCountryPages.length + cityMakePages.length + categorySearchPages.length + dealerLeadPages.length + cities.length + dealerPages.length + showroomPages.length + modelPages.length + blogPostPages.length}`);

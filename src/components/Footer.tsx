@@ -14,6 +14,7 @@ const columns = [
     { label: "How It Works", to: "/how-it-works" },
     { label: "Duty Calculator", to: "/duty-calculator" },
     { label: "Car Showrooms", to: "/dealers" },
+    { label: "Dealer Contacts", to: "/dealer-leads" },
   ]},
   { title: "For Sellers", links: [
     { label: "Post Your Ad", to: "/sell" },
@@ -37,11 +38,11 @@ const columns = [
 ];
 
 const countries = [
-  { label: "Tanzania", to: "/city/dar-es-salaam" },
-  { label: "Kenya", to: "/city/nairobi" },
-  { label: "Uganda", to: "/city/kampala" },
-  { label: "Rwanda", to: "/city/kigali" },
-  { label: "Ethiopia", to: "/city/addis-ababa" },
+  { label: "Tanzania", to: "/country/tanzania" },
+  { label: "Kenya", to: "/country/kenya" },
+  { label: "Uganda", to: "/country/uganda" },
+  { label: "Rwanda", to: "/country/rwanda" },
+  { label: "Ethiopia", to: "/country/ethiopia" },
   { label: "Burundi", to: "/search?city=Bujumbura" },
   { label: "South Sudan", to: "/search?city=Juba" },
   { label: "Somalia", to: "/search?city=Mogadishu" },

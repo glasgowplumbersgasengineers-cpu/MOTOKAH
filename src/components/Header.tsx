@@ -19,6 +19,7 @@ const navLinks = [
   { key: "nav.bikes", href: "/search?vehicleType=bike" },
   { key: "nav.boats", href: "/search?vehicleType=boat" },
   { key: "nav.dealers", href: "/dealers" },
+  { key: "nav.dealerContacts", href: "/dealer-leads", label: "Dealer Contacts" },
   { key: "nav.compare", href: "/compare" },
   { key: "nav.blog", href: "/blog" },
 ];
@@ -48,7 +49,7 @@ export default function Header() {
         <nav className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => (
             <Link key={link.key} to={link.href} className="px-3 py-2 text-sm text-secondary-foreground hover:text-primary transition-colors rounded-md hover:bg-secondary">
-              {t(link.key)}
+              {"label" in link ? link.label : t(link.key)}
             </Link>
           ))}
         </nav>
@@ -104,7 +105,7 @@ export default function Header() {
                 {navLinks.map(link => (
                   <SheetClose asChild key={link.key}>
                     <Link to={link.href} className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
-                      {t(link.key)}
+                      {"label" in link ? link.label : t(link.key)}
                     </Link>
                   </SheetClose>
                 ))}

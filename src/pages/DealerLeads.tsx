@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import {
 } from "@tabler/icons-react";
 import { DEALERS, type Dealer } from "@/data/dealers";
 import { mockDealers } from "@/data/mockData";
+import { breadcrumbJsonLd, collectionPageJsonLd, jsonLdScript } from "@/lib/structuredData";
 
 // Instagram showrooms — accounts with scraped data + showroom pages
 const IG_SHOWROOMS = mockDealers.filter((d) =>
@@ -189,6 +191,27 @@ export default function DealerLeads() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <Helmet>
+        <title>East Africa Car Dealers and Showrooms | Motokah</title>
+        <meta
+          name="description"
+          content="Find car dealers and vehicle showrooms across Tanzania, Kenya, Uganda and Rwanda. Call or WhatsApp dealers directly from Motokah."
+        />
+        <link rel="canonical" href="https://www.motokah.com/dealer-leads" />
+        <meta property="og:title" content="East Africa Car Dealers and Showrooms | Motokah" />
+        <meta property="og:description" content="Find car dealers and vehicle showrooms across East Africa. Call or WhatsApp dealers directly." />
+        <meta property="og:url" content="https://www.motokah.com/dealer-leads" />
+        {jsonLdScript(breadcrumbJsonLd([
+          { name: "Home", url: "https://www.motokah.com/" },
+          { name: "Dealer Contacts", url: "https://www.motokah.com/dealer-leads" },
+        ]))}
+        {jsonLdScript(collectionPageJsonLd({
+          name: "East Africa Car Dealers and Showrooms",
+          description: "Dealer contact directory for car buyers across Tanzania, Kenya, Uganda and Rwanda.",
+          url: "https://www.motokah.com/dealer-leads",
+          itemCount: DEALERS.length + IG_SHOWROOMS.length,
+        }))}
+      </Helmet>
       <Header />
 
       <main className="flex-1">
@@ -323,6 +346,27 @@ export default function DealerLeads() {
           <p className="text-xs text-muted-foreground text-center pb-4 border-t border-border pt-4">
             Dealer info sourced from public directories. Contact details may change — verify before visiting.
           </p>
+
+          <section className="rounded-xl border border-border bg-card p-5">
+            <h2 className="text-lg font-bold text-foreground">How to use Motokah dealer contacts</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Start with dealers that have clear inventory, public phone numbers and recent stock.
+              Ask for the vehicle price, chassis details, registration documents and inspection time
+              before visiting. Dealers can claim their page so Motokah buyers reach the correct WhatsApp
+              number instead of old scraped contacts.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link to="/dealers" className="rounded-full border border-border px-3 py-1.5 text-sm hover:border-primary hover:text-primary">
+                Browse dealer pages
+              </Link>
+              <Link to="/become-dealer" className="rounded-full border border-border px-3 py-1.5 text-sm hover:border-primary hover:text-primary">
+                Claim a dealer page
+              </Link>
+              <Link to="/search?country=Tanzania" className="rounded-full border border-border px-3 py-1.5 text-sm hover:border-primary hover:text-primary">
+                Browse Tanzania stock
+              </Link>
+            </div>
+          </section>
         </div>
       </main>
 

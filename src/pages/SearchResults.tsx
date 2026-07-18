@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
-import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
+import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -226,6 +226,24 @@ export default function SearchResults() {
     : filters.bodyType[0]
     ? `${filters.bodyType[0]}s for Sale in ${locationLabel}`
     : `Used Cars for Sale in ${locationLabel}`;
+  const searchFaq = useMemo(() => {
+    const place = location || locationLabel || "East Africa";
+    const vehicle = seoMake ? `${seoMake} ${vehicleLabel.toLowerCase()}` : vehicleLabel.toLowerCase();
+    return [
+      {
+        q: `Where can I find ${vehicle} for sale in ${place}?`,
+        a: `Motokah lists ${vehicle} from dealer and private sellers in ${place}. Use filters for price, year, mileage, fuel type, transmission and city before contacting sellers.`,
+      },
+      {
+        q: `What should I check before buying ${vehicle} in ${place}?`,
+        a: "Check clear photos, seller contact details, registration documents, chassis number, mileage consistency, service condition and inspection readiness before paying a deposit.",
+      },
+      {
+        q: "Can I contact sellers directly on Motokah?",
+        a: "Yes. Motokah is built around direct seller contact by phone or WhatsApp once a listing looks worth inspecting.",
+      },
+    ];
+  }, [location, locationLabel, seoMake, vehicleLabel]);
 
   const handleSaveSearch = async () => {
     if (!user) { toast.error("Sign in to save searches"); return; }
@@ -267,6 +285,7 @@ export default function SearchResults() {
           url: seoCanonical,
           itemCount: filtered.length,
         }))}
+        {jsonLdScript(faqJsonLd(searchFaq))}
       </Helmet>
       <Header />
 
@@ -406,7 +425,8 @@ export default function SearchResults() {
         </div>
 
         <section className="mt-12 border-t border-border pt-8">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl space-y-8">
+            <div>
             <h2 className="text-xl font-bold text-foreground">
               {seoMake
                 ? `${seoMake} ${vehicleLabel.toLowerCase()}${location ? ` in ${location}` : " in East Africa"}`
@@ -417,6 +437,11 @@ export default function SearchResults() {
               fuel type and seller location. {location ? `For ${location}, ` : "Across East Africa, "}
               browse dealer and private stock, shortlist vehicles, then call or WhatsApp the seller directly
               before arranging an inspection.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              For launch, Motokah is strongest in Tanzania and Kenya dealer stock. If a listing has
+              clear photos, a realistic title, visible price, city and seller details, shortlist it;
+              if those basics are missing, ask the seller before travelling.
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-sm">
               {["Toyota", "Nissan", "Subaru", "Mazda", "Honda", "Mitsubishi"].filter(make => make !== seoMake).map((make) => {
@@ -434,6 +459,18 @@ export default function SearchResults() {
                   </a>
                 );
               })}
+            </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-foreground">Buyer Questions</h2>
+              <div className="mt-4 space-y-4">
+                {searchFaq.map((item) => (
+                  <div key={item.q}>
+                    <h3 className="font-semibold text-foreground">{item.q}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{item.a}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
