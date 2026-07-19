@@ -14,7 +14,7 @@ export default function BottomNav() {
   const location = useLocation();
   const { user } = useAuth();
 
-  if (["/marketing-plan", "/dealer-leads", "/welcome"].includes(location.pathname)) return null;
+  if (["/marketing-plan", "/dealer-leads", "/welcome", "/sell"].includes(location.pathname)) return null;
 
   return (
     <nav
