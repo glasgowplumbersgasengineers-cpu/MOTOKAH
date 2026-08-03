@@ -20,6 +20,10 @@ export default function NotificationBell() {
 
   useEffect(() => {
     if (!user) return;
+    if (user.id.startsWith("demo-")) {
+      setNotifications([]);
+      return;
+    }
     supabase.from("notifications").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20).then(({ data }) => {
       if (data) setNotifications(data);
     });
@@ -32,6 +36,10 @@ export default function NotificationBell() {
   }, [user]);
 
   const markRead = async (id: string) => {
+    if (user?.id.startsWith("demo-")) {
+      setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
+      return;
+    }
     await supabase.from("notifications").update({ read: true }).eq("id", id);
     setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
   };

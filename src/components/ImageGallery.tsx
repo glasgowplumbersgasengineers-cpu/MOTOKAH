@@ -37,7 +37,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
           className={`w-full h-full object-cover transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
           loading="eager"
           decoding="async"
-          fetchPriority="high"
+          fetchpriority="high"
           onClick={() => setZoomed(!zoomed)}
           draggable={false}
         />

@@ -66,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchProfile = async (userId: string) => {
+    if (userId.startsWith("demo-")) return;
     try {
       const [{ data: profileData }, { data: roleRows }] = await Promise.all([
         supabase

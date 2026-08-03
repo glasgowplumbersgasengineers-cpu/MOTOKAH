@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings, getShowroomListings } from "@/data/mockData";
-import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
+import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing, isStaticListingId } from "@/lib/listingQuality";
 
 export interface ListingWithDescription extends Listing {
   description?: string | null;
@@ -16,7 +16,7 @@ export function useListing(id: string | undefined) {
     if (!id) { setLoading(false); return; }
 
     const staticId = id.startsWith("mock-") ? id.replace(/^mock-/, "stock-") : id;
-    if (staticId.startsWith("stock-") || staticId.startsWith("ig-") || staticId.startsWith("ib-") || staticId.startsWith("jiji-") || staticId.startsWith("boat-")) {
+    if (isStaticListingId(staticId)) {
       let mock: Listing | undefined = mockListings.find((m) => m.id === staticId);
 
       // ig- listings created by getShowroomListings aren't in mockListings

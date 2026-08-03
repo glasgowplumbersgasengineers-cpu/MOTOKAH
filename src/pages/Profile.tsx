@@ -160,6 +160,25 @@ export default function Profile() {
 
   useEffect(() => {
     if (!user) return;
+    if (user.id.startsWith("demo-")) {
+      setProfile({
+        display_name: user.user_metadata?.display_name || user.email || "Demo User",
+        phone: "+255 700 000 000",
+        avatar_url: null,
+        seller_type: "private",
+        verified_at: "2026-01-01T00:00:00Z",
+        city: "Dar es Salaam",
+      });
+      setEditName(user.user_metadata?.display_name || user.email || "Demo User");
+      setEditPhone("+255 700 000 000");
+      setEditCity("Dar es Salaam");
+      setListings(mockListings.slice(0, 5).map(l => ({
+        id: l.id, title: l.title, make: l.make, model: l.model,
+        year: l.year, price: l.price, currency: l.currency,
+        status: "approved", created_at: new Date().toISOString(), views: l.views,
+      })));
+      return;
+    }
     supabase.from("profiles").select("*").eq("user_id", user.id).single().then(({ data }) => {
       if (data) {
         setProfile(data as ProfileData);
@@ -168,24 +187,13 @@ export default function Profile() {
         setEditCity(data.city || "");
       }
     });
-    // Demo users (id starts with "demo-") don't have DB listings — show mock data
-    if (user.id.startsWith("demo-")) {
-      import("@/data/mockData").then(({ mockListings }) => {
-        setListings(mockListings.slice(0, 5).map(l => ({
-          id: l.id, title: l.title, make: l.make, model: l.model,
-          year: l.year, price: l.price, currency: l.currency,
-          status: "approved", created_at: new Date().toISOString(), views: l.views,
-        })));
+    supabase.from("listings")
+      .select("id, title, make, model, year, price, currency, status, created_at, views")
+      .eq("seller_id", user.id)
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (data) setListings(data as ListingRow[]);
       });
-    } else {
-      supabase.from("listings")
-        .select("id, title, make, model, year, price, currency, status, created_at, views")
-        .eq("seller_id", user.id)
-        .order("created_at", { ascending: false })
-        .then(({ data }) => {
-          if (data) setListings(data as ListingRow[]);
-        });
-    }
     // saved_searches table not yet created - skip for now
   }, [user]);
 
@@ -213,6 +221,12 @@ export default function Profile() {
 
   const saveProfile = async () => {
     if (!user) return;
+    if (user.id.startsWith("demo-")) {
+      setProfile((p) => p ? { ...p, display_name: editName, phone: editPhone, city: editCity } : p);
+      setEditing(false);
+      toast({ title: "Demo profile updated locally" });
+      return;
+    }
     const { error } = await supabase.from("profiles").update({
       display_name: editName,
       phone: editPhone,

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import VehicleCard from "./VehicleCard";
 import { supabase } from "@/integrations/supabase/client";
-import { type Listing } from "@/data/mockData";
-import { hasUsablePhone, isLaunchQualityListing } from "@/lib/listingQuality";
+import { type Listing, mockListings } from "@/data/mockData";
+import { hasUsablePhone, isLaunchQualityListing, isStaticListingId } from "@/lib/listingQuality";
 
 interface SimilarListingsProps {
   currentId: string;
@@ -14,6 +14,18 @@ export default function SimilarListings({ currentId, make, bodyType }: SimilarLi
   const [similar, setSimilar] = useState<Listing[]>([]);
 
   useEffect(() => {
+    const localMatches = mockListings
+      .filter((listing) => listing.id !== currentId)
+      .filter((listing) => !make || listing.make === make)
+      .filter((listing) => !bodyType || listing.bodyType === bodyType)
+      .filter(isLaunchQualityListing)
+      .slice(0, 4);
+
+    if (isStaticListingId(currentId)) {
+      setSimilar(localMatches);
+      return;
+    }
+
     const fetch = async () => {
       let query = supabase
         .from("listings")
@@ -38,7 +50,8 @@ export default function SimilarListings({ currentId, make, bodyType }: SimilarLi
         ? await supabase.from("profiles").select("user_id, display_name, seller_type, phone").in("user_id", sellerIds)
         : { data: [] };
       const profileMap = new Map((profiles || []).map((profile) => [profile.user_id, profile]));
-      setSimilar(mapRows(rows, profileMap).filter((listing) => hasUsablePhone(listing.sellerPhone) && isLaunchQualityListing(listing)));
+      const dbMatches = mapRows(rows, profileMap).filter((listing) => hasUsablePhone(listing.sellerPhone) && isLaunchQualityListing(listing));
+      setSimilar(dbMatches.length > 0 ? dbMatches : localMatches);
     };
     fetch();
   }, [currentId, make, bodyType]);

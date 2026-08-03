@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { usePriceFormatter } from "@/lib/prices";
+import { isStaticListingId } from "@/lib/listingQuality";
 
 const reportReasons = ["Fake listing", "Wrong price", "Duplicate", "Inappropriate content", "Scam / Fraud", "Other"];
 
@@ -91,6 +92,7 @@ export default function ListingDetail() {
   // Increment view count once per session
   useEffect(() => {
     if (!id) return;
+    if (isStaticListingId(id)) return;
     const viewed = JSON.parse(sessionStorage.getItem("viewedListings") || "[]");
     if (viewed.includes(id)) return;
     supabase.rpc("increment_listing_views", { _listing_id: id }).then(() => {

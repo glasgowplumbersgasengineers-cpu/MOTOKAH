@@ -1,5 +1,9 @@
 import { type Listing } from "@/data/mockData";
 
+export function isStaticListingId(id?: string | null): boolean {
+  return /^(?:mock-|stock-|ig-|ib-|jiji-|boat-)/.test(id || "");
+}
+
 export function hasUsablePhone(phone?: string | null): boolean {
   const digits = (phone || "").replace(/\D/g, "");
   if (digits.length < 9) return false;

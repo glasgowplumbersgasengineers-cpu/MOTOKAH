@@ -109,7 +109,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
             className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
-            fetchPriority={priority ? "high" : "auto"}
+            fetchpriority={priority ? "high" : "auto"}
             onLoad={() => {
               setImgLoaded(true);
               setImgError(false);

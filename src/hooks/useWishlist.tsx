@@ -14,6 +14,9 @@ const WishlistContext = createContext<WishlistContextType>({
   loading: false,
 });
 
+const isDemoUser = (userId?: string) => Boolean(userId?.startsWith("demo-"));
+const demoWishlistKey = (userId: string) => `motokah_demo_wishlist_${userId}`;
+
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [wishlistIds, setWishlistIds] = useState<Set<string>>(new Set());
@@ -22,6 +25,11 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!user) {
       setWishlistIds(new Set());
+      return;
+    }
+    if (isDemoUser(user.id)) {
+      const stored = localStorage.getItem(demoWishlistKey(user.id));
+      setWishlistIds(new Set(stored ? JSON.parse(stored) : []));
       return;
     }
     const fetch = async () => {
@@ -38,11 +46,24 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     if (!user) return;
     setLoading(true);
     if (wishlistIds.has(listingId)) {
-      await supabase.from("wishlist").delete().eq("user_id", user.id).eq("listing_id", listingId);
-      setWishlistIds((prev) => { const next = new Set(prev); next.delete(listingId); return next; });
+      setWishlistIds((prev) => {
+        const next = new Set(prev);
+        next.delete(listingId);
+        if (isDemoUser(user.id)) localStorage.setItem(demoWishlistKey(user.id), JSON.stringify([...next]));
+        return next;
+      });
+      if (!isDemoUser(user.id)) {
+        await supabase.from("wishlist").delete().eq("user_id", user.id).eq("listing_id", listingId);
+      }
     } else {
-      await supabase.from("wishlist").insert({ user_id: user.id, listing_id: listingId });
-      setWishlistIds((prev) => new Set(prev).add(listingId));
+      setWishlistIds((prev) => {
+        const next = new Set(prev).add(listingId);
+        if (isDemoUser(user.id)) localStorage.setItem(demoWishlistKey(user.id), JSON.stringify([...next]));
+        return next;
+      });
+      if (!isDemoUser(user.id)) {
+        await supabase.from("wishlist").insert({ user_id: user.id, listing_id: listingId });
+      }
     }
     setLoading(false);
   }, [user, wishlistIds]);
