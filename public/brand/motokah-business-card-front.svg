@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="600" viewBox="0 0 1050 600" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah business card front</title>
+  <desc id="desc">Front side of Motokah business card.</desc>
+  <rect width="1050" height="600" fill="#102A43"/>
+  <rect x="34" y="34" width="982" height="532" rx="28" fill="none" stroke="#3493C9" stroke-width="5"/>
+  <g transform="translate(72 70)">
+    <rect x="0" y="0" width="330" height="96" fill="#3493C9"/>
+    <text x="34" y="68" font-family="Bebas Neue, Impact, Arial Narrow, Arial, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="4">MOTOKAH</text>
+  </g>
+  <text x="72" y="376" font-family="Montserrat, Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#ffffff">Waleed Malik</text>
+  <text x="76" y="422" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#C9D8E8">Launch &amp; Growth</text>
+  <text x="76" y="486" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600" fill="#C9D8E8">info@motokah.com</text>
+  <text x="76" y="524" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600" fill="#C9D8E8">www.motokah.com</text>
+  <text x="682" y="524" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff">Dar es Salaam</text>
+</svg>

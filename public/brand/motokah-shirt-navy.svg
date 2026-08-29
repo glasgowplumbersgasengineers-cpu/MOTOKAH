@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1600" viewBox="0 0 1400 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah navy staff shirt</title>
+  <desc id="desc">Navy Motokah staff shirt print mockup.</desc>
+  <rect width="1400" height="1600" fill="#F4F8FC"/>
+  <path d="M420 170h560l196 155 118 440-170 58-86-304v904H362V519l-86 304-170-58 118-440 196-155Z" fill="#102A43"/>
+  <path d="M540 170c23 90 82 142 160 142s137-52 160-142" fill="#0B1726"/>
+  <g transform="translate(490 520)">
+    <rect x="0" y="0" width="420" height="124" fill="#3493C9"/>
+    <text x="44" y="86" font-family="Bebas Neue, Impact, Arial Narrow, Arial, sans-serif" font-size="84" font-weight="800" fill="#ffffff" letter-spacing="5">MOTOKAH</text>
+  </g>
+  <text x="700" y="765" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="800" fill="#C9D8E8">DEALER TEAM</text>
+</svg>

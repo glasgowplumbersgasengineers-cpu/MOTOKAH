@@ -1,242 +1,167 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import {
-  IconArrowDown,
-  IconBrandInstagram,
-  IconBrandWhatsapp,
-  IconDownload,
-  IconMail,
-  IconMapPin,
-  IconPrinter,
-  IconShirt,
-  IconSparkles,
-} from "@tabler/icons-react";
 import { Helmet } from "react-helmet-async";
+import {
+  IconBrandInstagram,
+  IconBuildingStore,
+  IconCheck,
+  IconDownload,
+  IconFileText,
+  IconIdBadge2,
+  IconPrinter,
+  IconQrcode,
+  IconShieldCheck,
+  IconShirt,
+} from "@tabler/icons-react";
 
-const brandAssets = [
-  { name: "Full-color logo", file: "/brand/motokah-logo-full-color.svg", use: "White paper, proposals, letterheads" },
-  { name: "Reverse logo", file: "/brand/motokah-logo-reverse.svg", use: "Dark shirts, banners, night-mode artwork" },
-  { name: "App / favicon icon", file: "/brand/motokah-icon.svg", use: "App icon, stickers, social avatar" },
-  { name: "Wordmark", file: "/brand/motokah-wordmark.svg", use: "Headers, invoices, email signatures" },
-  { name: "Verified badge", file: "/brand/motokah-verified-badge.svg", use: "Dealer material, showroom posters" },
+type Asset = {
+  title: string;
+  file: string;
+  format: string;
+  kit: "Office" | "Uniform" | "Dealer" | "Marketing";
+  icon: typeof IconFileText;
+};
+
+const logos = [
+  ["Main logo lockup", "/brand/motokah-logo-horizontal.svg", "Primary lockup for signs, print and official documents."],
+  ["Car-M symbol", "/brand/motokah-symbol-blue.svg", "Icon, embroidery, stickers, app mark and dealer badge."],
+  ["Blue block wordmark", "/brand/motokah-wordmark-block.svg", "Simple fast-print mark for labels and basic applications."],
+  ["Showroom wall lockup", "/brand/motokah-logo-white-blueprint.svg", "Large-format wall, poster and launch backdrop artwork."],
+] as const;
+
+const assets: Asset[] = [
+  { title: "A4 Letterhead", file: "/brand/motokah-letterhead-a4.svg", format: "210 x 297 mm", kit: "Office", icon: IconFileText },
+  { title: "Business Card Front", file: "/brand/motokah-business-card-front.svg", format: "90 x 54 mm", kit: "Office", icon: IconIdBadge2 },
+  { title: "Business Card Back", file: "/brand/motokah-business-card-back.svg", format: "90 x 54 mm", kit: "Office", icon: IconIdBadge2 },
+  { title: "DL Envelope", file: "/brand/motokah-envelope-dl.svg", format: "220 x 110 mm", kit: "Office", icon: IconFileText },
+  { title: "Navy Staff Shirt", file: "/brand/motokah-shirt-navy.svg", format: "Embroidery", kit: "Uniform", icon: IconShirt },
+  { title: "White Field Shirt", file: "/brand/motokah-shirt-white.svg", format: "Embroidery", kit: "Uniform", icon: IconShirt },
+  { title: "Dealer ID Tag", file: "/brand/motokah-dealer-tag.svg", format: "Lanyard card", kit: "Dealer", icon: IconIdBadge2 },
+  { title: "Verified Dealer Sticker", file: "/brand/motokah-verified-badge.svg", format: "Vinyl sticker", kit: "Dealer", icon: IconShieldCheck },
+  { title: "Vehicle Window Tag", file: "/brand/motokah-vehicle-window-tag.svg", format: "A5 landscape", kit: "Dealer", icon: IconQrcode },
+  { title: "Dealer Poster", file: "/brand/motokah-dealer-poster.svg", format: "A4 / A3", kit: "Marketing", icon: IconBuildingStore },
+  { title: "Pull-up Banner", file: "/brand/motokah-pullup-banner.svg", format: "850 x 2000 mm", kit: "Marketing", icon: IconPrinter },
+  { title: "Instagram Template", file: "/brand/motokah-social-template.svg", format: "1080 x 1350 px", kit: "Marketing", icon: IconBrandInstagram },
 ];
 
-const colors = [
-  { label: "Motokah Blue", hex: "#0066CC", role: "Primary trust color" },
-  { label: "Action Orange", hex: "#F28C28", role: "CTA, highlight, price tag" },
-  { label: "Deep Navy", hex: "#0B1726", role: "Premium backgrounds" },
-  { label: "Road Slate", hex: "#52677A", role: "Body text, secondary UI" },
-  { label: "Soft Surface", hex: "#F4F8FC", role: "Paper tint, backgrounds" },
-  { label: "Verified Green", hex: "#13A55B", role: "Trust badges" },
+const rules = [
+  "Use the SVG files as vector master artwork. Do not redraw, crop or stretch the Motokah mark.",
+  "Export printer PDFs at 300 DPI. Add 3 mm bleed and keep live text at least 5 mm away from cut edges.",
+  "Use Motokah Blue #3493C9, Wall Blue #6BA7D4, Deep Navy #102A43 and Verified Green #13A55B only.",
+  "Business cards should be matte laminated 350 gsm. Letterheads should be clean 100 to 120 gsm bond paper.",
+  "For shirts, embroider the car-M mark on the chest and use the wordmark only when the print area is wide enough.",
+  "Send one photo proof before bulk print, especially for blue accuracy and QR readability.",
 ];
 
-const launchPosts = [
-  {
-    pillar: "Buyer Trust",
-    title: "Find cars in Dar es Salaam without guessing",
-    caption:
-      "Browse launch-quality cars, compare prices, and contact verified sellers directly on Motokah. Start with Tanzania, then East Africa.",
-  },
-  {
-    pillar: "Dealer",
-    title: "Dealers: claim your Motokah page",
-    caption:
-      "Your Instagram stock deserves a searchable showroom. Claim your Motokah dealer page and let buyers call or WhatsApp from every listing.",
-  },
-  {
-    pillar: "Safety",
-    title: "Before you pay, inspect",
-    caption:
-      "Always check logbook, chassis number, import documents and seller identity. Motokah makes discovery easy; inspection keeps the deal clean.",
-  },
-  {
-    pillar: "Local SEO",
-    title: "Used cars in Tanzania",
-    caption:
-      "Toyota Harrier, Hilux, Prado, Mark X, Crown and more. Browse Tanzania vehicle listings on Motokah and speak to sellers directly.",
-  },
-];
-
-const printItems = [
-  "Business cards for dealer visits",
-  "A4 letterhead for D&B, bank and partner letters",
-  "DL envelope front",
-  "Dealer claim flyer",
-  "Verified dealer window sticker",
-  "Staff polo / T-shirt front and back",
-  "Pull-up banner for showroom visits",
-  "WhatsApp launch poster",
-];
-
-function AssetDownload({ file, label }: { file: string; label: string }) {
+function DownloadButton({ file, children = "Download SVG" }: { file: string; children?: string }) {
   return (
-    <a href={file} download className="inline-flex">
-      <Button size="sm" className="gap-2">
-        <IconDownload size={16} />
-        {label}
+    <a href={file} download>
+      <Button className="h-10 rounded-none bg-[#102A43] px-4 text-xs font-black uppercase tracking-[0.16em] text-white hover:bg-[#1b456b]">
+        <IconDownload size={15} className="mr-2" />
+        {children}
       </Button>
     </a>
   );
 }
 
-function SectionTitle({
-  eyebrow,
+function SectionHeading({ code, title, copy }: { code: string; title: string; copy: string }) {
+  return (
+    <div className="mx-auto mb-8 grid max-w-6xl gap-4 border-b border-[#d0e0ed] pb-6 lg:grid-cols-[180px_1fr]">
+      <p className="font-mono text-xs font-black uppercase tracking-[0.32em] text-[#3493C9]">{code}</p>
+      <div>
+        <h2 className="max-w-3xl text-[clamp(2.4rem,5vw,4.8rem)] font-black leading-[0.9] tracking-tight text-[#102A43]">{title}</h2>
+        <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-[#5f7488]">{copy}</p>
+      </div>
+    </div>
+  );
+}
+
+function LogoShelf() {
+  return (
+    <section className="px-5 py-16 lg:px-8">
+      <SectionHeading
+        code="01 / logo"
+        title="One logo system. No random versions."
+        copy="These are the official Motokah logo masters. The spacing is corrected so the car-M symbol sits cleanly beside the wordmark and inside square applications."
+      />
+      <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
+        {logos.map(([title, file, note]) => (
+          <article key={file} className="border border-[#d0e0ed] bg-white p-4 shadow-[0_20px_60px_rgba(16,42,67,.08)]">
+            <a
+              href={file}
+              target="_blank"
+              rel="noreferrer"
+              className={`grid aspect-[16/8] place-items-center p-8 ${file.includes("symbol-blue") || file.includes("wordmark") ? "bg-white" : "bg-[#6BA7D4]"}`}
+            >
+              <img src={file} alt={title} className="max-h-[76%] w-full object-contain" />
+            </a>
+            <div className="mt-4 flex items-start justify-between gap-4">
+              <div>
+                <h3 className="text-2xl font-black text-[#102A43]">{title}</h3>
+                <p className="mt-1 text-sm font-semibold leading-6 text-[#5f7488]">{note}</p>
+              </div>
+              <DownloadButton file={file}>SVG</DownloadButton>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function KitShowcase({
+  code,
   title,
-  body,
+  copy,
+  children,
+  dark = false,
 }: {
-  eyebrow: string;
+  code: string;
   title: string;
-  body?: string;
+  copy: string;
+  children: React.ReactNode;
+  dark?: boolean;
 }) {
   return (
-    <div className="max-w-3xl">
-      <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">{eyebrow}</p>
-      <h2 className="mt-3 text-3xl font-black tracking-tight text-foreground md:text-5xl">{title}</h2>
-      {body ? <p className="mt-4 text-base leading-7 text-muted-foreground md:text-lg">{body}</p> : null}
-    </div>
+    <section className={`${dark ? "bg-[#102A43] text-white" : "bg-[#f8fbfd] text-[#102A43]"} px-5 py-16 lg:px-8`}>
+      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
+        <div>
+          <p className={`font-mono text-xs font-black uppercase tracking-[0.32em] ${dark ? "text-[#9dcdea]" : "text-[#3493C9]"}`}>{code}</p>
+          <h2 className={`mt-5 text-[clamp(2.35rem,4.6vw,4.4rem)] font-black leading-[0.9] tracking-tight ${dark ? "text-white" : "text-[#102A43]"}`}>{title}</h2>
+          <p className={`mt-5 max-w-md text-base font-semibold leading-7 ${dark ? "text-[#c7dbe9]" : "text-[#5f7488]"}`}>{copy}</p>
+        </div>
+        {children}
+      </div>
+    </section>
   );
 }
 
-function LogoPanel() {
+function DownloadTable() {
   return (
-    <div className="grid gap-4 md:grid-cols-[1.3fr_0.7fr]">
-      <div className="rounded-lg border border-border bg-white p-6 shadow-sm">
-        <img src="/brand/motokah-logo-full-color.svg" alt="Motokah full-color logo" className="h-auto w-full" />
-      </div>
-      <div className="grid gap-4">
-        <div className="rounded-lg border border-border bg-[#0B1726] p-6">
-          <img src="/brand/motokah-logo-reverse.svg" alt="Motokah reverse logo" className="h-auto w-full" />
-        </div>
-        <div className="rounded-lg border border-border bg-white p-6">
-          <img src="/brand/motokah-icon.svg" alt="Motokah icon" className="mx-auto h-32 w-32" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BusinessCard() {
-  return (
-    <div className="grid gap-5 md:grid-cols-2">
-      <div className="aspect-[1.75/1] rounded-lg bg-[#0B1726] p-6 text-white shadow-xl">
-        <div className="flex h-full flex-col justify-between">
-          <img src="/brand/motokah-logo-reverse.svg" alt="" className="w-56" />
-          <div>
-            <p className="text-xl font-black">Waleed Malik</p>
-            <p className="text-sm font-semibold text-[#C9D8E8]">Launch & Growth</p>
-            <div className="mt-4 grid gap-1 text-xs text-[#C9D8E8]">
-              <span>info@motokah.com</span>
-              <span>www.motokah.com</span>
-              <span>Dar es Salaam, Tanzania</span>
+    <section id="downloads" className="bg-white px-5 py-16 lg:px-8">
+      <SectionHeading
+        code="06 / files"
+        title="Clean download counter for the printer."
+        copy="The showcase above is for checking the look. This list is for sending the exact SVG file to whoever is printing, embroidering or cutting vinyl."
+      />
+      <div className="mx-auto max-w-6xl overflow-hidden border border-[#d0e0ed] bg-white shadow-[0_20px_60px_rgba(16,42,67,.08)]">
+        {assets.map((asset, index) => {
+          const Icon = asset.icon;
+          return (
+            <div key={asset.file} className="grid items-center gap-4 border-b border-[#e2edf5] p-4 last:border-b-0 md:grid-cols-[56px_1fr_180px_170px]">
+              <span className="grid h-12 w-12 place-items-center bg-[#edf6fc] text-[#1677ad]">
+                <Icon size={21} />
+              </span>
+              <div>
+                <p className="text-lg font-black text-[#102A43]">{String(index + 1).padStart(2, "0")} / {asset.title}</p>
+                <p className="text-sm font-bold text-[#6b8194]">{asset.kit} kit</p>
+              </div>
+              <p className="font-mono text-xs font-black uppercase tracking-[0.14em] text-[#6b8194]">{asset.format}</p>
+              <DownloadButton file={asset.file}>SVG</DownloadButton>
             </div>
-          </div>
-        </div>
+          );
+        })}
       </div>
-      <div className="aspect-[1.75/1] rounded-lg border border-[#D7E5F4] bg-white p-6 shadow-xl">
-        <div className="flex h-full flex-col justify-between">
-          <div className="flex items-center justify-between">
-            <img src="/brand/motokah-icon.svg" alt="" className="h-16 w-16" />
-            <span className="rounded-full bg-[#13A55B]/10 px-3 py-1 text-xs font-black text-[#0C7B43]">Verified dealer network</span>
-          </div>
-          <div>
-            <p className="text-2xl font-black text-[#102A43]">Find Your Perfect Ride</p>
-            <p className="mt-2 max-w-sm text-sm font-medium text-[#52677A]">
-              Trusted vehicle discovery for Tanzania and East Africa.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function Letterhead() {
-  return (
-    <div className="mx-auto max-w-3xl rounded-lg border border-border bg-white p-8 text-[#102A43] shadow-xl">
-      <div className="flex items-start justify-between border-b-4 border-[#0066CC] pb-6">
-        <img src="/brand/motokah-wordmark.svg" alt="" className="w-56" />
-        <div className="text-right text-xs font-semibold text-[#52677A]">
-          <p>MOTOKAH AFRICA LIMITED</p>
-          <p>Plot No. 18, Mbagala Industrial Area</p>
-          <p>Dar es Salaam, Tanzania</p>
-          <p>info@motokah.com</p>
-        </div>
-      </div>
-      <div className="py-10">
-        <p className="text-sm text-[#52677A]">29 August 2026</p>
-        <h3 className="mt-8 text-2xl font-black">Official Company Letter</h3>
-        <p className="mt-5 leading-7 text-[#52677A]">
-          Motokah Africa Limited operates a digital vehicle marketplace built for buyers, sellers and dealers across
-          East Africa. This letterhead should be used for bank, D&B, Apple Developer, Google Play, partner and dealer
-          communication.
-        </p>
-      </div>
-      <div className="border-t border-[#D7E5F4] pt-5 text-xs font-semibold text-[#52677A]">
-        motokah.com | Find Your Perfect Ride
-      </div>
-    </div>
-  );
-}
-
-function ShirtMockup() {
-  return (
-    <div className="grid gap-5 md:grid-cols-3">
-      {["Navy staff polo", "White dealer visit tee", "Blue event tee"].map((label, index) => (
-        <div key={label} className="rounded-lg border border-border bg-card p-5 shadow-sm">
-          <div
-            className={`relative mx-auto h-72 max-w-56 rounded-t-[44px] ${
-              index === 0 ? "bg-[#0B1726]" : index === 1 ? "bg-white" : "bg-[#0066CC]"
-            } shadow-xl`}
-          >
-            <div className="absolute left-1/2 top-0 h-16 w-24 -translate-x-1/2 rounded-b-full bg-background/80" />
-            <div className="absolute left-4 top-20 h-32 w-7 -skew-y-12 rounded-full bg-black/10" />
-            <div className="absolute right-4 top-20 h-32 w-7 skew-y-12 rounded-full bg-black/10" />
-            <img
-              src={index === 1 ? "/brand/motokah-logo-full-color.svg" : "/brand/motokah-logo-reverse.svg"}
-              alt=""
-              className="absolute left-1/2 top-28 w-36 -translate-x-1/2"
-            />
-            <p
-              className={`absolute bottom-8 left-0 right-0 text-center text-xs font-black uppercase tracking-[0.18em] ${
-                index === 1 ? "text-[#52677A]" : "text-white/80"
-              }`}
-            >
-              Dealer Team
-            </p>
-          </div>
-          <h3 className="mt-5 text-lg font-black">{label}</h3>
-          <p className="mt-2 text-sm text-muted-foreground">Embroidery on chest, screen print on back, no tiny tagline below 28mm width.</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function SocialPost({ post, index }: { post: (typeof launchPosts)[number]; index: number }) {
-  return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
-      <div className={`aspect-square p-6 ${index % 2 ? "bg-[#0B1726] text-white" : "bg-[#F4F8FC] text-[#102A43]"}`}>
-        <div className="flex items-center justify-between">
-          <img
-            src={index % 2 ? "/brand/motokah-logo-reverse.svg" : "/brand/motokah-logo-full-color.svg"}
-            alt=""
-            className="w-40"
-          />
-          <span className="rounded-full bg-[#F28C28] px-3 py-1 text-xs font-black text-white">{post.pillar}</span>
-        </div>
-        <div className="mt-16">
-          <p className="text-4xl font-black leading-tight">{post.title}</p>
-          <div className="mt-8 h-2 w-36 rounded-full bg-[#F28C28]" />
-        </div>
-        <p className={`mt-10 max-w-sm text-sm font-semibold ${index % 2 ? "text-white/70" : "text-[#52677A]"}`}>
-          motokah.com
-        </p>
-      </div>
-      <div className="p-5">
-        <p className="text-sm leading-6 text-muted-foreground">{post.caption}</p>
-      </div>
-    </div>
+    </section>
   );
 }
 
@@ -244,201 +169,128 @@ export default function Stationery() {
   return (
     <>
       <Helmet>
-        <title>Motokah Brand & Stationery Kit | Print Assets</title>
-        <meta
-          name="description"
-          content="Motokah logo files, stationery previews, shirts, social post templates and printer handoff notes for Motokah Africa Limited."
-        />
+        <title>Motokah Private Stationery Room</title>
+        <meta name="robots" content="noindex,nofollow,noarchive" />
+        <meta name="description" content="Private Motokah stationery, uniform and dealer print room." />
       </Helmet>
-      <Header />
-      <main className="bg-background pb-16">
-        <section className="relative overflow-hidden bg-[#0B1726] text-white">
-          <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(90deg,rgba(255,255,255,.12)_1px,transparent_1px),linear-gradient(rgba(255,255,255,.12)_1px,transparent_1px)] [background-size:44px_44px]" />
-          <div className="container relative mx-auto grid min-h-[76vh] items-center gap-10 py-16 md:grid-cols-[1fr_0.8fr]">
+
+      <main className="min-h-screen bg-[#f8fbfd] text-[#102A43]">
+        <section className="relative overflow-hidden bg-[#102A43] text-white">
+          <div className="absolute inset-0 opacity-[.12] [background-image:linear-gradient(90deg,#fff_1px,transparent_1px),linear-gradient(#fff_1px,transparent_1px)] [background-size:44px_44px]" />
+          <div className="relative mx-auto grid min-h-[720px] max-w-6xl items-center gap-10 px-5 py-12 lg:grid-cols-[.78fr_1.22fr] lg:px-8">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-[#C9D8E8]">
-                <IconSparkles size={16} /> Motokah launch kit
-              </p>
-              <h1 className="mt-8 max-w-4xl text-5xl font-black leading-[0.95] tracking-tight md:text-7xl">
-                Stationery, merch, dealer collateral and social templates.
-              </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-[#C9D8E8]">
-                A practical brand system for printing, dealer visits, launch posting and official company communication.
+              <p className="font-mono text-xs font-black uppercase tracking-[0.34em] text-[#9dcdea]">Private Motokah print room</p>
+              <h1 className="mt-7 text-[clamp(3.2rem,7vw,6.4rem)] font-black leading-[0.86] tracking-tight">Stationery that looks real.</h1>
+              <p className="mt-7 max-w-lg text-lg font-semibold leading-8 text-[#c7dbe9]">
+                Office papers, cards, shirts, dealer tags, stickers, window cards, posters, banners and social assets,
+                arranged as a proper printer handoff.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href="#downloads">
-                  <Button className="gap-2 bg-white text-[#0B1726] hover:bg-white/90">
-                    <IconArrowDown size={18} /> Download assets
-                  </Button>
+                  <Button className="h-12 rounded-none bg-white px-5 font-black text-[#102A43] hover:bg-[#edf6fc]">Open downloads</Button>
                 </a>
-                <a href="#printer">
-                  <Button variant="outline" className="gap-2 border-white/30 bg-white/5 text-white hover:bg-white/10">
-                    <IconPrinter size={18} /> Printer brief
-                  </Button>
-                </a>
+                <DownloadButton file="/brand/motokah-logo-horizontal.svg">Main logo</DownloadButton>
               </div>
             </div>
-            <div className="rounded-lg border border-white/15 bg-white/8 p-4 shadow-2xl backdrop-blur">
-              <LogoPanel />
-            </div>
-          </div>
-        </section>
 
-        <section id="downloads" className="container mx-auto py-16">
-          <SectionTitle
-            eyebrow="01 / logo files"
-            title="Ready-to-send brand assets"
-            body="Use SVG for printing and PNG export. Keep the logo clear, never stretch it, and use reverse artwork on navy or photo backgrounds."
-          />
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            {brandAssets.map((asset) => (
-              <div key={asset.file} className="rounded-lg border border-border bg-card p-5 shadow-sm">
-                <div className="flex h-28 items-center justify-center rounded-md bg-white p-3">
-                  <img src={asset.file} alt={asset.name} className="max-h-full max-w-full" />
+            <div className="border border-white/15 bg-white/[.08] p-4 shadow-2xl">
+              <div className="grid gap-4">
+                <div className="grid aspect-[16/10] place-items-center bg-[#6BA7D4] p-10">
+                  <img src="/brand/motokah-logo-white-blueprint.svg" alt="Motokah wall logo" className="w-full object-contain" />
                 </div>
-                <h3 className="mt-4 font-black">{asset.name}</h3>
-                <p className="mt-2 min-h-10 text-sm text-muted-foreground">{asset.use}</p>
-                <div className="mt-4">
-                  <AssetDownload file={asset.file} label="Download SVG" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-surface-2 py-16">
-          <div className="container mx-auto">
-            <SectionTitle eyebrow="02 / color system" title="Simple, premium and easy to print" />
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {colors.map((color) => (
-                <div key={color.hex} className="flex items-center gap-4 rounded-lg border border-border bg-card p-4 shadow-sm">
-                  <div className="h-20 w-20 rounded-md border border-black/10" style={{ backgroundColor: color.hex }} />
-                  <div>
-                    <p className="font-black">{color.label}</p>
-                    <p className="font-mono text-sm text-muted-foreground">{color.hex}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{color.role}</p>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="bg-white p-5">
+                    <img src="/brand/motokah-business-card-front.svg" alt="Motokah business card" className="w-full object-contain" />
                   </div>
+                  <div className="bg-[#6BA7D4] p-5">
+                    <img src="/brand/motokah-shirt-white.svg" alt="Motokah white shirt" className="w-full object-contain" />
+                  </div>
+                  <div className="bg-white p-5">
+                    <img src="/brand/motokah-verified-badge.svg" alt="Motokah verified badge" className="w-full object-contain" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <LogoShelf />
+
+        <KitShowcase
+          code="02 / office"
+          title="Letterhead, cards and envelope."
+          copy="This is the paperwork kit for D-U-N-S, banks, Apple/Google developer accounts, dealer contracts and showroom meetings."
+        >
+          <div className="relative min-h-[560px] overflow-hidden border border-[#d0e0ed] bg-[#eef5fb] p-8 shadow-[0_24px_70px_rgba(16,42,67,.1)]">
+            <img src="/brand/motokah-letterhead-a4.svg" alt="Motokah letterhead" className="absolute left-[8%] top-8 h-[500px] w-auto shadow-2xl" />
+            <img src="/brand/motokah-envelope-dl.svg" alt="Motokah envelope" className="absolute bottom-10 right-[6%] w-[58%] shadow-xl" />
+            <img src="/brand/motokah-business-card-front.svg" alt="Motokah business card front" className="absolute right-[10%] top-20 w-[44%] shadow-2xl" />
+            <img src="/brand/motokah-business-card-back.svg" alt="Motokah business card back" className="absolute right-[18%] top-52 w-[40%] shadow-2xl" />
+          </div>
+        </KitShowcase>
+
+        <KitShowcase
+          code="03 / field"
+          title="Staff shirts and dealer presence."
+          copy="The field kit should make Motokah feel official when you walk into a showroom: shirt, badge, dealer sticker and vehicle card."
+          dark
+        >
+          <div className="grid gap-5 md:grid-cols-2">
+            <div className="grid place-items-center border border-white/15 bg-white/[.08] p-8">
+              <img src="/brand/motokah-shirt-navy.svg" alt="Motokah navy staff shirt" className="max-h-[430px] w-full object-contain" />
+            </div>
+            <div className="grid gap-5">
+              <div className="grid place-items-center border border-white/15 bg-white p-6">
+                <img src="/brand/motokah-dealer-tag.svg" alt="Motokah dealer tag" className="max-h-64 w-full object-contain" />
+              </div>
+              <div className="grid place-items-center border border-white/15 bg-[#6BA7D4] p-6">
+                <img src="/brand/motokah-vehicle-window-tag.svg" alt="Motokah vehicle window tag" className="max-h-56 w-full object-contain" />
+              </div>
+            </div>
+          </div>
+        </KitShowcase>
+
+        <KitShowcase
+          code="04 / marketing"
+          title="Showroom poster, banner and social post."
+          copy="These are the pieces dealers and buyers actually see: counter poster, pull-up banner and Instagram template."
+        >
+          <div className="grid gap-5 md:grid-cols-[.8fr_1.2fr]">
+            <div className="grid place-items-center border border-[#d0e0ed] bg-[#6BA7D4] p-8 shadow-xl">
+              <img src="/brand/motokah-pullup-banner.svg" alt="Motokah pull-up banner" className="max-h-[560px] w-full object-contain" />
+            </div>
+            <div className="grid gap-5">
+              <div className="grid place-items-center border border-[#d0e0ed] bg-[#102A43] p-7 shadow-xl">
+                <img src="/brand/motokah-dealer-poster.svg" alt="Motokah dealer poster" className="max-h-72 w-full object-contain" />
+              </div>
+              <div className="grid place-items-center border border-[#d0e0ed] bg-white p-7 shadow-xl">
+                <img src="/brand/motokah-social-template.svg" alt="Motokah Instagram template" className="max-h-72 w-full object-contain" />
+              </div>
+            </div>
+          </div>
+        </KitShowcase>
+
+        <section className="bg-[#102A43] px-5 py-16 text-white lg:px-8">
+          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[.72fr_1.28fr]">
+            <div>
+              <p className="font-mono text-xs font-black uppercase tracking-[0.32em] text-[#9dcdea]">05 / printer brief</p>
+              <h2 className="mt-5 text-[clamp(2.35rem,4.6vw,4.4rem)] font-black leading-[0.9] tracking-tight">Send these rules with the files.</h2>
+            </div>
+            <div className="grid gap-3">
+              {rules.map((rule) => (
+                <div key={rule} className="flex gap-4 border border-white/15 bg-white/[.07] p-4">
+                  <span className="grid h-6 w-6 shrink-0 place-items-center bg-[#13A55B] text-[#102A43]">
+                    <IconCheck size={15} />
+                  </span>
+                  <p className="text-sm font-bold leading-6 text-white">{rule}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="container mx-auto py-16">
-          <SectionTitle
-            eyebrow="03 / stationery"
-            title="Business cards and official letterhead"
-            body="These are the core pieces for D&B, Apple/Google developer account verification, dealer visits and partner communication."
-          />
-          <div className="mt-8 grid gap-10">
-            <BusinessCard />
-            <Letterhead />
-          </div>
-        </section>
-
-        <section className="bg-[#0B1726] py-16 text-white">
-          <div className="container mx-auto">
-            <div className="[&_h2]:text-white [&_p:first-child]:text-[#C9D8E8]">
-              <SectionTitle eyebrow="04 / shirts" title="Staff merch that looks like a real mobility brand" />
-            </div>
-            <div className="mt-8">
-              <ShirtMockup />
-            </div>
-          </div>
-        </section>
-
-        <section className="container mx-auto py-16">
-          <SectionTitle
-            eyebrow="05 / dealer collateral"
-            title="Print pieces for showroom visits"
-            body="Give this section to the printer as the list of required deliverables. The same visual system works across flyers, banners, stickers and dealer cards."
-          />
-          <div className="mt-8 grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <h3 className="text-2xl font-black">Print checklist</h3>
-              <div className="mt-5 grid gap-3">
-                {printItems.map((item) => (
-                  <div key={item} className="flex items-center gap-3 rounded-md bg-surface-2 p-3 text-sm font-bold">
-                    <span className="h-2.5 w-2.5 rounded-full bg-[#F28C28]" />
-                    {item}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="grid gap-5 md:grid-cols-2">
-              <div className="rounded-lg border border-border bg-white p-6 text-[#102A43] shadow-sm">
-                <img src="/brand/motokah-verified-badge.svg" alt="" className="w-full" />
-                <h3 className="mt-6 text-2xl font-black">Window Sticker</h3>
-                <p className="mt-2 text-sm font-semibold text-[#52677A]">Size: 120mm x 45mm. Material: waterproof vinyl.</p>
-              </div>
-              <div className="rounded-lg border border-border bg-[#0066CC] p-6 text-white shadow-sm">
-                <IconBrandWhatsapp size={36} />
-                <h3 className="mt-12 text-3xl font-black leading-tight">Claim your dealer page.</h3>
-                <p className="mt-4 text-sm font-semibold text-white/80">
-                  Your cars are already online. Let buyers call or WhatsApp you from Motokah.
-                </p>
-                <p className="mt-8 text-sm font-black">motokah.com/dealers</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-surface-2 py-16">
-          <div className="container mx-auto">
-            <SectionTitle
-              eyebrow="06 / social launch"
-              title="Instagram-ready post directions"
-              body="Use these as daily launch posts. Keep it buyer/dealer focused; avoid random news, accidents, politics or thin content."
-            />
-            <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              {launchPosts.map((post, index) => (
-                <SocialPost key={post.title} post={post} index={index} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="printer" className="container mx-auto py-16">
-          <SectionTitle
-            eyebrow="07 / handoff"
-            title="Brief for printing guy"
-            body="Send this page link with the SVG files. Tell the printer to keep colors exact and ask for proof images before final production."
-          />
-          <div className="mt-8 grid gap-5 md:grid-cols-3">
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <IconPrinter className="text-primary" size={32} />
-              <h3 className="mt-5 text-xl font-black">Print setup</h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Use SVG/vector artwork. Export print PDFs at 300 DPI. Keep 3mm bleed and 5mm safe margin on all printed pieces.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <IconShirt className="text-primary" size={32} />
-              <h3 className="mt-5 text-xl font-black">Merch setup</h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Use embroidery for polo chest logos. Use screen print for large back logos. Navy shirt + reverse logo is the premium default.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <IconBrandInstagram className="text-primary" size={32} />
-              <h3 className="mt-5 text-xl font-black">Social setup</h3>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Keep posts square or 4:5. Use the full logo at top, strong vehicle/dealer headline, orange CTA bar and motokah.com footer.
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 rounded-lg border border-primary/25 bg-primary/5 p-6">
-            <h3 className="text-xl font-black">Copy block for official material</h3>
-            <div className="mt-4 grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
-              <p className="flex items-center gap-2"><IconMail size={18} /> info@motokah.com</p>
-              <p className="flex items-center gap-2"><IconMapPin size={18} /> Dar es Salaam, Tanzania</p>
-              <p className="flex items-center gap-2"><IconBrandWhatsapp size={18} /> WhatsApp-first seller contact</p>
-              <p className="flex items-center gap-2"><IconSparkles size={18} /> Find Your Perfect Ride</p>
-            </div>
-          </div>
-        </section>
+        <DownloadTable />
       </main>
-      <Footer />
     </>
   );
 }

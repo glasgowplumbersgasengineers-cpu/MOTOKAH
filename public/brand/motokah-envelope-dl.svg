@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1100" viewBox="0 0 2200 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah DL envelope</title>
+  <desc id="desc">Motokah branded DL envelope front.</desc>
+  <rect width="2200" height="1100" fill="#ffffff"/>
+  <rect x="0" y="0" width="2200" height="28" fill="#3493C9"/>
+  <g transform="translate(125 112)">
+    <rect x="0" y="0" width="340" height="100" fill="#3493C9"/>
+    <text x="36" y="70" font-family="Bebas Neue, Impact, Arial Narrow, Arial, sans-serif" font-size="66" font-weight="800" fill="#ffffff" letter-spacing="4">MOTOKAH</text>
+  </g>
+  <text x="125" y="280" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="700" fill="#52677A">MOTOKAH AFRICA LIMITED</text>
+  <text x="125" y="328" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#52677A">Dar es Salaam, Tanzania</text>
+  <rect x="1220" y="334" width="720" height="360" rx="12" fill="none" stroke="#DCEAF5" stroke-width="6"/>
+  <text x="1270" y="458" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700" fill="#D2DFEA">Recipient Name</text>
+  <text x="1270" y="532" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#D2DFEA">Company / Department</text>
+  <text x="1270" y="600" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#D2DFEA">Address line</text>
+  <text x="125" y="966" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#3493C9">info@motokah.com | motokah.com</text>
+</svg>

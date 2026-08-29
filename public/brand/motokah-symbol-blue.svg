@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="600" viewBox="90 70 1040 600" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah blue car M symbol</title>
+  <desc id="desc">Motokah car-outline symbol in Motokah blue.</desc>
+  <rect x="90" y="70" width="1040" height="600" fill="none"/>
+  <g fill="none" stroke="#3493C9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M165 605V462c0-71 42-132 104-159l55-23 49-91c27-50 80-81 137-81h224c58 0 111 32 138 83l49 92 53 22c63 27 104 88 104 157v143" stroke-width="70"/>
+    <path d="M168 606h158c23 0 42-19 42-42v-27h464v27c0 23 19 42 42 42h158" stroke-width="70"/>
+    <path d="M408 436V276l128 160 128-160v160" stroke-width="68"/>
+  </g>
+</svg>

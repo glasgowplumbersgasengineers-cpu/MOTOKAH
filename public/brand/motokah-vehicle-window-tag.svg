@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah vehicle window tag</title>
+  <desc id="desc">Vehicle showroom window tag for Motokah listed cars.</desc>
+  <rect width="1600" height="1000" fill="#ffffff"/>
+  <rect width="1600" height="170" fill="#102A43"/>
+  <rect x="70" y="42" width="300" height="88" fill="#3493C9"/>
+  <text x="104" y="104" font-family="Bebas Neue, Impact, Arial Narrow, Arial, sans-serif" font-size="58" font-weight="800" fill="#ffffff" letter-spacing="4">MOTOKAH</text>
+  <text x="70" y="320" font-family="Montserrat, Inter, Arial, sans-serif" font-size="84" font-weight="900" fill="#102A43">2018 Toyota Harrier</text>
+  <text x="70" y="438" font-family="Montserrat, Inter, Arial, sans-serif" font-size="72" font-weight="900" fill="#3493C9">TZS 48,000,000</text>
+  <rect x="70" y="520" width="360" height="72" rx="36" fill="#F4F8FC"/>
+  <text x="250" y="568" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" fill="#52677A">Foreign Used</text>
+  <rect x="462" y="520" width="220" height="72" rx="36" fill="#F4F8FC"/>
+  <text x="572" y="568" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" fill="#52677A">SUV</text>
+  <rect x="714" y="520" width="260" height="72" rx="36" fill="#F4F8FC"/>
+  <text x="844" y="568" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800" fill="#52677A">Automatic</text>
+  <rect x="70" y="730" width="520" height="150" rx="26" fill="#3493C9"/>
+  <text x="330" y="824" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="900" fill="#ffffff">View on Motokah</text>
+  <rect x="1180" y="650" width="280" height="280" rx="22" fill="#F4F8FC"/>
+  <text x="1320" y="805" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="900" fill="#DCEAF5">QR</text>
+</svg>

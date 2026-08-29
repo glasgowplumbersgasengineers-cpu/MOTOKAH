@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah Instagram post template</title>
+  <desc id="desc">Instagram launch post template for Motokah.</desc>
+  <rect width="1080" height="1350" fill="#102A43"/>
+  <rect x="54" y="54" width="972" height="1242" rx="42" fill="#F4F8FC"/>
+  <rect x="100" y="100" width="292" height="86" fill="#3493C9"/>
+  <text x="132" y="160" font-family="Bebas Neue, Impact, Arial Narrow, Arial, sans-serif" font-size="58" font-weight="800" fill="#ffffff" letter-spacing="4">MOTOKAH</text>
+  <rect x="100" y="280" width="880" height="520" rx="34" fill="#DCEAF5"/>
+  <text x="540" y="560" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="52" font-weight="900" fill="#A7BBCD">VEHICLE PHOTO</text>
+  <text x="100" y="940" font-family="Montserrat, Inter, Arial, sans-serif" font-size="76" font-weight="900" fill="#102A43">Used cars in</text>
+  <text x="100" y="1030" font-family="Montserrat, Inter, Arial, sans-serif" font-size="76" font-weight="900" fill="#102A43">Tanzania</text>
+  <rect x="100" y="1088" width="230" height="16" rx="8" fill="#3493C9"/>
+  <text x="100" y="1210" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800" fill="#52677A">Browse. Compare. Contact direct.</text>
+</svg>

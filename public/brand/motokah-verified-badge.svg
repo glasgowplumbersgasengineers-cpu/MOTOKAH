@@ -1,9 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="640" height="180" viewBox="0 0 640 180" role="img" aria-labelledby="title desc">
-  <title id="title">Motokah verified badge</title>
-  <desc id="desc">Green Motokah verified dealer badge.</desc>
-  <rect width="640" height="180" rx="48" fill="#13A55B"/>
-  <circle cx="90" cy="90" r="48" fill="#ffffff"/>
-  <path d="M68 91l15 15 31-35" fill="none" stroke="#13A55B" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="160" y="81" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="900" fill="#ffffff">Motokah Verified</text>
-  <text x="162" y="121" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="600" fill="#DDF8E9">Dealer profile checked</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah verified dealer badge</title>
+  <desc id="desc">Premium Motokah verified dealer badge for stickers and posters.</desc>
+  <rect width="1200" height="360" rx="42" fill="#102A43"/>
+  <rect x="22" y="22" width="1156" height="316" rx="32" fill="none" stroke="#3493C9" stroke-width="8"/>
+  <circle cx="164" cy="180" r="78" fill="#13A55B"/>
+  <path d="M124 184l30 29 57-70" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="292" y="154" font-family="Montserrat, Inter, Arial, sans-serif" font-size="54" font-weight="900" fill="#ffffff">Motokah Verified Dealer</text>
+  <text x="296" y="218" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="600" fill="#C9D8E8">Dealer identity and contact details checked for buyer trust</text>
 </svg>

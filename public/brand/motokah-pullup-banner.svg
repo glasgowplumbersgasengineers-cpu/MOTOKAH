@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="3200" viewBox="0 0 1200 3200" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah pull-up banner</title>
+  <desc id="desc">Pull-up banner for dealer and showroom visits.</desc>
+  <rect width="1200" height="3200" fill="#6BA7D4"/>
+  <g transform="translate(112 230)">
+    <rect x="0" y="0" width="460" height="136" fill="#102A43"/>
+    <text x="48" y="95" font-family="Bebas Neue, Impact, Arial Narrow, Arial, sans-serif" font-size="92" font-weight="800" fill="#ffffff" letter-spacing="5">MOTOKAH</text>
+  </g>
+  <text x="112" y="950" font-family="Montserrat, Inter, Arial, sans-serif" font-size="120" font-weight="900" fill="#ffffff">Find your</text>
+  <text x="112" y="1082" font-family="Montserrat, Inter, Arial, sans-serif" font-size="120" font-weight="900" fill="#ffffff">perfect ride.</text>
+  <rect x="112" y="1168" width="280" height="18" rx="9" fill="#102A43"/>
+  <text x="112" y="1450" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800" fill="#ffffff">Cars. Bikes. Boats. Commercial.</text>
+  <text x="112" y="1534" font-family="Inter, Arial, sans-serif" font-size="48" font-weight="800" fill="#ffffff">Verified dealers across East Africa.</text>
+  <rect x="112" y="2180" width="976" height="260" rx="44" fill="#102A43"/>
+  <text x="600" y="2340" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="64" font-weight="900" fill="#ffffff">Scan. Compare. WhatsApp.</text>
+  <text x="112" y="2940" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="900" fill="#102A43">www.motokah.com</text>
+</svg>

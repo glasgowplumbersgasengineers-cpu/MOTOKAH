@@ -1,4 +1,12 @@
 {
+  "headers": [
+    {
+      "source": "/stationery",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+      ]
+    }
+  ],
   "rewrites": [{ "source": "/((?!.*\\.(?:xml|xsl|txt|ico|svg|png|jpg|jpeg|gif|webp|json|css|js|woff|woff2|map|webmanifest)$).*)", "destination": "/index.html" }],
   "installCommand": "npm install --legacy-peer-deps",
   "buildCommand": "npm run build",

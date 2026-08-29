@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2480" height="3508" viewBox="0 0 2480 3508" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah dealer claim poster</title>
+  <desc id="desc">A4 poster for dealers to claim their Motokah page.</desc>
+  <rect width="2480" height="3508" fill="#102A43"/>
+  <rect x="130" y="130" width="2220" height="3248" rx="70" fill="none" stroke="#3493C9" stroke-width="12"/>
+  <g transform="translate(190 220)">
+    <rect x="0" y="0" width="520" height="152" fill="#3493C9"/>
+    <text x="54" y="106" font-family="Bebas Neue, Impact, Arial Narrow, Arial, sans-serif" font-size="104" font-weight="800" fill="#ffffff" letter-spacing="6">MOTOKAH</text>
+  </g>
+  <text x="190" y="920" font-family="Montserrat, Inter, Arial, sans-serif" font-size="176" font-weight="900" fill="#ffffff">Claim your</text>
+  <text x="190" y="1105" font-family="Montserrat, Inter, Arial, sans-serif" font-size="176" font-weight="900" fill="#ffffff">dealer page.</text>
+  <rect x="190" y="1190" width="420" height="22" rx="11" fill="#3493C9"/>
+  <text x="190" y="1450" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="700" fill="#C9D8E8">Turn Instagram car posts into a searchable showroom.</text>
+  <text x="190" y="1585" font-family="Inter, Arial, sans-serif" font-size="66" font-weight="700" fill="#C9D8E8">Let buyers call or WhatsApp from every listing.</text>
+  <rect x="190" y="1920" width="870" height="160" rx="30" fill="#ffffff"/>
+  <text x="625" y="2024" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="56" font-weight="900" fill="#102A43">motokah.com/dealers</text>
+  <rect x="190" y="2320" width="760" height="760" rx="42" fill="#ffffff"/>
+  <text x="570" y="2710" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="900" fill="#DCEAF5">QR</text>
+  <text x="190" y="3230" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700" fill="#C9D8E8">MOTOKAH AFRICA LIMITED | Dar es Salaam</text>
+</svg>
