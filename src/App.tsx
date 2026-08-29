@@ -69,6 +69,7 @@ import Welcome from "./pages/Welcome.tsx";
 import InstagramShowroom from "./pages/InstagramShowroom.tsx";
 import PromoVideo from "./pages/PromoVideo.tsx";
 import ModelLandingPage from "./pages/ModelLandingPage.tsx";
+import Stationery from "./pages/Stationery.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
 import { usePageTracking } from "@/hooks/usePageTracking";
@@ -142,6 +143,7 @@ function AnimatedRoutes() {
               <Route path="/country/:slug" element={<CountryLandingPage />} />
               <Route path="/showroom/:username" element={<InstagramShowroom />} />
               <Route path="/promo" element={<PromoVideo />} />
+              <Route path="/stationery" element={<Stationery />} />
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />
               <Route path="*" element={<NotFound />} />
         </Routes>

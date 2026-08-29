@@ -22,6 +22,7 @@ const navLinks = [
   { key: "nav.dealerContacts", href: "/dealer-leads", label: "Dealer Contacts" },
   { key: "nav.compare", href: "/compare" },
   { key: "nav.blog", href: "/blog" },
+  { key: "nav.stationery", href: "/stationery", label: "Stationery" },
 ];
 
 export default function Header() {

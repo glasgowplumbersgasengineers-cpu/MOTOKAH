@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah app icon</title>
+  <desc id="desc">Motokah road-pin app icon.</desc>
+  <rect width="512" height="512" rx="112" fill="#0066CC"/>
+  <path d="M256 82c-85.6 0-155 69.4-155 155 0 114.6 155 221 155 221s155-106.4 155-221c0-85.6-69.4-155-155-155Z" fill="#ffffff"/>
+  <circle cx="256" cy="238" r="100" fill="#0066CC"/>
+  <path d="M201 274c26.8-59.4 55-107 55-107s28.2 47.6 55 107" fill="none" stroke="#ffffff" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M256 171v132" stroke="#F28C28" stroke-width="22" stroke-linecap="round"/>
+  <path d="M197 303h118" stroke="#ffffff" stroke-width="28" stroke-linecap="round"/>
+</svg>

@@ -63,6 +63,7 @@ const staticPages = [
   { path: "/duty-calculator",freq: "monthly", pri: 0.7 },
   { path: "/compare",        freq: "weekly",  pri: 0.6 },
   { path: "/blog",           freq: "weekly",  pri: 0.6 },
+  { path: "/stationery",     freq: "monthly", pri: 0.5 },
   { path: "/about",          freq: "monthly", pri: 0.5 },
   { path: "/contact",        freq: "monthly", pri: 0.5 },
   { path: "/faq",            freq: "monthly", pri: 0.4 },

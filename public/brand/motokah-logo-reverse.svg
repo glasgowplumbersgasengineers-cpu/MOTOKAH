@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah logo reverse</title>
+  <desc id="desc">White Motokah wordmark on deep navy background with orange accent.</desc>
+  <rect width="1200" height="320" fill="#0B1726"/>
+  <g transform="translate(80 48)">
+    <path d="M112 0C50.1 0 0 50.1 0 112c0 82.8 112 160 112 160s112-77.2 112-160C224 50.1 173.9 0 112 0Z" fill="#0066CC"/>
+    <circle cx="112" cy="112" r="73" fill="#0B1726"/>
+    <path d="M72 138c19.3-42.7 40-77 40-77s20.7 34.3 40 77" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M112 63v94" stroke="#F28C28" stroke-width="14" stroke-linecap="round"/>
+    <path d="M69 157h86" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(350 82)">
+    <text x="0" y="92" font-family="Inter, Arial, sans-serif" font-size="96" font-weight="900" letter-spacing="-1" fill="#ffffff">Motokah</text>
+    <text x="6" y="150" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#C9D8E8">Find Your Perfect Ride</text>
+    <rect x="6" y="182" width="318" height="8" rx="4" fill="#ffffff"/>
+    <rect x="342" y="182" width="82" height="8" rx="4" fill="#F28C28"/>
+  </g>
+</svg>

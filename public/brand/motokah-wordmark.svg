@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220" role="img" aria-labelledby="title desc">
+  <title id="title">Motokah wordmark</title>
+  <desc id="desc">Motokah blue wordmark with tagline.</desc>
+  <rect width="900" height="220" fill="#ffffff"/>
+  <text x="40" y="100" font-family="Inter, Arial, sans-serif" font-size="88" font-weight="900" letter-spacing="-1" fill="#0066CC">Motokah</text>
+  <text x="44" y="154" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#52677A">Find Your Perfect Ride</text>
+  <rect x="44" y="178" width="282" height="8" rx="4" fill="#0066CC"/>
+  <rect x="344" y="178" width="72" height="8" rx="4" fill="#F28C28"/>
+</svg>
