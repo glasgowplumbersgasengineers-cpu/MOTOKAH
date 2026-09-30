@@ -16,17 +16,17 @@
     "build:ios": "npm run build && npx cap sync ios",
     "open:android": "npx cap open android",
     "open:ios": "npx cap open ios",
-    "sync": "npx cap sync"
-    ,"social:seed": "node scripts/seed-social-content.mjs"
-    ,"social:seed:apply": "node scripts/seed-social-content.mjs --days=365 --start=2026-07-10 --apply --replace-pending"
-    ,"social:audit": "node scripts/audit-social-content.mjs"
-    ,"social:ig:audit": "node scripts/instagram-cleanup.mjs"
-    ,"social:ig:delete-junk": "node scripts/instagram-cleanup.mjs --apply"
-    ,"social:token:setup": "node scripts/setup-instagram-token.mjs"
-    ,"social:generate": "node content/instagram/generate-images.mjs"
-    ,"social:post:dry": "node scripts/auto-post.mjs --dry-run"
-    ,"social:post": "node scripts/auto-post.mjs"
-    ,"store:screenshots": "node scripts/capture-store-screenshots.mjs"
+    "sync": "npx cap sync",
+    "social:seed": "node scripts/seed-social-content.mjs",
+    "social:seed:apply": "node scripts/seed-social-content.mjs --days=365 --start=2026-07-10 --apply --replace-pending",
+    "social:audit": "node scripts/audit-social-content.mjs",
+    "social:ig:audit": "node scripts/instagram-cleanup.mjs",
+    "social:ig:delete-junk": "node scripts/instagram-cleanup.mjs --apply",
+    "social:token:setup": "node scripts/setup-instagram-token.mjs",
+    "social:generate": "node content/instagram/generate-images.mjs",
+    "social:post:dry": "node scripts/auto-post.mjs --dry-run",
+    "social:post": "node scripts/auto-post.mjs",
+    "store:screenshots": "node scripts/capture-store-screenshots.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.0",
@@ -73,6 +73,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
     "framer-motion": "^12.37.0",
+    "html-to-image": "^1.11.13",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
@@ -111,6 +112,7 @@
     "google-auth-library": "^10.7.0",
     "jsdom": "^20.0.3",
     "postcss": "^8.5.6",
+    "sharp": "^0.35.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0",
