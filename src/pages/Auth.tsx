@@ -142,7 +142,7 @@ export default function Auth() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
                   <IconMail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required />
+                  <Input type="email" aria-label="Email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Please wait..." : "Send Reset Link"}
@@ -159,7 +159,7 @@ export default function Auth() {
               <form onSubmit={handleOtp} className="space-y-4">
                 <div className="relative">
                   <IconMail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input type="email" placeholder="Email" value={otpEmail} onChange={(e) => setOtpEmail(e.target.value)} className="pl-10" required />
+                  <Input type="email" aria-label="Email" placeholder="Email" value={otpEmail} onChange={(e) => setOtpEmail(e.target.value)} className="pl-10" required />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Sending..." : "Send Magic Link"}
@@ -205,16 +205,16 @@ export default function Auth() {
                 {tab === "register" && (
                   <div className="relative">
                     <IconUser size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                    <Input placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="pl-10" required />
+                    <Input aria-label="Full Name" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="pl-10" required />
                   </div>
                 )}
                 <div className="relative">
                   <IconMail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required />
+                  <Input type="email" aria-label="Email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10" required />
                 </div>
                 <div className="relative">
                   <IconLock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10" required minLength={6} />
+                  <Input type="password" aria-label="Password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10" required minLength={6} />
                 </div>
                 {tab === "register" && <PasswordStrength password={password} />}
 

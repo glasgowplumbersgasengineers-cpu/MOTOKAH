@@ -7,7 +7,7 @@ import SpecsTable from "@/components/SpecsTable";
 import SellerCard from "@/components/SellerCard";
 import SimilarListings from "@/components/SimilarListings";
 import { useListing } from "@/hooks/useListing";
-import { IconHeart, IconShare, IconFlag, IconChevronRight, IconBrandWhatsapp, IconBrandFacebook, IconBrandTwitter, IconCopy, IconX, IconCalendar, IconGauge, IconManualGearbox, IconMapPin, IconPhone } from "@tabler/icons-react";
+import { IconHeart, IconShare, IconFlag, IconChevronRight, IconBrandWhatsapp, IconBrandFacebook, IconBrandTwitter, IconCopy, IconX, IconCalendar, IconGauge, IconManualGearbox, IconMapPin, IconPhone, IconArrowLeft, IconUserOff } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useSEO } from "@/hooks/useSEO";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { usePriceFormatter } from "@/lib/prices";
 import { isStaticListingId } from "@/lib/listingQuality";
+import { blockSeller } from "@/lib/blockedSellers";
 
 const reportReasons = ["Fake listing", "Wrong price", "Duplicate", "Inappropriate content", "Scam / Fraud", "Other"];
 
@@ -133,6 +134,14 @@ export default function ListingDetail() {
     if (sellerPhone) window.open(`tel:${sellerPhone}`);
   };
 
+  const handleBlockSeller = () => {
+    if (!user) { navigate("/auth"); return; }
+    if (!listing) return;
+    blockSeller(listing);
+    toast.success(`${listing.sellerName} has been blocked. Their listings will no longer appear.`);
+    navigate("/search", { replace: true });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -165,6 +174,16 @@ export default function ListingDetail() {
     <div className="min-h-screen bg-background">
       <Header />
 
+      <div className="container mx-auto px-4 pt-3">
+        <button
+          type="button"
+          onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/search")}
+          className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-semibold hover:bg-muted/50"
+        >
+          <IconArrowLeft size={18} stroke={2.5} /> Back
+        </button>
+      </div>
+
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-3">
         <nav className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -187,19 +206,21 @@ export default function ListingDetail() {
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
               <div className="min-w-0">
                 <h1 className="text-xl md:text-2xl font-bold leading-tight">{listing.title}</h1>
-                <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
-                  <IconMapPin size={15} stroke={2} />
-                  <span className="truncate">{listing.location}</span>
-                  <span>•</span>
-                  <span>{listing.condition}</span>
-                  <span>•</span>
-                  <span>{listing.views.toLocaleString()} views</span>
+                <p className="text-sm text-muted-foreground mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span className="inline-flex min-w-0 items-center gap-1">
+                    <IconMapPin size={15} stroke={2} className="shrink-0" />
+                    <span className="truncate max-w-[15rem]">{listing.location}</span>
+                  </span>
+                  <span aria-hidden="true">•</span>
+                  <span className="whitespace-nowrap">{listing.condition}</span>
+                  <span aria-hidden="true">•</span>
+                  <span className="whitespace-nowrap">{listing.views.toLocaleString()} views</span>
                 </p>
                 <p className="text-2xl md:text-3xl font-extrabold text-primary mt-3">
                   {priceFormatter.format(listing.price, listing.currency)}
                 </p>
               </div>
-              <div className="flex gap-2 shrink-0">
+              <div className="flex flex-wrap gap-2 shrink-0">
                 <button
                   onClick={handleSave}
                   className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
@@ -263,6 +284,13 @@ export default function ListingDetail() {
                     </div>
                   </DialogContent>
                 </Dialog>
+                <button
+                  onClick={handleBlockSeller}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm font-medium hover:bg-destructive/10 hover:border-destructive/40 transition-colors text-muted-foreground hover:text-destructive"
+                >
+                  <IconUserOff size={16} stroke={2.5} />
+                  Block seller
+                </button>
               </div>
               </div>
 
