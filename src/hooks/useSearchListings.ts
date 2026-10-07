@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings, commercialTypes as COMMERCIAL_TYPES } from "@/data/mockData";
 import { getJijiListings } from "@/data/jijiListings";
 import { hasUsablePhone, isContactPendingListing, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
+import { getBlockedSellerKeys, sellerBlockKey } from "@/lib/blockedSellers";
 
 export interface SearchFilters {
   q?: string;
@@ -109,7 +110,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         } else if (filters.vehicleType === "boat") {
           query = query.in("body_type", BOAT_TYPES);
         } else if (filters.vehicleType === "car") {
-          query = query.not("body_type", "in", [...BIKE_TYPES, ...COMMERCIAL_TYPES, ...BOAT_TYPES]);
+          const excluded = [...BIKE_TYPES, ...COMMERCIAL_TYPES, ...BOAT_TYPES];
+          query = query.not("body_type", "in", `(${excluded.map((v) => `"${v}"`).join(",")})`);
         }
       }
 
@@ -123,8 +125,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       }
 
       // Add timeout to prevent hanging queries
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Query timeout')), 5000)
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Query timeout')), 15000)
       );
       
       let rows;
@@ -177,7 +179,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           errMocks = errMocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
           errJiji = errJiji.filter(m => cities.some(c => m.location?.includes(c)));
         }
-        const combined = [...errMocks, ...errJiji];
+        const blockedSellers = getBlockedSellerKeys();
+        const combined = [...errMocks, ...errJiji].filter((listing) => !blockedSellers.has(sellerBlockKey(listing)));
         if (sort === "price-low") combined.sort((a, b) => a.price - b.price);
         else if (sort === "price-high") combined.sort((a, b) => b.price - a.price);
         setListings(combined);
@@ -215,6 +218,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
           sellerPhone: profile?.phone || undefined,
+          sellerId: r.seller_id,
           bodyType: r.body_type || undefined,
           fuelType: r.fuel_type || undefined,
           make: r.make,
@@ -320,7 +324,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         return true;
       });
       
-      const combined = deduped;
+      const blockedSellers = getBlockedSellerKeys();
+      const combined = deduped.filter((listing) => !blockedSellers.has(sellerBlockKey(listing)));
       
       // Sort combined results
       if (sort === "price-low") combined.sort((a, b) => a.price - b.price);

@@ -1,0 +1,26 @@
+Motokah App Review Information
+
+1. PHYSICAL-DEVICE RECORDING
+A physical-iPhone recording is supplied with the App Review reply. It begins with a cold launch and shows country/location selection, browse/search/filter, listing details and photos, registration/login, posting a listing, saving content, reporting a listing, blocking a seller, and permanent account deletion. Motokah has no paid content, subscriptions, or in-app purchases.
+
+2. PURPOSE AND AUDIENCE
+Motokah is a public vehicle marketplace for adults in East Africa. It helps buyers discover cars, motorcycles, commercial vehicles, and boats offered by private sellers and dealers. Buyers can search, compare, save, inspect listing details, and contact sellers. Sellers can register and submit listings. Motokah does not sell vehicles, process vehicle payments, provide financing, or act as a vehicle dealer.
+
+3. ACCESSING FEATURES
+Browsing does not require login. Launch the app, select a country or allow location access, browse Home or Search, apply filters, and open a listing. Signed-in users can save listings, submit a vehicle, report content, block sellers, manage their profile, and delete their account from Profile > Settings > Delete my account. No sample file is required. Working review credentials are supplied in the dedicated Sign-In Information fields.
+
+4. EXTERNAL SERVICES
+- Supabase: authentication, marketplace data, saved items, reports, messages, and server-side account deletion.
+- Cloudflare R2: public listing-image delivery.
+- Vercel: public Motokah web services and marketplace pages.
+- Resend: transactional account email.
+- Native iOS phone, messaging, sharing, web, and mapping capabilities when the user chooses the corresponding action.
+No payment processor or AI service is required for the app's core functionality.
+
+5. REGIONAL DIFFERENCES
+Core functionality is consistent across supported regions. Available inventory, default country/city, displayed currency, and seller contact details vary based on selected location and available listings. Users can change country/location and browse other supported countries.
+
+6. REGULATION AND THIRD-PARTY MATERIAL
+Motokah is a classified marketplace, not a lender, insurer, transport operator, financial service, or vehicle dealer. It does not process transactions or hold customer funds. Make/model names identify listed vehicles. Listing images and information are supplied or authorized by the relevant seller/dealer. Users can report content and block sellers from listing pages.
+
+The submitted build was tested through our QA process and on a supported physical iPhone running the latest available iOS.

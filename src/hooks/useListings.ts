@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings } from "@/data/mockData";
 import { getJijiListings } from "@/data/jijiListings";
 import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
+import { getBlockedSellerKeys, sellerBlockKey } from "@/lib/blockedSellers";
 
 // Only select columns we actually need — much faster
 const LISTING_COLUMNS = [
@@ -74,7 +75,9 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           // Jiji country field is unreliable (e.g. Nigerian cities tagged as TZ) — use city name only
           jijiItems = jijiItems.filter(m => cities.some(c => m.location?.includes(c)));
         }
-        const fallback = [...mocks.filter(isLaunchQualityListing), ...jijiItems.filter(isLaunchQualityListing)];
+        const blockedSellers = getBlockedSellerKeys();
+        const fallback = [...mocks.filter(isLaunchQualityListing), ...jijiItems.filter(isLaunchQualityListing)]
+          .filter((listing) => !blockedSellers.has(sellerBlockKey(listing)));
         fallback.sort(() => Math.random() - 0.5);
         setListings(fallback.slice(0, limit));
         setLoading(false);
@@ -116,6 +119,7 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
           sellerPhone: profile?.phone || undefined,
+          sellerId: r.seller_id,
           bodyType: r.body_type || undefined,
           fuelType: r.fuel_type || undefined,
           make: r.make,
@@ -137,7 +141,10 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
       const fillFrom = [...fillMocks, ...fillJiji];
       fillFrom.sort(() => Math.random() - 0.5);
 
-      const combined = [...mapped, ...fillFrom].slice(0, limit);
+      const blockedSellers = getBlockedSellerKeys();
+      const combined = [...mapped, ...fillFrom]
+        .filter((listing) => !blockedSellers.has(sellerBlockKey(listing)))
+        .slice(0, limit);
       setListings(combined);
       setLoading(false);
     };
@@ -153,7 +160,9 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         catchMocks = catchMocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
         catchJiji = catchJiji.filter(m => cities.some(c => m.location?.includes(c)));
       }
-      const all = [...catchMocks.filter(isLaunchQualityListing), ...catchJiji.filter(isLaunchQualityListing)];
+      const blockedSellers = getBlockedSellerKeys();
+      const all = [...catchMocks.filter(isLaunchQualityListing), ...catchJiji.filter(isLaunchQualityListing)]
+        .filter((listing) => !blockedSellers.has(sellerBlockKey(listing)));
       all.sort(() => Math.random() - 0.5);
       setListings(all.slice(0, options?.limit || 20));
       setLoading(false);

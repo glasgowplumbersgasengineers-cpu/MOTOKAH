@@ -53,6 +53,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  deleteAccount: () => Promise<{ error: Error | null }>;
   refreshProfile: () => Promise<void>;
 }
 
@@ -200,13 +201,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const deleteAccount = async () => {
+    if (!user) return { error: new Error("You must be signed in to delete your account.") };
+
+    if (user.id.startsWith("demo-")) {
+      await signOut();
+      return { error: null };
+    }
+
+    const accessToken = session?.access_token;
+    if (!accessToken) return { error: new Error("Your session has expired. Please sign in again.") };
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) return { error: new Error(result.error || "Could not delete your account.") };
+      await signOut();
+      return { error: null };
+    } catch {
+      return { error: new Error("Connection failed. Please try again.") };
+    }
+  };
+
   const isDealer = profile?.seller_type === "dealer";
 
   return (
     <AuthContext.Provider value={{
       user, session, loading,
       profile, isAdmin, isDealer,
-      signUp, signIn, signOut, resetPassword, refreshProfile,
+      signUp, signIn, signOut, resetPassword, deleteAccount, refreshProfile,
     }}>
       {children}
     </AuthContext.Provider>

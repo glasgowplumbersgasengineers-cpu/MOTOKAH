@@ -13,6 +13,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useLanguage } from "@/contexts/LanguageContext";
 import HelpGuide from "@/components/HelpGuide";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 // date-fns kept for future use
 import { mockListings } from "@/data/mockData";
 
@@ -141,7 +152,7 @@ function MfaSection() {
 }
 
 export default function Profile() {
-  const { user, signOut, isDealer } = useAuth();
+  const { user, signOut, deleteAccount, isDealer } = useAuth();
   const { wishlistIds } = useWishlist();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -153,6 +164,7 @@ export default function Profile() {
   const [wishlistListings, setWishlistListings] = useState<Array<{ id: string; title: string; price: number; currency: string; year: number; image: string; location?: string }>>([]);
   const [editing, setEditing] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   usePageTitle("My Profile");
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
@@ -241,6 +253,18 @@ export default function Profile() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    const { error } = await deleteAccount();
+    setDeletingAccount(false);
+    if (error) {
+      toast({ title: "Account deletion failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Account deleted", description: "Your Motokah account and associated data have been deleted." });
+    navigate("/", { replace: true });
+  };
+
   const deleteListing = async (id: string) => {
     await supabase.from("listings").delete().eq("id", id);
     setListings((prev) => prev.filter((l) => l.id !== id));
@@ -281,7 +305,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <div className="container mx-auto px-4 pt-8 pb-28 md:pb-8 max-w-3xl">
         {/* Profile Header */}
         <div className="bg-card border border-border rounded-xl p-6 mb-6 flex items-center gap-4">
           <div className="relative w-16 h-16">
@@ -581,6 +605,37 @@ export default function Profile() {
                   <IconChevronRight size={18} className="ml-auto text-muted-foreground" />
                 </button>
               </div>
+
+               <div className="border-t border-border pt-4 mt-4">
+                 <h3 className="text-sm font-semibold text-destructive mb-1">Delete account</h3>
+                 <p className="text-xs text-muted-foreground mb-3">
+                   Permanently delete your profile, listings, messages, saved items, and account access.
+                 </p>
+                 <AlertDialog>
+                   <AlertDialogTrigger asChild>
+                     <Button variant="destructive" disabled={deletingAccount} className="scroll-mb-28">
+                       <IconTrash size={16} className="mr-2" /> Delete my account
+                     </Button>
+                   </AlertDialogTrigger>
+                   <AlertDialogContent>
+                     <AlertDialogHeader>
+                       <AlertDialogTitle>Delete your Motokah account?</AlertDialogTitle>
+                       <AlertDialogDescription>
+                         This permanently removes your account and associated marketplace data. This action cannot be undone.
+                       </AlertDialogDescription>
+                     </AlertDialogHeader>
+                     <AlertDialogFooter>
+                       <AlertDialogCancel>Cancel</AlertDialogCancel>
+                       <AlertDialogAction
+                         onClick={handleDeleteAccount}
+                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                       >
+                         {deletingAccount ? "Deleting..." : "Permanently delete"}
+                       </AlertDialogAction>
+                     </AlertDialogFooter>
+                   </AlertDialogContent>
+                 </AlertDialog>
+               </div>
             </div>
           )}
 
