@@ -164,6 +164,19 @@ export default function Header() {
                 <SheetClose asChild>
                   <Link to="/sell"><Button className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold w-full">{t("nav.postAd")}</Button></Link>
                 </SheetClose>
+                <div className="mt-4 pt-4 border-t border-border text-center">
+                  <p className="text-[11px] text-muted-foreground">
+                    &copy; 2026 Motokah &bull; Powered by{" "}
+                    <a
+                      href="https://1pointsolutions.cloud"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline font-medium"
+                    >
+                      1Point Solutions
+                    </a>
+                  </p>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>

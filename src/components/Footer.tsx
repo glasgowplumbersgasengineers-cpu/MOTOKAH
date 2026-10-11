@@ -68,7 +68,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-surface-2 border-t border-border pt-12 pb-6 safe-bottom">
+    <footer className="hidden lg:block bg-surface-2 border-t border-border pt-12 pb-6 safe-bottom">
       <div className="container mx-auto px-4">
 
         {/* Main grid */}
