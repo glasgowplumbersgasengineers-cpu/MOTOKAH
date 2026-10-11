@@ -94,6 +94,13 @@ export default function SellCar() {
     return countryCities.length > 0 ? countryCities : africanCities;
   }, [country]);
   const sellerPhone = profile?.phone || (user?.user_metadata?.phone as string | undefined) || "";
+  const [phoneInput, setPhoneInput] = useState(sellerPhone);
+
+  useEffect(() => {
+    if (sellerPhone && !phoneInput) {
+      setPhoneInput(sellerPhone);
+    }
+  }, [sellerPhone]);
 
   useEffect(() => {
     const saved = localStorage.getItem("sellCarDraft");
@@ -148,8 +155,9 @@ export default function SellCar() {
     if (!form.make || !form.model) { toast({ title: "Required", description: "Please fill in Make and Model.", variant: "destructive" }); return; }
     if (!form.bodyType) { toast({ title: "Required", description: "Please select a Body Type.", variant: "destructive" }); return; }
     if (!form.price) { toast({ title: "Required", description: "Please enter a price.", variant: "destructive" }); return; }
-    if (!sellerPhone) {
-      toast({ title: "Phone number required", description: "Add your phone number in your profile before posting so buyers can contact you.", variant: "destructive" });
+    const activePhone = phoneInput.trim() || sellerPhone;
+    if (!activePhone) {
+      toast({ title: "Phone number required", description: "Please enter your mobile phone number below so interested buyers can contact you.", variant: "destructive" });
       return;
     }
     if (user.id.startsWith("demo-")) {
@@ -157,10 +165,12 @@ export default function SellCar() {
       return;
     }
 
-    const isVerified = user.email_confirmed_at || user.confirmed_at;
-    if (!isVerified) {
-      toast({ title: "Email not verified", description: "Please verify your email before listing.", variant: "destructive" });
-      return;
+    if (user && activePhone && (!profile?.phone || profile.phone !== activePhone)) {
+      try {
+        await supabase.from("profiles").update({ phone: activePhone }).eq("id", user.id);
+      } catch (e) {
+        console.warn("Auto-saving phone to profile:", e);
+      }
     }
     setSubmitting(true);
     try {
@@ -614,14 +624,20 @@ export default function SellCar() {
 
             {/* Phone */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground">Mobile Number</p>
-                <p className={`text-sm mt-0.5 ${displayPhone ? "text-foreground" : "text-destructive"}`}>
-                  {displayPhone || "Add phone in profile"}
-                </p>
+              <div className="flex-1 mr-3">
+                <p className="text-xs text-muted-foreground font-medium">Mobile / WhatsApp Number</p>
+                <Input
+                  type="tel"
+                  value={phoneInput}
+                  onChange={(e) => setPhoneInput(e.target.value)}
+                  placeholder="e.g. 0712 345 678 or +255 712 345 678"
+                  className="border-none shadow-none p-0 h-auto text-sm bg-transparent focus-visible:ring-0 placeholder:text-muted-foreground/50 mt-0.5"
+                />
               </div>
-              {displayPhone ? <IconCheck size={16} className="text-success shrink-0" /> : (
-                <button onClick={() => navigate("/profile")} className="text-xs font-semibold text-primary">Update</button>
+              {phoneInput.trim() ? (
+                <IconCheck size={16} className="text-success shrink-0" />
+              ) : (
+                <span className="text-[11px] text-amber-500 font-medium shrink-0">Required</span>
               )}
             </div>
 
