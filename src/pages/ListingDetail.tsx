@@ -200,6 +200,12 @@ export default function ListingDetail() {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-6">
             <ImageGallery images={images} title={listing.title} />
+            {listing.videoUrl && (
+              <section className="rounded-xl border border-border bg-card p-3">
+                <h2 className="mb-3 text-base font-bold">Vehicle video</h2>
+                <video src={listing.videoUrl} controls playsInline preload="metadata" className="aspect-video w-full rounded-lg bg-black object-contain" />
+              </section>
+            )}
 
             {/* Title + Actions */}
             <div className="rounded-xl border border-border bg-card p-4 md:p-5">

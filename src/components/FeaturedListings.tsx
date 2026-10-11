@@ -35,7 +35,7 @@ export default function FeaturedListings() {
   const displayListings = listings;
 
   return (
-    <section className="container mx-auto py-10">
+    <section className="container mx-auto py-7 md:py-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <IconFlame size={24} stroke={2.5} className="text-destructive" /> Hot Deals & Featured

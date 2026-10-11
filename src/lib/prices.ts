@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { type Country, useLocation } from "@/contexts/LocationContext";
+import { type Country } from "@/contexts/LocationContext";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const COUNTRY_CURRENCY: Record<Exclude<Country, "All">, string> = {
   Tanzania: "TZS",
@@ -81,8 +82,7 @@ export function formatVehiclePrice(
 }
 
 export function usePriceFormatter() {
-  const { country } = useLocation();
-  const targetCurrency = currencyForCountry(country);
+  const { currency: targetCurrency } = useCurrency();
   const [rates, setRates] = useState<Record<string, number> | null>(() => readCachedRates());
 
   useEffect(() => {

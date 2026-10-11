@@ -73,7 +73,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
 
       let query = supabase
         .from("listings")
-        .select("id, title, price, currency, condition, year, mileage, transmission, city, views, seller_id, body_type, fuel_type, make, model, created_at, listing_images(image_url, display_order)")
+        .select("id, title, price, currency, condition, year, mileage, transmission, city, views, seller_id, body_type, fuel_type, make, model, created_at, video_url, listing_images(image_url, display_order)")
         .eq("status", "approved");
 
       // Text search (keyword)
@@ -212,6 +212,8 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           transmission: r.transmission || "Automatic",
           location: r.city || "Tanzania",
           image: mainImage,
+          images: sorted.map((image) => image.image_url),
+          videoUrl: r.video_url || undefined,
           views: r.views || 0,
           sellerName: profile?.display_name || "Private Seller",
           sellerRating: Number((4.2 + (r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 7) / 10).toFixed(1)),

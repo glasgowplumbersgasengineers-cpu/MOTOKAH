@@ -80,6 +80,8 @@ export function useListing(id: string | undefined) {
         transmission: r.transmission || "Automatic",
         location: r.city || "Tanzania",
         image: sorted[0] || "",
+        images: sorted,
+        videoUrl: r.video_url || undefined,
         views: r.views || 0,
         sellerName,
         sellerRating: Number((4.2 + (r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 7) / 10).toFixed(1)),

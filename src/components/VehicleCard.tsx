@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconSparkles, IconScale, IconBuildingStore, IconCar } from "@tabler/icons-react";
+import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconSparkles, IconScale, IconBuildingStore, IconCar, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,7 +20,10 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   const [imgLoaded, setImgLoaded] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [useOriginalSrc, setUseOriginalSrc] = useState(false);
-  const primaryImage = normalizeImageUrl(listing.image || listing.images?.[0] || "");
+  const [imageIndex, setImageIndex] = useState(0);
+  const touchStart = useRef<number | null>(null);
+  const cardImages = useMemo(() => [...new Set([listing.image, ...(listing.images || [])].filter(Boolean).map(normalizeImageUrl))], [listing.image, listing.images]);
+  const primaryImage = cardImages[imageIndex] || "";
   const displayImage = useOriginalSrc ? fullImageUrl(primaryImage) : cardImageUrl(primaryImage);
 
   useEffect(() => {
@@ -29,17 +32,35 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
     setUseOriginalSrc(false);
   }, [listing.id, primaryImage]);
 
+  useEffect(() => setImageIndex(0), [listing.id]);
+
+  const changeImage = (event: React.SyntheticEvent, direction: number) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setImageIndex((current) => (current + direction + cardImages.length) % cardImages.length);
+  };
+
+  const handleImageFailure = useCallback(() => {
+    const originalImage = fullImageUrl(primaryImage);
+    if (!useOriginalSrc && displayImage !== originalImage) {
+      setUseOriginalSrc(true);
+      setImgLoaded(false);
+      return;
+    }
+    if (imageIndex < cardImages.length - 1) {
+      setImageIndex((current) => current + 1);
+      return;
+    }
+    setImgError(true);
+  }, [cardImages.length, displayImage, imageIndex, primaryImage, useOriginalSrc]);
+
   useEffect(() => {
     if (!primaryImage || imgLoaded || imgError) return;
     const timeout = window.setTimeout(() => {
-      if (!useOriginalSrc) {
-        setUseOriginalSrc(true);
-        return;
-      }
-      setImgError(true);
-    }, priority ? 2500 : 4000);
+      handleImageFailure();
+    }, priority ? 2000 : 3000);
     return () => window.clearTimeout(timeout);
-  }, [primaryImage, imgLoaded, imgError, priority, useOriginalSrc]);
+  }, [primaryImage, imgLoaded, imgError, priority, useOriginalSrc, displayImage, imageIndex, cardImages.length, handleImageFailure]);
 
   // Sync isCompared when other cards update localStorage
   useEffect(() => {
@@ -95,7 +116,14 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   return (
     <Link to={`/listing/${listing.id}`} className="group block w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:scale-[1.02]">
       {/* Image */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted"
+        onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }}
+        onTouchEnd={(event) => {
+          if (touchStart.current === null || cardImages.length < 2) return;
+          const delta = (event.changedTouches[0]?.clientX ?? touchStart.current) - touchStart.current;
+          if (Math.abs(delta) > 45) changeImage(event, delta < 0 ? 1 : -1);
+          touchStart.current = null;
+        }}>
         {/* Skeleton placeholder */}
         {showPlaceholder && (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -114,14 +142,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
               setImgLoaded(true);
               setImgError(false);
             }}
-            onError={() => {
-              if (useOriginalSrc) {
-                setImgError(true);
-                return;
-              }
-              setUseOriginalSrc(true);
-              setImgLoaded(false);
-            }}
+            onError={handleImageFailure}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -132,6 +153,17 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
           <span className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase flex items-center gap-1 ${badge.className}`}>
             <badge.icon size={12} stroke={2.5} /> {badge.label}
           </span>
+        )}
+        {cardImages.length > 1 && (
+          <>
+            <button aria-label="Previous photo" onClick={(event) => changeImage(event, -1)} className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background/75 opacity-100 shadow-sm backdrop-blur sm:opacity-0 sm:group-hover:opacity-100">
+              <IconChevronLeft size={18} />
+            </button>
+            <button aria-label="Next photo" onClick={(event) => changeImage(event, 1)} className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-background/75 opacity-100 shadow-sm backdrop-blur sm:opacity-0 sm:group-hover:opacity-100">
+              <IconChevronRight size={18} />
+            </button>
+            <span className="absolute bottom-2 right-2 rounded-full bg-background/75 px-2 py-1 text-[10px] font-semibold text-foreground backdrop-blur">{imageIndex + 1}/{cardImages.length}</span>
+          </>
         )}
         <div className="absolute top-2 right-2 flex flex-col gap-1">
           <button

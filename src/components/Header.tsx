@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown, IconHelpCircle } from "@tabler/icons-react";
+import { Link, useLocation as useRouterLocation, useNavigate } from "react-router-dom";
+import { IconArrowLeft, IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown, IconHelpCircle } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -10,6 +10,7 @@ import { useLocation } from "@/contexts/LocationContext";
 import NotificationBell from "@/components/NotificationBell";
 import EmailVerificationBanner from "@/components/EmailVerificationBanner";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
 import HelpGuide from "@/components/HelpGuide";
 
 const navLinks = [
@@ -30,6 +31,7 @@ export default function Header() {
   const { t, lang } = useLanguage();
   const { city, country } = useLocation();
   const navigate = useNavigate();
+  const routerLocation = useRouterLocation();
   const [showHelp, setShowHelp] = useState(false);
   const locationLabel = city || (country !== "All" ? country : "");
   const changeLocationPath = "/welcome?change=location";
@@ -40,10 +42,17 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b-2 border-primary bg-card backdrop-blur-md safe-top">
       <div className="container mx-auto flex items-center justify-between py-3">
         {/* Logo */}
+        <div className="flex items-center gap-1">
+          {routerLocation.pathname !== "/" && routerLocation.pathname !== "/welcome" && (
+            <button onClick={() => navigate(-1)} aria-label="Go back" className="flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-secondary lg:hidden">
+              <IconArrowLeft size={21} stroke={2.5} />
+            </button>
+          )}
         <Link to="/" className="flex flex-col">
           <span className="text-2xl font-extrabold text-primary tracking-tight">Motokah</span>
           <span className="text-[10px] text-muted-foreground hidden sm:block">Find Your Perfect Ride</span>
         </Link>
+        </div>
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-1">
@@ -70,6 +79,7 @@ export default function Header() {
           <div className="hidden sm:block">
             <LanguageSwitcher />
           </div>
+          <div className="hidden md:block"><CurrencySwitcher /></div>
 
           {/* Theme Toggle */}
           <button onClick={toggleTheme} className="flex items-center justify-center w-8 h-8 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
@@ -131,6 +141,7 @@ export default function Header() {
                 <hr className="border-border my-2" />
                 {/* Language switcher in mobile menu */}
                 <LanguageSwitcher mobile />
+                <CurrencySwitcher mobile />
                 <hr className="border-border my-2" />
                 <SheetClose asChild>
                   <button onClick={toggleTheme} className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">

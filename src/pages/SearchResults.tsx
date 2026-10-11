@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useLocation as useLocationCtx } from "@/contexts/LocationContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -22,6 +22,7 @@ import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from 
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
   const { user } = useAuth();
   const { country: locationCountry } = useLocationCtx();
@@ -290,6 +291,17 @@ export default function SearchResults() {
       <Header />
 
       <main className="container mx-auto px-4 pt-5 pb-28 lg:py-6">
+        <form onSubmit={(event) => {
+          event.preventDefault();
+          const params = new URLSearchParams(searchParams);
+          if (keyword.trim()) params.set("q", keyword.trim());
+          else params.delete("q");
+          setSearchParams(params);
+          setPage(1);
+        }} className="mb-4 flex gap-2">
+          <Input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="Search make, model or keyword" aria-label="Search vehicles" className="h-11" />
+          <Button type="submit" className="h-11 shrink-0"><IconSearch size={17} /> <span className="hidden sm:inline">Search</span></Button>
+        </form>
         {/* Top bar */}
         <div className="mb-4 space-y-3 sm:flex sm:items-start sm:justify-between sm:gap-4 sm:space-y-0">
           <div className="min-w-0">
@@ -392,13 +404,15 @@ export default function SearchResults() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-20">
+              <div className="rounded-xl border border-border bg-card px-5 py-16 text-center">
                 <IconSearch size={48} stroke={1.5} className="mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No vehicles found</h3>
                 <p className="text-sm text-muted-foreground mb-4">Try adjusting your filters or search criteria</p>
-                <button onClick={clearFilters} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold">
-                  Clear All Filters
-                </button>
+                <div className="flex flex-wrap justify-center gap-2">
+                  <Button variant="outline" onClick={() => navigate(-1)}>Go Back</Button>
+                  <Button variant="outline" onClick={() => setDrawerOpen(true)} className="lg:hidden"><IconFilter size={16} /> Edit Filters</Button>
+                  <Button onClick={clearFilters}>Clear All Filters</Button>
+                </div>
               </div>
             )}
 

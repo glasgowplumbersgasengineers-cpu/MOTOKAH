@@ -5,11 +5,11 @@ import { useLocation } from "@/contexts/LocationContext";
 
 export default function LatestListingsGrid() {
   const { country } = useLocation();
-  const { listings, loading } = useListings({ limit: 12, country });
+  const { listings, loading } = useListings({ limit: 6, country });
   const displayListings = listings;
 
   return (
-    <section className="container mx-auto py-10">
+    <section className="container mx-auto py-7 md:py-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold flex items-center gap-2">
           <IconClock size={24} stroke={2.5} className="text-primary" /> Latest Listings
@@ -25,7 +25,9 @@ export default function LatestListingsGrid() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayListings.map((l, i) => (
-            <VehicleCard key={l.id} listing={l} priority={i < 3} />
+            <div key={l.id} className={i >= 3 ? "hidden sm:block" : undefined}>
+              <VehicleCard listing={l} priority={i < 3} />
+            </div>
           ))}
         </div>
       )}

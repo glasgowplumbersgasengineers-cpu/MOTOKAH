@@ -9,7 +9,7 @@ import { getBlockedSellerKeys, sellerBlockKey } from "@/lib/blockedSellers";
 const LISTING_COLUMNS = [
   "id", "title", "price", "currency", "condition", "year", "mileage",
   "transmission", "city", "views", "seller_id", "body_type", "fuel_type",
-  "make", "model", "created_at"
+  "make", "model", "created_at", "video_url"
 ].join(",");
 
 const countryCurrencyMap: Record<string, string[]> = {
@@ -113,6 +113,8 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           transmission: r.transmission || "Automatic",
           location: r.city || "Tanzania",
           image: mainImage,
+          images: sortedImages.map((image) => image.image_url),
+          videoUrl: r.video_url || undefined,
           views: r.views || 0,
           sellerName: profile?.display_name || "Private Seller",
           sellerRating: Number((4.2 + (ratingSeed % 7) / 10).toFixed(1)),

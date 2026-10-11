@@ -4,20 +4,12 @@ import HeroSearch from "@/components/HeroSearch";
 import BrowseSection from "@/components/BrowseSection";
 import FeaturedListings from "@/components/FeaturedListings";
 import LatestListingsGrid from "@/components/LatestListingsGrid";
-import PromoBanner from "@/components/PromoBanner";
-import { NewlyAdded, BestSellingBrands, SpecialDeals } from "@/components/AdditionalSections";
-import BikesSection from "@/components/BikesSection";
-import ComparisonSection from "@/components/ComparisonSection";
-import TrustSection from "@/components/TrustSection";
-import Testimonials from "@/components/Testimonials";
-import PriceRangeFilter from "@/components/PriceRangeFilter";
 import SellCTA from "@/components/SellCTA";
-import StatsBar from "@/components/StatsBar";
-import LocationSection from "@/components/LocationSection";
 import PopularModelsSection from "@/components/PopularModelsSection";
-import SEOLinksSection from "@/components/SEOLinksSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
+import { Link } from "react-router-dom";
+import { IconArrowRight } from "@tabler/icons-react";
 
 const Index = () => {
   return (
@@ -38,21 +30,20 @@ const Index = () => {
       <Header />
       <HeroSearch />
       <BrowseSection />
-      <LocationSection />
-      <PopularModelsSection />
-      <SEOLinksSection />
+      <section className="border-y border-border bg-card">
+        <div className="container mx-auto flex items-center justify-between gap-4 px-4 py-4">
+          <div>
+            <h2 className="text-base font-bold text-foreground">Vehicles across Africa</h2>
+            <p className="text-xs text-muted-foreground">Explore listings beyond your selected country.</p>
+          </div>
+          <Link to="/search?country=All" className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary">
+            View All Africa <IconArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
       <FeaturedListings />
       <LatestListingsGrid />
-      <PromoBanner />
-      <NewlyAdded />
-      <SpecialDeals />
-      <BestSellingBrands />
-      <BikesSection />
-      <PriceRangeFilter />
-      <ComparisonSection />
-      <StatsBar />
-      <TrustSection />
-      <Testimonials />
+      <PopularModelsSection />
       <SellCTA />
       <Footer />
     </div>

@@ -203,6 +203,7 @@ export type Database = {
           title: string
           transmission: string | null
           updated_at: string
+          video_url: string | null
           views: number
           year: number
         }
@@ -225,6 +226,7 @@ export type Database = {
           title: string
           transmission?: string | null
           updated_at?: string
+          video_url?: string | null
           views?: number
           year: number
         }
@@ -247,6 +249,7 @@ export type Database = {
           title?: string
           transmission?: string | null
           updated_at?: string
+          video_url?: string | null
           views?: number
           year?: number
         }

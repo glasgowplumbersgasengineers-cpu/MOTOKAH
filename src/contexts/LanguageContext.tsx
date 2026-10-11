@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 export type LangCode = "en" | "sw" | "fr" | "ar";
 
@@ -223,12 +223,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     return stored && translations[stored] ? stored : "en";
   });
 
-  const setLang = (code: LangCode) => {
+  const setLang = useCallback((code: LangCode) => {
     setLangState(code);
     localStorage.setItem("motokah_lang", code);
-  };
+  }, []);
 
-  const language = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+  const language = useMemo(() => LANGUAGES.find(l => l.code === lang) || LANGUAGES[0], [lang]);
 
   // Apply RTL direction to document
   useEffect(() => {
@@ -236,11 +236,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.lang = lang;
   }, [lang, language.dir]);
 
-  const t = (key: string): string =>
-    translations[lang]?.[key] ?? translations["en"]?.[key] ?? key;
+  const value = useMemo<LanguageContextType>(() => ({
+    lang,
+    language,
+    setLang,
+    t: (key: string) => translations[lang]?.[key] ?? translations.en?.[key] ?? key,
+  }), [lang, language, setLang]);
 
   return (
-    <LanguageContext.Provider value={{ lang, language, setLang, t }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

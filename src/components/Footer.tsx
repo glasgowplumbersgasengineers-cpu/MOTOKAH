@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Capacitor } from "@capacitor/core";
 
 const columns = [
   { title: "For Buyers", links: [
@@ -27,6 +28,7 @@ const columns = [
     { label: "About Us", to: "/about" },
     { label: "Contact Us", to: "/contact" },
     { label: "Blog & News", to: "/blog" },
+    { label: "Brand Centre", to: "/brand-centre" },
     { label: "Careers", to: "/careers" },
     { label: "FAQ / Help", to: "/faq" },
   ]},
@@ -50,6 +52,7 @@ const countries = [
 
 export default function Footer() {
   const [email, setEmail] = useState("");
+  if (Capacitor.isNativePlatform()) return null;
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();

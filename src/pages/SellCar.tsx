@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "@/contexts/LocationContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { IconX, IconCheck, IconCamera, IconChevronRight, IconBrandWhatsapp, IconPhone } from "@tabler/icons-react";
+import { IconX, IconCheck, IconCamera, IconChevronRight, IconBrandWhatsapp, IconPhone, IconVideo } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { africanCities, carMakes, cityToCountry, currencies } from "@/data/mockData";
 
@@ -35,6 +35,12 @@ const bodyTypes = [
   { label: "Wagon / Estate",        value: "Wagon" },
   { label: "Convertible",           value: "Convertible" },
   { label: "Motorcycle / Boda Boda",value: "Motorcycle" },
+  { label: "Scooter",                value: "Scooter" },
+  { label: "Dirt Bike",              value: "Dirt Bike" },
+  { label: "Sport Bike",             value: "Sport Bike" },
+  { label: "Boat / Marine",           value: "Boat" },
+  { label: "Tuk-tuk / Bajaji",        value: "Tuk-tuk" },
+  { label: "Tipper",                  value: "Tipper" },
 ];
 const transmissions = ["Automatic", "Manual", "CVT"];
 const fuelTypes = ["Petrol", "Diesel", "Hybrid", "Electric"];
@@ -75,6 +81,8 @@ export default function SellCar() {
   });
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [video, setVideo] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sheet, setSheet] = useState<SheetKey>(null);
   const { user, profile } = useAuth();
@@ -123,6 +131,18 @@ export default function SellCar() {
     setPreviews((prev) => prev.filter((_, idx) => idx !== i));
   };
 
+  const handleVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.size > 30 * 1024 * 1024) {
+      toast({ title: "Video too large", description: "Video must be under 30MB.", variant: "destructive" });
+      return;
+    }
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideo(file);
+    setVideoPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async () => {
     if (!user) { navigate("/auth"); return; }
     if (!form.make || !form.model) { toast({ title: "Required", description: "Please fill in Make and Model.", variant: "destructive" }); return; }
@@ -164,6 +184,16 @@ export default function SellCar() {
         if (uploadErr) { console.error("Image upload failed:", uploadErr.message); continue; }
         const { data: urlData } = supabase.storage.from("listing-images").getPublicUrl(path);
         await supabase.from("listing_images").insert({ listing_id: listing.id, image_url: urlData.publicUrl, display_order: i });
+      }
+
+      if (video) {
+        const safeName = video.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+        const videoPath = `${user.id}/${listing.id}/video-${Date.now()}-${safeName}`;
+        const { error: videoError } = await supabase.storage.from("listing-images").upload(videoPath, video, { contentType: video.type, upsert: false });
+        if (videoError) throw new Error(`Video upload failed: ${videoError.message}`);
+        const { data: videoUrl } = supabase.storage.from("listing-images").getPublicUrl(videoPath);
+        const { error: updateError } = await supabase.from("listings").update({ video_url: videoUrl.publicUrl }).eq("id", listing.id);
+        if (updateError) throw updateError;
       }
 
       localStorage.removeItem("sellCarDraft");
@@ -353,6 +383,24 @@ export default function SellCar() {
             )}
             <input type="file" accept="image/*" multiple onChange={handleImages} className="hidden" />
           </label>
+        </div>
+
+        <div className="border-b border-border bg-card px-4 py-4">
+          <div className="mb-2 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Vehicle video</p>
+              <p className="text-xs text-muted-foreground">Optional, up to 30MB</p>
+            </div>
+            {video && <button type="button" onClick={() => { setVideo(null); if (videoPreview) URL.revokeObjectURL(videoPreview); setVideoPreview(""); }} className="text-xs font-semibold text-destructive">Remove</button>}
+          </div>
+          {videoPreview ? (
+            <video src={videoPreview} controls preload="metadata" className="aspect-video w-full rounded-lg bg-black object-contain" />
+          ) : (
+            <label className="flex h-20 cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border text-sm font-medium text-muted-foreground hover:border-primary hover:text-primary">
+              <IconVideo size={22} /> Add video
+              <input type="file" accept="video/mp4,video/quicktime,video/webm" onChange={handleVideo} className="hidden" />
+            </label>
+          )}
         </div>
 
         {/* CAR DETAILS */}

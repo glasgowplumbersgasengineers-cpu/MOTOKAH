@@ -1,4 +1,4 @@
-import { Component, type ReactNode } from "react";
+import { Component, lazy, Suspense, useEffect, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 
@@ -26,63 +26,78 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/hooks/useAuth";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import AdminLayout from "@/components/admin/AdminLayout";
-import Index from "./pages/Index.tsx";
-import ListingDetail from "./pages/ListingDetail.tsx";
-import SearchResults from "./pages/SearchResults.tsx";
-import Auth from "./pages/Auth.tsx";
-import ResetPassword from "./pages/ResetPassword.tsx";
-import SellCar from "./pages/SellCar.tsx";
-import Profile from "./pages/Profile.tsx";
-import Wishlist from "./pages/Wishlist.tsx";
-import Messages from "./pages/Messages.tsx";
-import Compare from "./pages/Compare.tsx";
-import About from "./pages/About.tsx";
-import Contact from "./pages/Contact.tsx";
-import FAQ from "./pages/FAQ.tsx";
-import HowItWorks from "./pages/HowItWorks.tsx";
-import Safety from "./pages/Safety.tsx";
-import Blog from "./pages/Blog.tsx";
-import BlogPost from "./pages/BlogPost.tsx";
-import Careers from "./pages/Careers.tsx";
-import Terms from "./pages/Terms.tsx";
-import Privacy from "./pages/Privacy.tsx";
-import DealerDirectory from "./pages/DealerDirectory.tsx";
-import DealerProfilePage from "./pages/DealerProfile.tsx";
-import BecomeDealer from "./pages/BecomeDealer.tsx";
-import DealerDashboard from "./pages/DealerDashboard.tsx";
-import AdminOverview from "./pages/admin/AdminOverview.tsx";
-import AdminListings from "./pages/admin/AdminListings.tsx";
-import AdminUsers from "./pages/admin/AdminUsers.tsx";
-import AdminReports from "./pages/admin/AdminReports.tsx";
-import AdminBlog from "./pages/admin/AdminBlog.tsx";
-import AdminContacts from "./pages/admin/AdminContacts.tsx";
-import AdminNewsletter from "./pages/admin/AdminNewsletter.tsx";
-import AdminDealers from "./pages/admin/AdminDealers.tsx";
-import AdminContent from "./pages/admin/AdminContent.tsx";
-import DutyCalculator from "./pages/DutyCalculator.tsx";
-import DealerLeads from "./pages/DealerLeads.tsx";
-import NotFound from "./pages/NotFound.tsx";
-import CityLandingPage from "./pages/CityLandingPage.tsx";
-import CountryLandingPage from "./pages/CountryLandingPage.tsx";
-import Welcome from "./pages/Welcome.tsx";
-import InstagramShowroom from "./pages/InstagramShowroom.tsx";
-import PromoVideo from "./pages/PromoVideo.tsx";
-import ModelLandingPage from "./pages/ModelLandingPage.tsx";
-import Stationery from "./pages/Stationery.tsx";
 import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
 import { usePageTracking } from "@/hooks/usePageTracking";
 
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LocationProvider } from "@/contexts/LocationContext";
+import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { HelmetProvider } from "react-helmet-async";
 
 const queryClient = new QueryClient();
 
+const AdminLayout = lazy(() => import("@/components/admin/AdminLayout"));
+const Index = lazy(() => import("./pages/Index.tsx"));
+const ListingDetail = lazy(() => import("./pages/ListingDetail.tsx"));
+const SearchResults = lazy(() => import("./pages/SearchResults.tsx"));
+const Auth = lazy(() => import("./pages/Auth.tsx"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword.tsx"));
+const SellCar = lazy(() => import("./pages/SellCar.tsx"));
+const Profile = lazy(() => import("./pages/Profile.tsx"));
+const Wishlist = lazy(() => import("./pages/Wishlist.tsx"));
+const Messages = lazy(() => import("./pages/Messages.tsx"));
+const Compare = lazy(() => import("./pages/Compare.tsx"));
+const About = lazy(() => import("./pages/About.tsx"));
+const Contact = lazy(() => import("./pages/Contact.tsx"));
+const FAQ = lazy(() => import("./pages/FAQ.tsx"));
+const HowItWorks = lazy(() => import("./pages/HowItWorks.tsx"));
+const Safety = lazy(() => import("./pages/Safety.tsx"));
+const Blog = lazy(() => import("./pages/Blog.tsx"));
+const BlogPost = lazy(() => import("./pages/BlogPost.tsx"));
+const Careers = lazy(() => import("./pages/Careers.tsx"));
+const Terms = lazy(() => import("./pages/Terms.tsx"));
+const Privacy = lazy(() => import("./pages/Privacy.tsx"));
+const DealerDirectory = lazy(() => import("./pages/DealerDirectory.tsx"));
+const DealerProfilePage = lazy(() => import("./pages/DealerProfile.tsx"));
+const BecomeDealer = lazy(() => import("./pages/BecomeDealer.tsx"));
+const DealerDashboard = lazy(() => import("./pages/DealerDashboard.tsx"));
+const AdminOverview = lazy(() => import("./pages/admin/AdminOverview.tsx"));
+const AdminListings = lazy(() => import("./pages/admin/AdminListings.tsx"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers.tsx"));
+const AdminReports = lazy(() => import("./pages/admin/AdminReports.tsx"));
+const AdminBlog = lazy(() => import("./pages/admin/AdminBlog.tsx"));
+const AdminContacts = lazy(() => import("./pages/admin/AdminContacts.tsx"));
+const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter.tsx"));
+const AdminDealers = lazy(() => import("./pages/admin/AdminDealers.tsx"));
+const AdminContent = lazy(() => import("./pages/admin/AdminContent.tsx"));
+const DutyCalculator = lazy(() => import("./pages/DutyCalculator.tsx"));
+const DealerLeads = lazy(() => import("./pages/DealerLeads.tsx"));
+const NotFound = lazy(() => import("./pages/NotFound.tsx"));
+const CityLandingPage = lazy(() => import("./pages/CityLandingPage.tsx"));
+const CountryLandingPage = lazy(() => import("./pages/CountryLandingPage.tsx"));
+const Welcome = lazy(() => import("./pages/Welcome.tsx"));
+const Stationery = lazy(() => import("./pages/Stationery.tsx"));
+const InstagramShowroom = lazy(() => import("./pages/InstagramShowroom.tsx"));
+const PromoVideo = lazy(() => import("./pages/PromoVideo.tsx"));
+const ModelLandingPage = lazy(() => import("./pages/ModelLandingPage.tsx"));
+const BrandCentre = lazy(() => import("./pages/BrandCentre.tsx"));
+
+function RouteLoader() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-label="Loading page">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  );
+}
+
 function AnimatedRoutes() {
   const location = useLocation();
   usePageTracking();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location.pathname]);
 
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -95,6 +110,7 @@ function AnimatedRoutes() {
         style={{ minHeight: "100vh" }}
         className="overflow-x-hidden"
       >
+        <Suspense fallback={<RouteLoader />}>
         <Routes location={location}>
               <Route path="/welcome" element={<Welcome />} />
               <Route path="/" element={<Index />} />
@@ -120,6 +136,7 @@ function AnimatedRoutes() {
               <Route path="/careers" element={<Careers />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/stationery" element={<Stationery />} />
               <Route path="/dealers" element={<DealerDirectory />} />
               <Route path="/dealer/:id" element={<DealerProfilePage />} />
               <Route path="/become-dealer" element={<ProtectedRoute><BecomeDealer /></ProtectedRoute>} />
@@ -143,10 +160,11 @@ function AnimatedRoutes() {
               <Route path="/country/:slug" element={<CountryLandingPage />} />
               <Route path="/showroom/:username" element={<InstagramShowroom />} />
               <Route path="/promo" element={<PromoVideo />} />
-              <Route path="/stationery" element={<Stationery />} />
+              <Route path="/brand-centre" element={<BrandCentre />} />
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />
               <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   );
@@ -159,6 +177,7 @@ const App = () => (
         <ThemeProvider>
           <LanguageProvider>
             <LocationProvider>
+              <CurrencyProvider>
               <AuthProvider>
                 <WishlistProvider>
                   <TooltipProvider>
@@ -172,6 +191,7 @@ const App = () => (
                   </TooltipProvider>
                 </WishlistProvider>
               </AuthProvider>
+              </CurrencyProvider>
             </LocationProvider>
           </LanguageProvider>
         </ThemeProvider>

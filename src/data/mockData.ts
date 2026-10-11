@@ -150,6 +150,14 @@ function _postImagePrefix(username: string, shortcode: string): string {
   return shortcode.startsWith(`${username}_`) ? shortcode.slice(username.length + 1) : shortcode;
 }
 
+// Deterministic per-dealer rating in the 4.2-4.8 range, same approach used for
+// Supabase-sourced listings in useSearchListings.ts — avoids every showroom
+// dealer showing an identical flat 4.5.
+function _dealerRating(username: string): number {
+  const sum = username.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  return Number((4.2 + (sum % 7) / 10).toFixed(1));
+}
+
 function _postImages(username: string, post: { shortcode?: string; images?: string[] }, index = 0): string[] {
   const sourceImages = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
   const shortcode = post.shortcode || `post_${index + 1}`;
@@ -169,7 +177,7 @@ function _postImages(username: string, post: { shortcode?: string; images?: stri
 
 export const carMakes = [
   "Toyota", "Nissan", "Subaru", "Land Rover", "Jeep", "Mitsubishi",
-  "BMW", "Audi", "Mazda", "Mercedes-Benz", "Honda", "Hyundai",
+  "BMW", "Audi", "Mazda", "Mercedes-Benz", "Lexus", "Honda", "Hyundai",
   "Volkswagen", "Kia", "Suzuki", "Great Wall", "Isuzu",
 ];
 
@@ -184,6 +192,7 @@ export const carModels: Record<string, string[]> = {
   Audi: ["Q5", "Q7", "A4"],
   Mazda: ["CX-5", "CX-3", "Demio", "Verisa"],
   "Mercedes-Benz": ["C-Class", "E-Class", "GLC"],
+  Lexus: ["RX", "LX", "GX", "IS", "ES", "NX"],
   Honda: ["CR-V", "Fit", "Civic"],
   Hyundai: ["Tucson", "Santa Fe"],
   default: ["Select make first"],
@@ -249,6 +258,7 @@ export interface Listing {
   location: string;
   image: string;
   images?: string[];
+  videoUrl?: string;
   views: number;
   sellerName: string;
   sellerRating: number;
@@ -487,7 +497,7 @@ function _parseMgayaCaption(caption: string) {
   let bodyType: string | undefined;
   if (/hilux|navara|ranger|d-max|l200|double.?cab|single.?cab|dmax|tundra|triton|bt-50|\bpickup\b/i.test(bodyHint)) {
     bodyType = "Pickup";
-  } else if (/canter|dyna|lorry|\belf\b|fuso|hino|actros|\btruck\b/i.test(bodyHint)) {
+  } else if (/canter|\bdyna\b|lorry|\belf\b|fuso|hino|actros|\btruck\b/i.test(bodyHint)) {
     bodyType = "Truck";
   } else if (/daladala|coaster|rosa|hiace.{0,10}bus|minibus|mini.?bus/i.test(bodyHint)) {
     bodyType = "Minibus";
@@ -617,7 +627,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         images,
         views: Math.max(post.likes * 3, 50),
         sellerName: dealer.full_name || username,
-        sellerRating: 4.5,
+        sellerRating: _dealerRating(username),
         sellerType: "dealer" as const,
         sellerListingCount: carPosts.length,
         sellerId: `dealer-${username}`,
@@ -808,240 +818,6 @@ export const mockListings: Listing[] = [
   ..._convertMgayaToListings(),
   ..._convertAllShowroomsToListings(),
   ..._nicoletteBoatListings(),
-
-  // ─── Additional private seller listings — various cities across East Africa ──
-  {
-    id: "stock-11", title: "2018 Toyota Vitz F 1.0 Hatchback", price: 18_500_000, currency: "TZS",
-    condition: "Foreign Used", year: 2018, mileage: 42000, transmission: "Automatic",
-    location: "Arusha, TZ", country: "TZ", image: "/cars/patrol-2022-1.jpg", images: ["/cars/patrol-2022-1.jpg"],
-    views: 312, sellerName: "Arusha Auto Center", sellerRating: 4.3, sellerType: "dealer",
-    sellerListingCount: 8, sellerPhone: "+255754000011", make: "Toyota", model: "Vitz",
-    bodyType: "Hatchback", fuelType: "Petrol", cc: 1000, dutyPaid: true,
-    description: "Toyota Vitz 2018 F grade 1.0L petrol automatic. Excellent fuel economy — perfect city car for Arusha. Low mileage 42,000km. Clean interior, well maintained.",
-  },
-  {
-    id: "stock-12", title: "2019 Mazda Demio 1.3 Hatchback", price: 22_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2019, mileage: 38000, transmission: "Automatic",
-    location: "Mwanza, TZ", country: "TZ", image: "/cars/hilux-gray-2019-1.jpg", images: ["/cars/hilux-gray-2019-1.jpg"],
-    views: 198, sellerName: "Hassan Mwanza", sellerRating: 4.0, sellerType: "private",
-    sellerListingCount: 1, sellerPhone: "+255766000012", make: "Mazda", model: "Demio",
-    bodyType: "Hatchback", fuelType: "Petrol", cc: 1300, dutyPaid: true,
-    description: "Mazda Demio 2019 1.3L automatic. Very economical, perfect for city and family use. First owner. No accidents. Available for viewing in Mwanza.",
-  },
-  {
-    id: "stock-13", title: "2020 Toyota Rush 1.5 SUV", price: 48_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2020, mileage: 28000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/fortuner-white-2019-1.jpg", images: ["/cars/fortuner-white-2019-1.jpg"],
-    views: 521, sellerName: "Dar Auto Hub", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 15, sellerPhone: "+255752000013", badge: "hot" as const, make: "Toyota", model: "Rush",
-    bodyType: "SUV", fuelType: "Petrol", cc: 1500, dutyPaid: true,
-    description: "Toyota Rush 2020 1.5L automatic SUV. 7-seater, perfect for families. Clean and well maintained. Fuel efficient. New tyres.",
-  },
-  {
-    id: "stock-14", title: "2017 Toyota Wish 1.8 Minivan", price: 38_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2017, mileage: 65000, transmission: "Automatic",
-    location: "Zanzibar, TZ", country: "TZ", image: "/cars/subaru-forester-2022-1.jpg", images: ["/cars/subaru-forester-2022-1.jpg"],
-    views: 276, sellerName: "Zanzibar Cars", sellerRating: 4.1, sellerType: "dealer",
-    sellerListingCount: 6, sellerPhone: "+255777000014", make: "Toyota", model: "Wish",
-    bodyType: "Van", fuelType: "Petrol", cc: 1800, dutyPaid: true,
-    description: "Toyota Wish 2017 1.8L automatic. 7-seater family minivan. Clean interior. Good condition. Zanzibar registered.",
-  },
-  {
-    id: "stock-15", title: "2016 Toyota Vanguard 2.0 4WD SUV", price: 55_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2016, mileage: 78000, transmission: "Automatic",
-    location: "Mbeya, TZ", country: "TZ", image: "/cars/landrover-disco-2020-1.jpg", images: ["/cars/landrover-disco-2020-1.jpg"],
-    views: 189, sellerName: "Mbeya Motors", sellerRating: 3.9, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+255765000015", make: "Toyota", model: "Vanguard",
-    bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    description: "Toyota Vanguard 2016 2.0L 4WD. 7-seater SUV, ideal for mountain terrain around Mbeya. Well maintained, all services done.",
-  },
-  {
-    id: "stock-16", title: "2021 Toyota Prius 1.8 Hybrid", price: 35_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2021, mileage: 22000, transmission: "CVT",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-white-2019-1.jpg", images: ["/cars/hilux-white-2019-1.jpg"],
-    views: 445, sellerName: "EcoMotors TZ", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 11, sellerPhone: "+255752000016", badge: "featured" as const, make: "Toyota", model: "Prius",
-    bodyType: "Sedan", fuelType: "Hybrid", cc: 1800, dutyPaid: true,
-    description: "Toyota Prius 2021 1.8L Hybrid. Ultra-low fuel consumption — 26km/L. Perfect for Dar es Salaam traffic. Lane assist, adaptive cruise. Low 22,000km.",
-  },
-  {
-    id: "stock-17", title: "2020 Toyota Aqua 1.5 Hybrid", price: 25_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2020, mileage: 35000, transmission: "CVT",
-    location: "Arusha, TZ", country: "TZ", image: "/cars/navara-2017-1.jpg", images: ["/cars/navara-2017-1.jpg"],
-    views: 367, sellerName: "Kilimanjaro Auto", sellerRating: 4.2, sellerType: "dealer",
-    sellerListingCount: 7, sellerPhone: "+255754000017", make: "Toyota", model: "Aqua",
-    bodyType: "Hatchback", fuelType: "Hybrid", cc: 1500, dutyPaid: true,
-    description: "Toyota Aqua 2020 1.5L Hybrid hatchback. Excellent fuel economy. Perfect for Arusha city and safari trips. Clean condition.",
-  },
-  {
-    id: "stock-18", title: "2015 BMW 320i 2.0 Turbo Sedan", price: 45_000_000, currency: "TZS",
-    condition: "Used", year: 2015, mileage: 95000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/wrangler-2016-1.jpg", images: ["/cars/wrangler-2016-1.jpg"],
-    views: 534, sellerName: "Prestige Motors TZ", sellerRating: 4.4, sellerType: "dealer",
-    sellerListingCount: 9, sellerPhone: "+255752000018", make: "BMW", model: "3 Series",
-    bodyType: "Sedan", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    description: "BMW 320i 2015 F30 2.0T. Luxury sedan in excellent condition. Leather interior, sunroof, navigation. Full service history. Locally used.",
-  },
-  {
-    id: "stock-19", title: "2016 Mercedes-Benz C200 1.8 Turbo", price: 3_800_000, currency: "KES",
-    condition: "Used", year: 2016, mileage: 87000, transmission: "Automatic",
-    location: "Nairobi, KE", image: "/cars/hilux-arb-2019-1.jpg", images: ["/cars/hilux-arb-2019-1.jpg"],
-    views: 412, sellerName: "Nairobi Premium Cars", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 13, sellerPhone: "+254720000019", country: "KE",
-    make: "Mercedes-Benz", model: "C-Class", bodyType: "Sedan", fuelType: "Petrol",
-    cc: 1800, dutyPaid: true,
-    description: "Mercedes-Benz C200 2016 W205. Premium executive sedan. AMG styling package. Panoramic sunroof. Nairobi registered. Clean title.",
-  },
-  {
-    id: "stock-20", title: "2018 Mazda CX-5 2.0 SUV", price: 52_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2018, mileage: 52000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/subaru-forester-2022b-1.jpg", images: ["/cars/subaru-forester-2022b-1.jpg"],
-    views: 298, sellerName: "Mazda Centre TZ", sellerRating: 4.3, sellerType: "dealer",
-    sellerListingCount: 5, sellerPhone: "+255752000020", make: "Mazda", model: "CX-5",
-    bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    description: "Mazda CX-5 2018 Skyactiv-G 2.0. Premium crossover SUV. BOSE sound system, leather, blind spot monitoring. Japanese import.",
-  },
-  {
-    id: "stock-21", title: "2019 Mitsubishi Outlander 2.4 SUV", price: 155_000_000, currency: "UGX",
-    condition: "Foreign Used", year: 2019, mileage: 44000, transmission: "CVT",
-    location: "Kampala, UG", image: "/cars/patrol-2022-2.jpg", images: ["/cars/patrol-2022-2.jpg"],
-    views: 187, sellerName: "Kampala Cars Ltd", sellerRating: 4.0, sellerType: "dealer",
-    sellerListingCount: 6, sellerPhone: "+256700000021", country: "UG",
-    make: "Mitsubishi", model: "Outlander", bodyType: "SUV", fuelType: "Petrol",
-    cc: 2400, dutyPaid: true,
-    description: "Mitsubishi Outlander 2019 2.4L CVT. 7-seater SUV. All wheel drive. Well maintained, clean history. Available in Kampala.",
-  },
-  {
-    id: "stock-26", title: "2022 Toyota Rumion 1.5 Hatchback", price: 28_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2022, mileage: 15000, transmission: "Automatic",
-    location: "Moshi, TZ", country: "TZ", image: "/cars/navara-2017-2.jpg", images: ["/cars/navara-2017-2.jpg"],
-    views: 245, sellerName: "Moshi Auto Sales", sellerRating: 4.1, sellerType: "dealer",
-    sellerListingCount: 3, sellerPhone: "+255754000026", badge: "new" as const,
-    make: "Toyota", model: "Rumion", bodyType: "Hatchback", fuelType: "Petrol",
-    cc: 1500, dutyPaid: true,
-    description: "Toyota Rumion 2022 1.5L automatic. Brand new import with only 15,000km. Modern safety features, Apple CarPlay. Perfect condition.",
-  },
-  {
-    id: "stock-27", title: "2021 Toyota Kluger 3.5 V6 AWD SUV", price: 5_700_000, currency: "KES",
-    condition: "Foreign Used", year: 2021, mileage: 24000, transmission: "Automatic",
-    location: "Nairobi, KE", image: "/cars/subaru-forester-2022-3.jpg", images: ["/cars/subaru-forester-2022-3.jpg"],
-    views: 334, sellerName: "Westlands Auto KE", sellerRating: 4.4, sellerType: "dealer",
-    sellerListingCount: 11, sellerPhone: "+254720000027", country: "KE",
-    make: "Toyota", model: "Kluger", bodyType: "SUV", fuelType: "Petrol",
-    cc: 3500, dutyPaid: true,
-    description: "Toyota Kluger 2021 3.5L V6 AWD. 8-seater premium SUV. Dual sunroof, captain seats, wireless charging. Excellent condition.",
-  },
-  {
-    id: "stock-28", title: "2018 Mitsubishi Pajero 3.2 Diesel 4WD", price: 88_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2018, mileage: 62000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-arb-2019-2.jpg", images: ["/cars/hilux-arb-2019-2.jpg"],
-    views: 467, sellerName: "Safari Auto TZ", sellerRating: 4.3, sellerType: "dealer",
-    sellerListingCount: 8, sellerPhone: "+255752000028", make: "Mitsubishi", model: "Pajero",
-    bodyType: "SUV", fuelType: "Diesel", cc: 3200, dutyPaid: true,
-    description: "Mitsubishi Pajero 2018 V93 3.2D 4WD. Full-size luxury 4x4. Super select 4WD, locking diff, terrain management. Perfect for safaris and rough terrain.",
-  },
-  {
-    id: "stock-29", title: "2020 Toyota Hilux Surf 3.0 4WD Diesel", price: 72_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2020, mileage: 45000, transmission: "Automatic",
-    location: "Arusha, TZ", country: "TZ", image: "/cars/patrol-2022-3.jpg", images: ["/cars/patrol-2022-3.jpg"],
-    views: 389, sellerName: "Arusha 4x4 Centre", sellerRating: 4.2, sellerType: "dealer",
-    sellerListingCount: 7, sellerPhone: "+255754000029", make: "Toyota", model: "Hilux Surf",
-    bodyType: "SUV", fuelType: "Diesel", cc: 3000, dutyPaid: true,
-    description: "Toyota Hilux Surf 2020 (4Runner) 3.0D 4WD. Premium mid-size SUV. KDSS, locking rear diff, crawl control. Ideal for Arusha–Nairobi runs.",
-  },
-  {
-    id: "stock-30", title: "2019 Nissan Civilian 4.2 Minibus 28-seater", price: 45_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2019, mileage: 95000, transmission: "Manual",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/hilux-gray-2019-3.jpg", images: ["/cars/hilux-gray-2019-3.jpg"],
-    views: 156, sellerName: "Daladala Motors TZ", sellerRating: 3.8, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+255752000030", make: "Nissan", model: "Civilian",
-    bodyType: "Minibus", fuelType: "Diesel", cc: 4200, dutyPaid: false,
-    description: "Nissan Civilian 2019 4.2L diesel 28-seater. Japanese import. Right-hand drive, A/C, well maintained. Ideal for school or hotel shuttle. Duty not paid.",
-  },
-  {
-    id: "stock-31", title: "2020 Mitsubishi Canter 4WD Truck", price: 65_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2020, mileage: 78000, transmission: "Manual",
-    location: "Mwanza, TZ", country: "TZ", image: "/cars/hilux-white-2019-2.jpg", images: ["/cars/hilux-white-2019-2.jpg"],
-    views: 134, sellerName: "Mwanza Trucks", sellerRating: 4.0, sellerType: "dealer",
-    sellerListingCount: 3, sellerPhone: "+255766000031", make: "Mitsubishi", model: "Canter",
-    bodyType: "Truck", fuelType: "Diesel", cc: 3900, dutyPaid: false,
-    description: "Mitsubishi Canter 4WD 2020 3.9L diesel. Flat bed truck, 3-tonne payload. Excellent for mining and rough terrain. Duty not paid — good price.",
-  },
-  {
-    id: "stock-32", title: "2022 Mazda Verisa 1.5 Hatchback", price: 22_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2022, mileage: 18000, transmission: "Automatic",
-    location: "Dodoma, TZ", country: "TZ", image: "/cars/subaru-forester-2022b-2.jpg", images: ["/cars/subaru-forester-2022b-2.jpg"],
-    views: 212, sellerName: "Capital Cars Dodoma", sellerRating: 4.0, sellerType: "dealer",
-    sellerListingCount: 5, sellerPhone: "+255763000032", badge: "new" as const,
-    make: "Mazda", model: "Verisa", bodyType: "Hatchback", fuelType: "Petrol",
-    cc: 1500, dutyPaid: true,
-    description: "Mazda Verisa 2022 1.5L hatchback. Stylish and economical. Only 18,000km. Perfect for city driving in Dodoma. All papers in order.",
-  },
-  {
-    id: "stock-33", title: "2019 Subaru Forester 2.0 AWD XT Turbo", price: 82_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2019, mileage: 47000, transmission: "CVT",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/subaru-forester-2022-4.jpg", images: ["/cars/subaru-forester-2022-4.jpg"],
-    views: 478, sellerName: "Subaru Specialists TZ", sellerRating: 4.5, sellerType: "dealer",
-    sellerListingCount: 9, sellerPhone: "+255752000033", make: "Subaru", model: "Forester",
-    bodyType: "SUV", fuelType: "Petrol", cc: 2000, dutyPaid: true,
-    description: "Subaru Forester 2019 2.0XT Turbo AWD. EyeSight driver assist, X-mode off-road, apple carplay. Turbocharged for mountain performance.",
-  },
-  {
-    id: "stock-34", title: "2021 Subaru Forester 2.5 AWD E-Boxer", price: 6_800_000, currency: "KES",
-    condition: "Foreign Used", year: 2021, mileage: 29000, transmission: "CVT",
-    location: "Nairobi, KE", image: "/cars/subaru-forester-2022b-3.jpg", images: ["/cars/subaru-forester-2022b-3.jpg"],
-    views: 356, sellerName: "Subaru Kenya", sellerRating: 4.6, sellerType: "dealer",
-    sellerListingCount: 12, sellerPhone: "+254720000034", country: "KE",
-    badge: "featured" as const, make: "Subaru", model: "Forester", bodyType: "SUV",
-    fuelType: "Hybrid", cc: 2500, dutyPaid: true,
-    description: "Subaru Forester 2021 2.5L e-Boxer hybrid AWD. EyeSight 4.0, SI-drive, X-mode. Hybrid efficiency with Subaru all-terrain capability.",
-  },
-  {
-    id: "stock-35", title: "2020 Toyota Corolla 1.8 Sedan", price: 32_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2020, mileage: 38000, transmission: "CVT",
-    location: "Tanga, TZ", country: "TZ", image: "/cars/hilux-gray-2019-4.jpg", images: ["/cars/hilux-gray-2019-4.jpg"],
-    views: 287, sellerName: "Tanga Auto Sales", sellerRating: 4.0, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+255753000035", make: "Toyota", model: "Corolla",
-    bodyType: "Sedan", fuelType: "Petrol", cc: 1800, dutyPaid: true,
-    description: "Toyota Corolla 2020 1.8L CVT sedan. Pre-collision system, lane departure alert, radar cruise control. Fuel efficient family saloon.",
-  },
-  {
-    id: "stock-36", title: "2018 Toyota Ipsum 2.4 MPV 7-seater", price: 25_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2018, mileage: 72000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/navara-2017-3.jpg", images: ["/cars/navara-2017-3.jpg"],
-    views: 198, sellerName: "Family Cars TZ", sellerRating: 3.9, sellerType: "private",
-    sellerListingCount: 1, sellerPhone: "+255755000036", make: "Toyota", model: "Ipsum",
-    bodyType: "Van", fuelType: "Petrol", cc: 2400, dutyPaid: true,
-    description: "Toyota Ipsum 2018 2.4L automatic 7-seater MPV. Spacious family car. Good condition. Duty paid. Viewable in Dar es Salaam.",
-  },
-  {
-    id: "stock-37", title: "2019 Toyota IST 1.5 Hatchback", price: 20_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2019, mileage: 41000, transmission: "Automatic",
-    location: "Moshi, TZ", country: "TZ", image: "/cars/fortuner-white-2019-3.jpg", images: ["/cars/fortuner-white-2019-3.jpg"],
-    views: 156, sellerName: "Kilimanjaro Autos", sellerRating: 4.0, sellerType: "dealer",
-    sellerListingCount: 4, sellerPhone: "+255754000037", make: "Toyota", model: "IST",
-    bodyType: "Hatchback", fuelType: "Petrol", cc: 1500, dutyPaid: true,
-    description: "Toyota IST 2019 1.5L automatic hatchback. Compact and fuel efficient. Clean interior. Duty paid. Near Kilimanjaro.",
-  },
-  {
-    id: "stock-38", title: "2022 Mazda CX-3 2.0 Crossover", price: 38_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2022, mileage: 16000, transmission: "Automatic",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/wrangler-2016-3.jpg", images: ["/cars/wrangler-2016-3.jpg"],
-    views: 321, sellerName: "Mazda Centre TZ", sellerRating: 4.3, sellerType: "dealer",
-    sellerListingCount: 5, sellerPhone: "+255752000020", badge: "new" as const,
-    make: "Mazda", model: "CX-3", bodyType: "SUV", fuelType: "Petrol",
-    cc: 2000, dutyPaid: true,
-    description: "Mazda CX-3 2022 2.0L Skyactiv crossover. Sport compact SUV. Head-up display, G-Vectoring Control Plus. Low mileage import.",
-  },
-  {
-    id: "stock-39", title: "2020 Honda CR-V 1.5T AWD SUV", price: 55_000_000, currency: "TZS",
-    condition: "Foreign Used", year: 2020, mileage: 33000, transmission: "CVT",
-    location: "Dar es Salaam, TZ", country: "TZ", image: "/cars/patrol-2022-4.jpg", images: ["/cars/patrol-2022-4.jpg"],
-    views: 412, sellerName: "Honda Centre TZ", sellerRating: 4.4, sellerType: "dealer",
-    sellerListingCount: 8, sellerPhone: "+255752000039", make: "Honda", model: "CR-V",
-    bodyType: "SUV", fuelType: "Petrol", cc: 1500, dutyPaid: true,
-    description: "Honda CR-V 2020 1.5T Turbo AWD. Honda Sensing safety suite, wireless CarPlay, panoramic roof. Comfortable family SUV.",
-  },
 ].filter(_isLaunchQualityListing);
 
 export const priceRanges = [
@@ -1629,7 +1405,7 @@ export function getShowroomListings(username: string): Listing[] {
       images: imgs,
       views: post.likes ? post.likes * 3 : 50,
       sellerName: dealer.full_name || username,
-      sellerRating: 4.5,
+      sellerRating: _dealerRating(username),
       sellerType: "dealer" as const,
       sellerListingCount: carPosts.length,
       sellerId: username,

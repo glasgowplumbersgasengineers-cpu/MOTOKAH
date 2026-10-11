@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export type Country = "Tanzania" | "Kenya" | "Uganda" | "Rwanda" | "Burundi" | "Ethiopia" | "Nigeria" | "All";
 
@@ -26,17 +26,17 @@ export function LocationProvider({ children }: { children: ReactNode }) {
   });
   const [city, setCityState] = useState(() => localStorage.getItem(CITY_KEY) || "");
 
-  const setCountry = (c: Country) => {
+  const setCountry = useCallback((c: Country) => {
     setCountryState(c);
     localStorage.setItem(COUNTRY_KEY, c);
     window.dispatchEvent(new Event("motokah-location-updated"));
-  };
+  }, []);
 
-  const setCity = (c: string) => {
+  const setCity = useCallback((c: string) => {
     setCityState(c);
     localStorage.setItem(CITY_KEY, c);
     window.dispatchEvent(new Event("motokah-location-updated"));
-  };
+  }, []);
 
   // Listen for storage changes from Welcome page
   useEffect(() => {
@@ -54,8 +54,10 @@ export function LocationProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  const value = useMemo(() => ({ country, city, setCountry, setCity }), [country, city, setCountry, setCity]);
+
   return (
-    <LocationContext.Provider value={{ country, city, setCountry, setCity }}>
+    <LocationContext.Provider value={value}>
       {children}
     </LocationContext.Provider>
   );
