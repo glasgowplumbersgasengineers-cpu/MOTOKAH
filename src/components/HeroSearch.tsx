@@ -4,6 +4,7 @@ import { carMakes, bodyTypes, conditions, transmissions, africanCities, bikeMake
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useLocation } from "@/contexts/LocationContext";
+import { getSearchSuggestions } from "@/lib/searchSuggestions";
 
 const selectCls = "h-10 rounded-md border border-input bg-surface-3 px-3 text-sm text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors w-full";
 const years = Array.from({ length: 27 }, (_, i) => String(2000 + i));
@@ -20,9 +21,13 @@ export default function HeroSearch() {
   const [bikeF, setBikeF] = useState({ make: "", type: "", cc: "", condition: "", yearFrom: "", yearTo: "", city: "", maxPrice: "" });
   const [comF, setComF] = useState({ vehicleType: "", make: "", condition: "", yearFrom: "", yearTo: "", city: "", maxPrice: "" });
 
-  const handleSearch = () => {
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestions = getSearchSuggestions(keyword);
+
+  const handleSearch = (overrideKeyword?: string) => {
     const p = new URLSearchParams();
-    if (keyword.trim()) p.set("q", keyword.trim());
+    const term = (overrideKeyword !== undefined ? overrideKeyword : keyword).trim();
+    if (term) p.set("q", term);
     const applyDefaultLocation = () => {
       if (city) {
         p.set("city", city);
@@ -104,10 +109,45 @@ export default function HeroSearch() {
                   type="text"
                   placeholder={`Search ${tabLabel}...`}
                   value={keyword}
-                  onChange={e => setKeyword(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleSearch()}
+                  onChange={e => {
+                    setKeyword(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") {
+                      setShowSuggestions(false);
+                      handleSearch();
+                    }
+                  }}
                   className="w-full h-11 pl-10 pr-4 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="absolute left-0 right-0 top-full mt-1.5 bg-card border border-border rounded-xl shadow-xl z-50 overflow-hidden divide-y divide-border/50 max-h-64 overflow-y-auto">
+                    {suggestions.map((s) => (
+                      <button
+                        key={s.text}
+                        type="button"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          setKeyword(s.text);
+                          setShowSuggestions(false);
+                          handleSearch(s.text);
+                        }}
+                        className="w-full flex items-center justify-between px-4 py-2.5 text-left text-sm hover:bg-secondary/70 transition-colors"
+                      >
+                        <span className="font-medium text-foreground flex items-center gap-2">
+                          <IconSearch size={14} className="text-muted-foreground" />
+                          {s.text}
+                        </span>
+                        <span className="text-[10px] uppercase font-bold text-primary/80 bg-primary/10 px-2 py-0.5 rounded-full">
+                          {s.type}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               <Button onClick={handleSearch} className="h-11 px-6 bg-primary text-primary-foreground font-bold">
                 Search

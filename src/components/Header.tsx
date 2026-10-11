@@ -149,13 +149,12 @@ export default function Header() {
                     {theme === "dark" ? t("nav.lightMode") : t("nav.darkMode")}
                   </button>
                 </SheetClose>
-                <button 
-                  onClick={() => setShowHelp(true)} 
-                  className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors"
-                >
-                  <IconHelpCircle size={18} stroke={2.5} />
-                  How to Use
-                </button>
+                <SheetClose asChild>
+                  <Link to="/how-it-works" className="flex items-center gap-2 px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">
+                    <IconHelpCircle size={18} stroke={2.5} />
+                    How It Works
+                  </Link>
+                </SheetClose>
                 {user ? null : (
                   <SheetClose asChild>
                     <Link to="/auth"><Button variant="outline" className="border-border text-foreground w-full">{t("nav.signIn")}</Button></Link>
@@ -183,7 +182,7 @@ export default function Header() {
         </div>
       </div>
     </header>
-    <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={lang} />
+    
     </>
   );
 }

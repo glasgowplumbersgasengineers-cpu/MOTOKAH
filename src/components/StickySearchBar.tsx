@@ -1,3 +1,4 @@
+import { getSearchSuggestions } from "@/lib/searchSuggestions";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconSearch } from "@tabler/icons-react";
@@ -13,6 +14,8 @@ export default function StickySearchBar() {
   const [visible, setVisible] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [query, setQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestions = getSearchSuggestions(query);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,10 +24,11 @@ export default function StickySearchBar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = (overrideQuery?: string) => {
     const base = tabs[activeTab].href;
     const sep = base.includes("?") ? "&" : "?";
-    navigate(query.trim() ? `${base}${sep}q=${encodeURIComponent(query.trim())}` : base);
+    const q = (overrideQuery !== undefined ? overrideQuery : query).trim();
+    navigate(q ? `${base}${sep}q=${encodeURIComponent(q)}` : base);
   };
 
   return (
@@ -59,10 +63,40 @@ export default function StickySearchBar() {
               type="text"
               placeholder="Search used cars..."
               value={query}
-              onChange={e => setQuery(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && handleSearch()}
+              onChange={e => {
+                setQuery(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onFocus={() => setShowSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  setShowSuggestions(false);
+                  handleSearch();
+                }
+              }}
               className="w-full h-9 pl-9 pr-3 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-1.5 bg-card border border-border rounded-xl shadow-xl z-50 overflow-hidden divide-y divide-border/50 max-h-56 overflow-y-auto">
+                {suggestions.map((s) => (
+                  <button
+                    key={s.text}
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setQuery(s.text);
+                      setShowSuggestions(false);
+                      handleSearch(s.text);
+                    }}
+                    className="w-full flex items-center justify-between px-3 py-2 text-left text-xs hover:bg-secondary/70 transition-colors"
+                  >
+                    <span className="font-medium text-foreground">{s.text}</span>
+                    <span className="text-[9px] uppercase font-bold text-primary/80 bg-primary/10 px-1.5 py-0.5 rounded-full">{s.type}</span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <button
             onClick={handleSearch}

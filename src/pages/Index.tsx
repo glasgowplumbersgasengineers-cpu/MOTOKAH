@@ -6,6 +6,7 @@ import FeaturedListings from "@/components/FeaturedListings";
 import LatestListingsGrid from "@/components/LatestListingsGrid";
 import SellCTA from "@/components/SellCTA";
 import PopularModelsSection from "@/components/PopularModelsSection";
+import FuelPriceSection from "@/components/FuelPriceSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
 import { Link } from "react-router-dom";
@@ -44,6 +45,7 @@ const Index = () => {
       <FeaturedListings />
       <LatestListingsGrid />
       <PopularModelsSection />
+      <FuelPriceSection />
       <SellCTA />
       <Footer />
     </div>

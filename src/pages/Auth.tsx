@@ -64,6 +64,16 @@ export default function Auth() {
     }
   }, [user, isAdmin, userIsDealer, navigate, returnTo]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(routeLocation.search);
+    if (params.get("verified") === "1") {
+      toast({
+        title: "Email Verified! 🎉",
+        description: "Your email has been confirmed. You can now sign in.",
+      });
+    }
+  }, [routeLocation.search, toast]);
+
   if (user) return null;
 
   const handleSocialLogin = async (provider: "google" | "apple" | "facebook") => {

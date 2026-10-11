@@ -1,10 +1,39 @@
 import { useState } from "react";
-import { IconChevronLeft, IconChevronRight, IconZoomIn } from "@tabler/icons-react";
+import { IconCar, IconChevronLeft, IconChevronRight, IconZoomIn } from "@tabler/icons-react";
 import { fullImageUrl, galleryImageUrl, normalizeImageUrl } from "@/lib/imageUrls";
 
 interface ImageGalleryProps {
   images: string[];
   title: string;
+}
+
+function GalleryImage({ image, alt, className, priority = false, onClick }: {
+  image: string;
+  alt: string;
+  className: string;
+  priority?: boolean;
+  onClick?: () => void;
+}) {
+  const [useOriginal, setUseOriginal] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  if (failed) {
+    return <div className={`${className} flex items-center justify-center bg-muted`}><IconCar size={36} className="text-muted-foreground/35" /></div>;
+  }
+
+  return (
+    <img
+      src={useOriginal ? fullImageUrl(image) : galleryImageUrl(image)}
+      alt={alt}
+      className={className}
+      loading={priority ? "eager" : "lazy"}
+      decoding="async"
+      fetchpriority={priority ? "high" : "auto"}
+      onClick={onClick}
+      onError={() => useOriginal ? setFailed(true) : setUseOriginal(true)}
+      draggable={false}
+    />
+  );
 }
 
 export default function ImageGallery({ images, title }: ImageGalleryProps) {
@@ -31,15 +60,13 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
     <div className="space-y-3">
       {/* Main Image */}
       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted group select-none">
-        <img
-          src={zoomed ? fullImageUrl(activeImage) : galleryImageUrl(activeImage)}
+        <GalleryImage
+          key={activeImage}
+          image={activeImage}
           alt={`${title} - Image ${activeIndex + 1}`}
           className={`w-full h-full object-cover transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
-          loading="eager"
-          decoding="async"
-          fetchpriority="high"
+          priority
           onClick={() => setZoomed(!zoomed)}
-          draggable={false}
         />
         <button
           onClick={() => navigate("prev")}
@@ -71,7 +98,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
               i === activeIndex ? "border-primary" : "border-transparent opacity-60 hover:opacity-90"
             }`}
           >
-            <img src={galleryImageUrl(img)} alt={`Thumb ${i + 1}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+            <GalleryImage image={img} alt={`${title} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
           </button>
         ))}
       </div>

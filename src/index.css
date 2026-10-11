@@ -207,3 +207,18 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+/* Google Translate output often runs longer than English (many African
+   languages use longer words/phrases). Buttons and nav links are built with
+   whitespace-nowrap for compact English layouts, which clips or overflows
+   once translated. Google Translate tags <html> with translated-ltr/-rtl —
+   only relax nowrap in that state so the default English layout is untouched. */
+html.translated-ltr,
+html.translated-rtl {
+  button,
+  a {
+    white-space: normal !important;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}

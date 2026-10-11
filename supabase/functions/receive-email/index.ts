@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const forwardRecipients = [
-  "waleedmurtazamalil@gmail.com",
+const defaultForwardRecipients = [
+  "waleedmurtazamalik@gmail.com",
   "motokahafrica@gmail.com",
 ];
 
@@ -21,6 +21,74 @@ type ResendEmailReceivedEvent = {
     attachments?: unknown[];
   };
 };
+
+const encoder = new TextEncoder();
+
+function getHeader(req: Request, names: string[]) {
+  for (const name of names) {
+    const value = req.headers.get(name);
+    if (value) return value;
+  }
+  return null;
+}
+
+function base64ToBytes(value: string) {
+  const binary = atob(value);
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+}
+
+function timingSafeEqual(a: Uint8Array, b: Uint8Array) {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i += 1) {
+    diff |= a[i] ^ b[i];
+  }
+  return diff === 0;
+}
+
+async function verifyWebhookSignature(req: Request, payload: string) {
+  const secret = Deno.env.get("RESEND_WEBHOOK_SECRET");
+  if (!secret) {
+    throw new Error("RESEND_WEBHOOK_SECRET not configured");
+  }
+
+  const id = getHeader(req, ["svix-id", "webhook-id"]);
+  const timestamp = getHeader(req, ["svix-timestamp", "webhook-timestamp"]);
+  const signature = getHeader(req, ["svix-signature", "webhook-signature"]);
+
+  if (!id || !timestamp || !signature) {
+    throw new Error("Missing webhook signature headers");
+  }
+
+  const timestampSeconds = Number(timestamp);
+  if (!Number.isFinite(timestampSeconds)) {
+    throw new Error("Invalid webhook timestamp");
+  }
+
+  const ageSeconds = Math.abs(Date.now() / 1000 - timestampSeconds);
+  if (ageSeconds > 300) {
+    throw new Error("Webhook timestamp outside tolerance");
+  }
+
+  const secretValue = secret.startsWith("whsec_") ? secret.slice("whsec_".length) : secret;
+  const key = await crypto.subtle.importKey(
+    "raw",
+    base64ToBytes(secretValue),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signedContent = `${id}.${timestamp}.${payload}`;
+  const expected = new Uint8Array(await crypto.subtle.sign("HMAC", key, encoder.encode(signedContent)));
+  const providedSignatures = signature
+    .split(" ")
+    .map((part) => part.split(",").at(-1)?.trim())
+    .filter((part): part is string => Boolean(part));
+
+  if (!providedSignatures.some((part) => timingSafeEqual(expected, base64ToBytes(part)))) {
+    throw new Error("Invalid webhook signature");
+  }
+}
 
 function escapeHtml(value: string) {
   return value
@@ -51,6 +119,16 @@ function formatRecipients(value: ResendEmailReceivedEvent["data"]["to"]) {
     .join(", ");
 }
 
+function getForwardRecipients() {
+  const configured = Deno.env.get("INBOUND_FORWARD_TO");
+  if (!configured) return defaultForwardRecipients;
+  const recipients = configured
+    .split(",")
+    .map((email) => email.trim().replace(/^["'\[]+|["'\]]+$/g, ""))
+    .filter(Boolean);
+  return recipients.length > 0 ? recipients : defaultForwardRecipients;
+}
+
 serve(async (req) => {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "POST required" }), {
@@ -68,7 +146,10 @@ serve(async (req) => {
       });
     }
 
-    const event = (await req.json()) as ResendEmailReceivedEvent;
+    const payload = await req.text();
+    await verifyWebhookSignature(req, payload);
+
+    const event = JSON.parse(payload) as ResendEmailReceivedEvent;
     if (event.type && event.type !== "email.received") {
       return new Response(JSON.stringify({ ignored: true, type: event.type }), {
         headers: jsonHeaders,
@@ -76,6 +157,7 @@ serve(async (req) => {
     }
 
     const inbound = event.data ?? {};
+    const forwardRecipients = getForwardRecipients();
     const from = formatAddress(inbound.from);
     const to = formatRecipients(inbound.to);
     const subject = inbound.subject || "(no subject)";

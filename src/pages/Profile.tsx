@@ -592,7 +592,7 @@ export default function Profile() {
               <div className="border-t border-border pt-4 mt-4">
                 <h3 className="text-sm font-semibold text-foreground mb-3">Help & Support</h3>
                 <button
-                  onClick={() => setShowHelp(true)}
+                  onClick={() => navigate("/how-it-works")}
                   className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-muted/30 transition-all"
                 >
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -642,7 +642,7 @@ export default function Profile() {
         {tab === "security" && <MfaSection />}
       </div>
       <Footer />
-      <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={lang} />
+      
     </div>
   );
 }

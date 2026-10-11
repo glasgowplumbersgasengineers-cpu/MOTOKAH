@@ -1,296 +1,604 @@
-import { Button } from "@/components/ui/button";
-import { Helmet } from "react-helmet-async";
-import {
-  IconBrandInstagram,
-  IconBuildingStore,
-  IconCheck,
-  IconDownload,
-  IconFileText,
-  IconIdBadge2,
-  IconPrinter,
-  IconQrcode,
-  IconShieldCheck,
-  IconShirt,
-} from "@tabler/icons-react";
+import React, { useRef, useState, useCallback, createRef } from 'react';
+import { Download, FileImage, FileCode, Eye, EyeOff, Loader2, Images, Info } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { usePageTitle } from '@/hooks/usePageTitle';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { exportToPng, exportToSvg } from '@/lib/stationeryExport';
+import { toast } from 'sonner';
 
-type Asset = {
-  title: string;
-  file: string;
-  format: string;
-  kit: "Office" | "Uniform" | "Dealer" | "Marketing";
-  icon: typeof IconFileText;
+import BusinessCardFront from '@/components/stationery/BusinessCardFront';
+import BusinessCardBack from '@/components/stationery/BusinessCardBack';
+import Letterhead from '@/components/stationery/Letterhead';
+import Envelope from '@/components/stationery/Envelope';
+import Folder from '@/components/stationery/Folder';
+import ComplimentSlip from '@/components/stationery/ComplimentSlip';
+import { IDCardFront, IDCardBack } from '@/components/stationery/IDCard';
+import EmailSignature from '@/components/stationery/EmailSignature';
+import Diary from '@/components/stationery/Diary';
+import FileCover from '@/components/stationery/FileCover';
+import { GiftBagSmall, GiftBagMedium } from '@/components/stationery/GiftBag';
+import Cap from '@/components/stationery/Cap';
+import { StampOfficial, StampVerified, StampReceived } from '@/components/stationery/Stamp';
+
+// Mockup images
+import mockupSet from '@/assets/stationery-mockup-set.jpg';
+import mockupCards from '@/assets/stationery-business-cards-mockup.jpg';
+import mockupLetterhead from '@/assets/stationery-letterhead-mockup.jpg';
+import mockupFolder from '@/assets/stationery-folder-mockup.jpg';
+
+interface StationeryItem {
+  id: string;
+  name: string;
+  component: React.ForwardRefExoticComponent<React.RefAttributes<HTMLDivElement>>;
+  scale: number;
+  description: string;
+  dimensions: string;
+  backgroundColor: string;
+}
+
+const stationeryItems: StationeryItem[] = [
+  {
+    id: 'business-card-front',
+    name: 'Business Card (Front)',
+    component: BusinessCardFront,
+    scale: 0.3,
+    description: 'Icon + wordmark on brand blue',
+    dimensions: '3.5" × 2" (1050×600px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'business-card-back',
+    name: 'Business Card (Back)',
+    component: BusinessCardBack,
+    scale: 0.3,
+    description: 'Contact details and info',
+    dimensions: '3.5" × 2" (1050×600px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'letterhead',
+    name: 'Letterhead',
+    component: Letterhead,
+    scale: 0.12,
+    description: 'A4 letterhead with header and footer',
+    dimensions: 'A4 (2480×3508px)',
+    backgroundColor: '#ffffff',
+  },
+  {
+    id: 'envelope',
+    name: 'Envelope (DL)',
+    component: Envelope,
+    scale: 0.15,
+    description: 'Standard DL envelope design',
+    dimensions: 'DL (2598×1299px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'folder',
+    name: 'Presentation Folder',
+    component: Folder,
+    scale: 0.1,
+    description: 'A4 folder/portfolio cover',
+    dimensions: 'A4 (2480×3508px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'compliment-slip',
+    name: 'Compliment Slip',
+    component: ComplimentSlip,
+    scale: 0.15,
+    description: 'DL compliment slip',
+    dimensions: 'DL (2480×1169px)',
+    backgroundColor: '#ffffff',
+  },
+  {
+    id: 'id-card-front',
+    name: 'ID Card (Front)',
+    component: IDCardFront,
+    scale: 0.35,
+    description: 'Employee ID card front',
+    dimensions: 'CR80 (1013×638px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'id-card-back',
+    name: 'ID Card (Back)',
+    component: IDCardBack,
+    scale: 0.35,
+    description: 'Employee ID card back',
+    dimensions: 'CR80 (1013×638px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'email-signature',
+    name: 'Email Signature',
+    component: EmailSignature,
+    scale: 0.6,
+    description: 'Professional email signature',
+    dimensions: '600×200px',
+    backgroundColor: '#ffffff',
+  },
+  {
+    id: 'diary',
+    name: 'Diary Cover',
+    component: Diary,
+    scale: 0.1,
+    description: 'A5 diary/notebook cover',
+    dimensions: 'A5 (1748×2480px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'file-cover',
+    name: 'File Cover',
+    component: FileCover,
+    scale: 0.1,
+    description: 'A4 document file cover',
+    dimensions: 'A4 (2480×3508px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'gift-bag-small',
+    name: 'Gift Bag (Small)',
+    component: GiftBagSmall,
+    scale: 0.08,
+    description: '8×10 inch gift bag',
+    dimensions: '8"×10" (2400×3000px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'gift-bag-medium',
+    name: 'Gift Bag (Medium)',
+    component: GiftBagMedium,
+    scale: 0.06,
+    description: '12×15 inch gift bag',
+    dimensions: '12"×15" (3600×4500px)',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'cap',
+    name: 'Cap Design',
+    component: Cap,
+    scale: 0.3,
+    description: 'Cap front panel embroidery',
+    dimensions: '1200×800px',
+    backgroundColor: '#0066CC',
+  },
+  {
+    id: 'stamp-official',
+    name: 'Official Stamp',
+    component: StampOfficial,
+    scale: 0.4,
+    description: 'Official company rubber stamp',
+    dimensions: '1.5" diameter (450×450px)',
+    backgroundColor: '#ffffff',
+  },
+  {
+    id: 'stamp-verified',
+    name: 'Verified Stamp',
+    component: StampVerified,
+    scale: 0.4,
+    description: 'Vehicle verification stamp',
+    dimensions: '1.5" diameter (450×450px)',
+    backgroundColor: '#ffffff',
+  },
+  {
+    id: 'stamp-received',
+    name: 'Received Stamp',
+    component: StampReceived,
+    scale: 0.5,
+    description: 'Document received stamp',
+    dimensions: '2"×0.9" (400×180px)',
+    backgroundColor: '#ffffff',
+  },
+];
+
+const StationeryCard = ({ item, exportRef }: { item: StationeryItem; exportRef: React.RefObject<HTMLDivElement> }) => {
+  const [showPreview, setShowPreview] = useState(true);
+  const [exporting, setExporting] = useState<'png' | 'svg' | null>(null);
+
+  const handleExportPng = async () => {
+    if (!exportRef.current) return;
+    setExporting('png');
+    try {
+      await exportToPng(exportRef.current, {
+        filename: `motokah-${item.id}`,
+        backgroundColor: item.backgroundColor,
+      });
+      toast.success(`${item.name} exported as PNG`);
+    } catch (error) {
+      console.error('PNG export error:', error);
+      toast.error('Export failed. Please try again.');
+    }
+    setExporting(null);
+  };
+
+  const handleExportSvg = async () => {
+    if (!exportRef.current) return;
+    setExporting('svg');
+    try {
+      await exportToSvg(exportRef.current, {
+        filename: `motokah-${item.id}`,
+        backgroundColor: item.backgroundColor,
+      });
+      toast.success(`${item.name} exported as SVG`);
+    } catch (error) {
+      console.error('SVG export error:', error);
+      toast.error('Export failed. Please try again.');
+    }
+    setExporting(null);
+  };
+
+  const Component = item.component;
+
+  return (
+    <Card className="overflow-hidden bg-card border-border">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-lg text-foreground">{item.name}</CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+            <p className="text-xs text-muted-foreground mt-1 font-mono">{item.dimensions}</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowPreview(!showPreview)}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            {showPreview ? <EyeOff size={18} /> : <Eye size={18} />}
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {showPreview && (
+          <div className="mb-4 overflow-hidden rounded-lg border border-border bg-muted/50 flex items-center justify-center p-4 min-h-[200px]">
+            <div
+              style={{
+                transform: `scale(${item.scale})`,
+                transformOrigin: 'center center',
+              }}
+            >
+              <Component />
+            </div>
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <Button
+            onClick={handleExportPng}
+            disabled={exporting !== null}
+            className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            {exporting === 'png' ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <FileImage className="mr-2 h-4 w-4" />
+            )}
+            PNG
+          </Button>
+          <Button
+            onClick={handleExportSvg}
+            disabled={exporting !== null}
+            variant="outline"
+            className="flex-1"
+          >
+            {exporting === 'svg' ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <FileCode className="mr-2 h-4 w-4" />
+            )}
+            SVG
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
-const logos = [
-  ["Main logo lockup", "/brand/motokah-logo-horizontal.svg", "Primary lockup for signs, print and official documents."],
-  ["Car-M symbol", "/brand/motokah-symbol-blue.svg", "Icon, embroidery, stickers, app mark and dealer badge."],
-  ["Blue block wordmark", "/brand/motokah-wordmark-block.svg", "Simple fast-print mark for labels and basic applications."],
-  ["Showroom wall lockup", "/brand/motokah-logo-white-blueprint.svg", "Large-format wall, poster and launch backdrop artwork."],
-] as const;
+const Stationery = () => {
+  usePageTitle('Brand Stationery');
+  const [downloadingAll, setDownloadingAll] = useState<'png' | 'svg' | null>(null);
 
-const assets: Asset[] = [
-  { title: "A4 Letterhead", file: "/brand/motokah-letterhead-a4.svg", format: "210 x 297 mm", kit: "Office", icon: IconFileText },
-  { title: "Business Card Front", file: "/brand/motokah-business-card-front.svg", format: "90 x 54 mm", kit: "Office", icon: IconIdBadge2 },
-  { title: "Business Card Back", file: "/brand/motokah-business-card-back.svg", format: "90 x 54 mm", kit: "Office", icon: IconIdBadge2 },
-  { title: "DL Envelope", file: "/brand/motokah-envelope-dl.svg", format: "220 x 110 mm", kit: "Office", icon: IconFileText },
-  { title: "Navy Staff Shirt", file: "/brand/motokah-shirt-navy.svg", format: "Embroidery", kit: "Uniform", icon: IconShirt },
-  { title: "White Field Shirt", file: "/brand/motokah-shirt-white.svg", format: "Embroidery", kit: "Uniform", icon: IconShirt },
-  { title: "Dealer ID Tag", file: "/brand/motokah-dealer-tag.svg", format: "Lanyard card", kit: "Dealer", icon: IconIdBadge2 },
-  { title: "Verified Dealer Sticker", file: "/brand/motokah-verified-badge.svg", format: "Vinyl sticker", kit: "Dealer", icon: IconShieldCheck },
-  { title: "Vehicle Window Tag", file: "/brand/motokah-vehicle-window-tag.svg", format: "A5 landscape", kit: "Dealer", icon: IconQrcode },
-  { title: "Dealer Poster", file: "/brand/motokah-dealer-poster.svg", format: "A4 / A3", kit: "Marketing", icon: IconBuildingStore },
-  { title: "Pull-up Banner", file: "/brand/motokah-pullup-banner.svg", format: "850 x 2000 mm", kit: "Marketing", icon: IconPrinter },
-  { title: "Instagram Template", file: "/brand/motokah-social-template.svg", format: "1080 x 1350 px", kit: "Marketing", icon: IconBrandInstagram },
-];
-
-const rules = [
-  "Use the SVG files as vector master artwork. Do not redraw, crop or stretch the Motokah mark.",
-  "Export printer PDFs at 300 DPI. Add 3 mm bleed and keep live text at least 5 mm away from cut edges.",
-  "Use Motokah Blue #3493C9, Wall Blue #6BA7D4, Deep Navy #102A43 and Verified Green #13A55B only.",
-  "Business cards should be matte laminated 350 gsm. Letterheads should be clean 100 to 120 gsm bond paper.",
-  "For shirts, embroider the car-M mark on the chest and use the wordmark only when the print area is wide enough.",
-  "Send one photo proof before bulk print, especially for blue accuracy and QR readability.",
-];
-
-function DownloadButton({ file, children = "Download SVG" }: { file: string; children?: string }) {
-  return (
-    <a href={file} download>
-      <Button className="h-10 rounded-none bg-[#102A43] px-4 text-xs font-black uppercase tracking-[0.16em] text-white hover:bg-[#1b456b]">
-        <IconDownload size={15} className="mr-2" />
-        {children}
-      </Button>
-    </a>
+  const exportRefs = useRef<{ [key: string]: React.RefObject<HTMLDivElement> }>(
+    stationeryItems.reduce((acc, item) => {
+      acc[item.id] = createRef<HTMLDivElement>();
+      return acc;
+    }, {} as { [key: string]: React.RefObject<HTMLDivElement> })
   );
-}
 
-function SectionHeading({ code, title, copy }: { code: string; title: string; copy: string }) {
-  return (
-    <div className="mx-auto mb-8 grid max-w-6xl gap-4 border-b border-[#d0e0ed] pb-6 lg:grid-cols-[180px_1fr]">
-      <p className="font-mono text-xs font-black uppercase tracking-[0.32em] text-[#3493C9]">{code}</p>
-      <div>
-        <h2 className="max-w-3xl text-[clamp(2.4rem,5vw,4.8rem)] font-black leading-[0.9] tracking-tight text-[#102A43]">{title}</h2>
-        <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-[#5f7488]">{copy}</p>
-      </div>
-    </div>
-  );
-}
+  const handleDownloadAllPng = useCallback(async () => {
+    setDownloadingAll('png');
+    toast.info('Downloading all PNG files... This may take a moment.');
 
-function LogoShelf() {
-  return (
-    <section className="px-5 py-16 lg:px-8">
-      <SectionHeading
-        code="01 / logo"
-        title="One logo system. No random versions."
-        copy="These are the official Motokah logo masters. The spacing is corrected so the car-M symbol sits cleanly beside the wordmark and inside square applications."
-      />
-      <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-2">
-        {logos.map(([title, file, note]) => (
-          <article key={file} className="border border-[#d0e0ed] bg-white p-4 shadow-[0_20px_60px_rgba(16,42,67,.08)]">
-            <a
-              href={file}
-              target="_blank"
-              rel="noreferrer"
-              className={`grid aspect-[16/8] place-items-center p-8 ${file.includes("symbol-blue") || file.includes("wordmark") ? "bg-white" : "bg-[#6BA7D4]"}`}
-            >
-              <img src={file} alt={title} className="max-h-[76%] w-full object-contain" />
-            </a>
-            <div className="mt-4 flex items-start justify-between gap-4">
-              <div>
-                <h3 className="text-2xl font-black text-[#102A43]">{title}</h3>
-                <p className="mt-1 text-sm font-semibold leading-6 text-[#5f7488]">{note}</p>
-              </div>
-              <DownloadButton file={file}>SVG</DownloadButton>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
+    let successCount = 0;
+    for (const item of stationeryItems) {
+      const ref = exportRefs.current[item.id];
+      if (ref?.current) {
+        try {
+          await exportToPng(ref.current, {
+            filename: `motokah-${item.id}`,
+            backgroundColor: item.backgroundColor,
+          });
+          successCount++;
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (error) {
+          console.error(`Failed to export ${item.name}:`, error);
+        }
+      }
+    }
 
-function KitShowcase({
-  code,
-  title,
-  copy,
-  children,
-  dark = false,
-}: {
-  code: string;
-  title: string;
-  copy: string;
-  children: React.ReactNode;
-  dark?: boolean;
-}) {
+    setDownloadingAll(null);
+    toast.success(`Downloaded ${successCount} of ${stationeryItems.length} PNG files`);
+  }, []);
+
+  const handleDownloadAllSvg = useCallback(async () => {
+    setDownloadingAll('svg');
+    toast.info('Downloading all SVG files... This may take a moment.');
+
+    let successCount = 0;
+    for (const item of stationeryItems) {
+      const ref = exportRefs.current[item.id];
+      if (ref?.current) {
+        try {
+          await exportToSvg(ref.current, {
+            filename: `motokah-${item.id}`,
+            backgroundColor: item.backgroundColor,
+          });
+          successCount++;
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (error) {
+          console.error(`Failed to export ${item.name}:`, error);
+        }
+      }
+    }
+
+    setDownloadingAll(null);
+    toast.success(`Downloaded ${successCount} of ${stationeryItems.length} SVG files`);
+  }, []);
+
   return (
-    <section className={`${dark ? "bg-[#102A43] text-white" : "bg-[#f8fbfd] text-[#102A43]"} px-5 py-16 lg:px-8`}>
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.72fr_1.28fr]">
-        <div>
-          <p className={`font-mono text-xs font-black uppercase tracking-[0.32em] ${dark ? "text-[#9dcdea]" : "text-[#3493C9]"}`}>{code}</p>
-          <h2 className={`mt-5 text-[clamp(2.35rem,4.6vw,4.4rem)] font-black leading-[0.9] tracking-tight ${dark ? "text-white" : "text-[#102A43]"}`}>{title}</h2>
-          <p className={`mt-5 max-w-md text-base font-semibold leading-7 ${dark ? "text-[#c7dbe9]" : "text-[#5f7488]"}`}>{copy}</p>
+    <div className="min-h-screen bg-background">
+      <Header />
+
+      <main className="container mx-auto px-4 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+            Motokah <span className="text-primary">Brand Stationery</span>
+          </h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Download professional print-ready stationery in PNG (300 DPI) or SVG (vector) formats.
+            Built from the cropped Motokah icon mark — no redrawn logo.
+          </p>
         </div>
-        {children}
-      </div>
-    </section>
-  );
-}
 
-function DownloadTable() {
-  return (
-    <section id="downloads" className="bg-white px-5 py-16 lg:px-8">
-      <SectionHeading
-        code="06 / files"
-        title="Clean download counter for the printer."
-        copy="The showcase above is for checking the look. This list is for sending the exact SVG file to whoever is printing, embroidering or cutting vinyl."
-      />
-      <div className="mx-auto max-w-6xl overflow-hidden border border-[#d0e0ed] bg-white shadow-[0_20px_60px_rgba(16,42,67,.08)]">
-        {assets.map((asset, index) => {
-          const Icon = asset.icon;
-          return (
-            <div key={asset.file} className="grid items-center gap-4 border-b border-[#e2edf5] p-4 last:border-b-0 md:grid-cols-[56px_1fr_180px_170px]">
-              <span className="grid h-12 w-12 place-items-center bg-[#edf6fc] text-[#1677ad]">
-                <Icon size={21} />
-              </span>
+        <div className="mb-12 p-8 rounded-xl bg-primary text-primary-foreground text-center">
+          <h2 className="text-2xl font-bold mb-4">Download Complete Brand Package</h2>
+          <p className="mb-6 opacity-90">
+            Get all {stationeryItems.length} stationery items in your preferred format.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={handleDownloadAllPng}
+              disabled={downloadingAll !== null}
+            >
+              {downloadingAll === 'png' ? (
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-5 w-5" />
+              )}
+              Download All PNG
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleDownloadAllSvg}
+              disabled={downloadingAll !== null}
+              className="border-white/30 text-white hover:bg-white/10"
+            >
+              {downloadingAll === 'svg' ? (
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-5 w-5" />
+              )}
+              Download All SVG
+            </Button>
+          </div>
+        </div>
+
+        {/* Mockup Gallery */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-6">
+            <Images className="w-6 h-6 text-primary" />
+            <h2 className="text-2xl font-bold text-foreground">Presentation Mockups</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="rounded-xl overflow-hidden shadow-lg border border-border">
+              <img src={mockupSet} alt="Complete stationery set mockup" className="w-full h-auto" />
+              <div className="p-4 bg-card">
+                <h3 className="font-semibold text-foreground">Complete Brand Set</h3>
+                <p className="text-sm text-muted-foreground">Full stationery suite on dark slate surface</p>
+              </div>
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-lg border border-border">
+              <img src={mockupCards} alt="Business cards mockup" className="w-full h-auto" />
+              <div className="p-4 bg-card">
+                <h3 className="font-semibold text-foreground">Business Cards</h3>
+                <p className="text-sm text-muted-foreground">Premium stacked card presentation</p>
+              </div>
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-lg border border-border">
+              <img src={mockupLetterhead} alt="Letterhead mockup" className="w-full h-auto" />
+              <div className="p-4 bg-card">
+                <h3 className="font-semibold text-foreground">Letterhead & Cards</h3>
+                <p className="text-sm text-muted-foreground">Professional document presentation</p>
+              </div>
+            </div>
+            <div className="rounded-xl overflow-hidden shadow-lg border border-border">
+              <img src={mockupFolder} alt="Folder mockup" className="w-full h-auto" />
+              <div className="p-4 bg-card">
+                <h3 className="font-semibold text-foreground">Presentation Folder</h3>
+                <p className="text-sm text-muted-foreground">Open folder with documents</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Alert className="mb-12 border-primary/30 bg-primary/5">
+          <Info className="h-5 w-5 text-primary" />
+          <AlertTitle className="text-foreground font-semibold">Before you print: placeholders to fill in</AlertTitle>
+          <AlertDescription className="text-muted-foreground mt-2">
+            <p className="mb-3">
+              Several items carry bracketed placeholders — <code>[YOUR NAME]</code>, <code>[PHONE NUMBER]</code>,{' '}
+              <code>[OFFICE ADDRESS]</code> — because real contact details weren't available when these were generated.
+              Edit them directly in <code>src/components/stationery/*.tsx</code> before exporting final files.
+            </p>
+            <p className="text-sm">
+              Presentation mockup photos are generated in Motokah brand blue (#0066CC) and white on dark slate,
+              matching the live kit.
+            </p>
+          </AlertDescription>
+        </Alert>
+
+        <div className="mb-12 p-6 rounded-xl bg-card border border-border">
+          <h2 className="text-lg font-semibold text-foreground mb-4">Brand Colors</h2>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg shadow-sm" style={{ backgroundColor: '#0066CC' }} />
               <div>
-                <p className="text-lg font-black text-[#102A43]">{String(index + 1).padStart(2, "0")} / {asset.title}</p>
-                <p className="text-sm font-bold text-[#6b8194]">{asset.kit} kit</p>
-              </div>
-              <p className="font-mono text-xs font-black uppercase tracking-[0.14em] text-[#6b8194]">{asset.format}</p>
-              <DownloadButton file={asset.file}>SVG</DownloadButton>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-export default function Stationery() {
-  return (
-    <>
-      <Helmet>
-        <title>Motokah Private Stationery Room</title>
-        <meta name="robots" content="noindex,nofollow,noarchive" />
-        <meta name="description" content="Private Motokah stationery, uniform and dealer print room." />
-      </Helmet>
-
-      <main className="min-h-screen bg-[#f8fbfd] text-[#102A43]">
-        <section className="relative overflow-hidden bg-[#102A43] text-white">
-          <div className="absolute inset-0 opacity-[.12] [background-image:linear-gradient(90deg,#fff_1px,transparent_1px),linear-gradient(#fff_1px,transparent_1px)] [background-size:44px_44px]" />
-          <div className="relative mx-auto grid min-h-[720px] max-w-6xl items-center gap-10 px-5 py-12 lg:grid-cols-[.78fr_1.22fr] lg:px-8">
-            <div>
-              <p className="font-mono text-xs font-black uppercase tracking-[0.34em] text-[#9dcdea]">Private Motokah print room</p>
-              <h1 className="mt-7 text-[clamp(3.2rem,7vw,6.4rem)] font-black leading-[0.86] tracking-tight">Stationery that looks real.</h1>
-              <p className="mt-7 max-w-lg text-lg font-semibold leading-8 text-[#c7dbe9]">
-                Office papers, cards, shirts, dealer tags, stickers, window cards, posters, banners and social assets,
-                arranged as a proper printer handoff.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <a href="#downloads">
-                  <Button className="h-12 rounded-none bg-white px-5 font-black text-[#102A43] hover:bg-[#edf6fc]">Open downloads</Button>
-                </a>
-                <DownloadButton file="/brand/motokah-logo-horizontal.svg">Main logo</DownloadButton>
+                <p className="font-medium text-foreground">Brand Blue (bg)</p>
+                <p className="text-sm text-muted-foreground font-mono">#0066CC</p>
               </div>
             </div>
-
-            <div className="border border-white/15 bg-white/[.08] p-4 shadow-2xl">
-              <div className="grid gap-4">
-                <div className="grid aspect-[16/10] place-items-center bg-[#6BA7D4] p-10">
-                  <img src="/brand/motokah-logo-white-blueprint.svg" alt="Motokah wall logo" className="w-full object-contain" />
-                </div>
-                <div className="grid gap-4 md:grid-cols-3">
-                  <div className="bg-white p-5">
-                    <img src="/brand/motokah-business-card-front.svg" alt="Motokah business card" className="w-full object-contain" />
-                  </div>
-                  <div className="bg-[#6BA7D4] p-5">
-                    <img src="/brand/motokah-shirt-white.svg" alt="Motokah white shirt" className="w-full object-contain" />
-                  </div>
-                  <div className="bg-white p-5">
-                    <img src="/brand/motokah-verified-badge.svg" alt="Motokah verified badge" className="w-full object-contain" />
-                  </div>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg shadow-sm border border-border" style={{ backgroundColor: '#ffffff' }} />
+              <div>
+                <p className="font-medium text-foreground">White (icon/text)</p>
+                <p className="text-sm text-muted-foreground font-mono">#ffffff</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg shadow-sm" style={{ backgroundColor: '#28AF60' }} />
+              <div>
+                <p className="font-medium text-foreground">Verified Green</p>
+                <p className="text-sm text-muted-foreground font-mono">#28AF60</p>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <LogoShelf />
-
-        <KitShowcase
-          code="02 / office"
-          title="Letterhead, cards and envelope."
-          copy="This is the paperwork kit for D-U-N-S, banks, Apple/Google developer accounts, dealer contracts and showroom meetings."
+        {/* Hidden components for export - CRITICAL: use opacity instead of visibility */}
+        <div
+          style={{
+            position: 'fixed',
+            left: '-99999px',
+            top: 0,
+            opacity: 0,
+            pointerEvents: 'none',
+          }}
+          aria-hidden="true"
         >
-          <div className="relative min-h-[560px] overflow-hidden border border-[#d0e0ed] bg-[#eef5fb] p-8 shadow-[0_24px_70px_rgba(16,42,67,.1)]">
-            <img src="/brand/motokah-letterhead-a4.svg" alt="Motokah letterhead" className="absolute left-[8%] top-8 h-[500px] w-auto shadow-2xl" />
-            <img src="/brand/motokah-envelope-dl.svg" alt="Motokah envelope" className="absolute bottom-10 right-[6%] w-[58%] shadow-xl" />
-            <img src="/brand/motokah-business-card-front.svg" alt="Motokah business card front" className="absolute right-[10%] top-20 w-[44%] shadow-2xl" />
-            <img src="/brand/motokah-business-card-back.svg" alt="Motokah business card back" className="absolute right-[18%] top-52 w-[40%] shadow-2xl" />
-          </div>
-        </KitShowcase>
+          {stationeryItems.map((item) => {
+            const Component = item.component;
+            return <Component key={item.id} ref={exportRefs.current[item.id]} />;
+          })}
+        </div>
 
-        <KitShowcase
-          code="03 / field"
-          title="Staff shirts and dealer presence."
-          copy="The field kit should make Motokah feel official when you walk into a showroom: shirt, badge, dealer sticker and vehicle card."
-          dark
-        >
-          <div className="grid gap-5 md:grid-cols-2">
-            <div className="grid place-items-center border border-white/15 bg-white/[.08] p-8">
-              <img src="/brand/motokah-shirt-navy.svg" alt="Motokah navy staff shirt" className="max-h-[430px] w-full object-contain" />
-            </div>
-            <div className="grid gap-5">
-              <div className="grid place-items-center border border-white/15 bg-white p-6">
-                <img src="/brand/motokah-dealer-tag.svg" alt="Motokah dealer tag" className="max-h-64 w-full object-contain" />
-              </div>
-              <div className="grid place-items-center border border-white/15 bg-[#6BA7D4] p-6">
-                <img src="/brand/motokah-vehicle-window-tag.svg" alt="Motokah vehicle window tag" className="max-h-56 w-full object-contain" />
-              </div>
-            </div>
-          </div>
-        </KitShowcase>
+        <Tabs defaultValue="all" className="w-full">
+          <TabsList className="mb-8 flex-wrap h-auto">
+            <TabsTrigger value="all">All Items ({stationeryItems.length})</TabsTrigger>
+            <TabsTrigger value="cards">Business Cards</TabsTrigger>
+            <TabsTrigger value="documents">Documents</TabsTrigger>
+            <TabsTrigger value="identity">Identity</TabsTrigger>
+            <TabsTrigger value="promotional">Promotional</TabsTrigger>
+          </TabsList>
 
-        <KitShowcase
-          code="04 / marketing"
-          title="Showroom poster, banner and social post."
-          copy="These are the pieces dealers and buyers actually see: counter poster, pull-up banner and Instagram template."
-        >
-          <div className="grid gap-5 md:grid-cols-[.8fr_1.2fr]">
-            <div className="grid place-items-center border border-[#d0e0ed] bg-[#6BA7D4] p-8 shadow-xl">
-              <img src="/brand/motokah-pullup-banner.svg" alt="Motokah pull-up banner" className="max-h-[560px] w-full object-contain" />
-            </div>
-            <div className="grid gap-5">
-              <div className="grid place-items-center border border-[#d0e0ed] bg-[#102A43] p-7 shadow-xl">
-                <img src="/brand/motokah-dealer-poster.svg" alt="Motokah dealer poster" className="max-h-72 w-full object-contain" />
-              </div>
-              <div className="grid place-items-center border border-[#d0e0ed] bg-white p-7 shadow-xl">
-                <img src="/brand/motokah-social-template.svg" alt="Motokah Instagram template" className="max-h-72 w-full object-contain" />
-              </div>
-            </div>
-          </div>
-        </KitShowcase>
-
-        <section className="bg-[#102A43] px-5 py-16 text-white lg:px-8">
-          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[.72fr_1.28fr]">
-            <div>
-              <p className="font-mono text-xs font-black uppercase tracking-[0.32em] text-[#9dcdea]">05 / printer brief</p>
-              <h2 className="mt-5 text-[clamp(2.35rem,4.6vw,4.4rem)] font-black leading-[0.9] tracking-tight">Send these rules with the files.</h2>
-            </div>
-            <div className="grid gap-3">
-              {rules.map((rule) => (
-                <div key={rule} className="flex gap-4 border border-white/15 bg-white/[.07] p-4">
-                  <span className="grid h-6 w-6 shrink-0 place-items-center bg-[#13A55B] text-[#102A43]">
-                    <IconCheck size={15} />
-                  </span>
-                  <p className="text-sm font-bold leading-6 text-white">{rule}</p>
-                </div>
+          <TabsContent value="all">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stationeryItems.map((item) => (
+                <StationeryCard
+                  key={item.id}
+                  item={item}
+                  exportRef={exportRefs.current[item.id]}
+                />
               ))}
             </div>
-          </div>
-        </section>
+          </TabsContent>
 
-        <DownloadTable />
+          <TabsContent value="cards">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stationeryItems
+                .filter((item) => item.id.includes('business-card'))
+                .map((item) => (
+                  <StationeryCard
+                    key={item.id}
+                    item={item}
+                    exportRef={exportRefs.current[item.id]}
+                  />
+                ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="documents">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stationeryItems
+                .filter((item) =>
+                  ['letterhead', 'envelope', 'folder', 'compliment-slip', 'file-cover'].some(type =>
+                    item.id.includes(type)
+                  )
+                )
+                .map((item) => (
+                  <StationeryCard
+                    key={item.id}
+                    item={item}
+                    exportRef={exportRefs.current[item.id]}
+                  />
+                ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="identity">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stationeryItems
+                .filter((item) =>
+                  item.id.includes('id-card') || item.id.includes('email')
+                )
+                .map((item) => (
+                  <StationeryCard
+                    key={item.id}
+                    item={item}
+                    exportRef={exportRefs.current[item.id]}
+                  />
+                ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="promotional">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stationeryItems
+                .filter((item) =>
+                  ['diary', 'gift-bag', 'cap', 'stamp'].some(type => item.id.includes(type))
+                )
+                .map((item) => (
+                  <StationeryCard
+                    key={item.id}
+                    item={item}
+                    exportRef={exportRefs.current[item.id]}
+                  />
+                ))}
+            </div>
+          </TabsContent>
+        </Tabs>
       </main>
-    </>
+
+      <Footer />
+    </div>
   );
-}
+};
+
+export default Stationery;

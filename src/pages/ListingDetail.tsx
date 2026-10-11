@@ -23,6 +23,31 @@ import { blockSeller } from "@/lib/blockedSellers";
 
 const reportReasons = ["Fake listing", "Wrong price", "Duplicate", "Inappropriate content", "Scam / Fraud", "Other"];
 
+function formatWhatsAppNumber(phone: string, location?: string): string {
+  if (!phone) return "";
+  let digits = phone.replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  if (/^(255|254|256|250|257|251|234)\d{8,11}$/.test(digits)) return digits;
+  if (digits.startsWith("0")) {
+    const local = digits.slice(1);
+    const loc = (location || "").toLowerCase();
+    if (loc.includes("kenya") || loc.includes("nairobi") || loc.includes("mombasa")) return "254" + local;
+    if (loc.includes("uganda") || loc.includes("kampala")) return "256" + local;
+    if (loc.includes("rwanda") || loc.includes("kigali")) return "250" + local;
+    if (loc.includes("ethiopia") || loc.includes("addis")) return "251" + local;
+    if (loc.includes("nigeria") || loc.includes("lagos")) return "234" + local;
+    return "255" + local;
+  }
+  if (digits.length === 9) {
+    const loc = (location || "").toLowerCase();
+    if (loc.includes("kenya") || loc.includes("nairobi") || loc.includes("mombasa")) return "254" + digits;
+    if (loc.includes("uganda") || loc.includes("kampala")) return "256" + digits;
+    return "255" + digits;
+  }
+  return digits;
+}
+
 export default function ListingDetail() {
   const { id } = useParams<{ id: string }>();
   const { listing, images, loading } = useListing(id);
@@ -126,12 +151,22 @@ export default function ListingDetail() {
 
   const handleWhatsApp = () => {
     if (!listing) return;
+    const cleanPhone = formatWhatsAppNumber(sellerPhone, listing.location);
     const msg = encodeURIComponent(`Hi, I'm interested in your ${listing.title} listed on Motokah.`);
-    window.open(sellerPhone ? `https://wa.me/${sellerPhone.replace(/\D/g, "")}?text=${msg}` : `https://wa.me/?text=${msg}`);
+    if (cleanPhone) {
+      window.open(`https://wa.me/${cleanPhone}?text=${msg}`, "_blank");
+    } else {
+      toast.error("Seller has not provided a valid WhatsApp number.");
+    }
   };
 
   const handleCall = () => {
-    if (sellerPhone) window.open(`tel:${sellerPhone}`);
+    if (!sellerPhone) {
+      toast.error("Seller has not provided a phone number.");
+      return;
+    }
+    const cleanPhone = formatWhatsAppNumber(sellerPhone, listing?.location);
+    window.open(`tel:+${cleanPhone}`);
   };
 
   const handleBlockSeller = () => {

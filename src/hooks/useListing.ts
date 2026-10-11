@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { type Listing, mockListings, getShowroomListings } from "@/data/mockData";
+import { type Listing, mockListings, getShowroomListings, mockDealers } from "@/data/mockData";
 import { hasUsablePhone, isGenericScraperSeller, isJijiImage, isLaunchQualityListing, isStaticListingId } from "@/lib/listingQuality";
 
 export interface ListingWithDescription extends Listing {
@@ -36,7 +36,9 @@ export function useListing(id: string | undefined) {
           setLoading(false);
           return;
         }
-        setListing({ ...mock, description: mock.description ?? null });
+        const dealer = mockDealers.find(d => d.id === mock?.sellerId || d.name === mock?.sellerName);
+        const resolvedPhone = mock.sellerPhone || dealer?.phone;
+        setListing({ ...mock, sellerPhone: resolvedPhone, description: mock.description ?? null });
         setImages(mock.images?.length ? mock.images : mock.image ? [mock.image] : []);
       }
       setLoading(false);
