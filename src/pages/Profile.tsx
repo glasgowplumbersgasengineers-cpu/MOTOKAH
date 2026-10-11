@@ -345,24 +345,66 @@ export default function Profile() {
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap border-b border-border mb-6 gap-0">
-          <button onClick={() => setTab("dashboard")} className={`px-4 pb-3 text-sm font-semibold flex items-center gap-1 ${tab === "dashboard" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            <IconLayoutDashboard size={14} /> Dashboard
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none border-b border-border mb-6 flex-nowrap">
+          <button
+            onClick={() => setTab("dashboard")}
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 shrink-0 transition-all ${
+              tab === "dashboard"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            <IconLayoutDashboard size={15} /> Dashboard
           </button>
-          <button onClick={() => setTab("listings")} className={`px-4 pb-3 text-sm font-semibold ${tab === "listings" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            My Listings ({listings.length})
+          <button
+            onClick={() => setTab("listings")}
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 shrink-0 transition-all ${
+              tab === "listings"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            <IconCar size={15} /> My Listings ({listings.length})
           </button>
-          <button onClick={() => setTab("saved")} className={`px-4 pb-3 text-sm font-semibold flex items-center gap-1 ${tab === "saved" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            <IconHeart size={14} /> Saved Cars {wishlistListings.length > 0 && `(${wishlistListings.length})`}
+          <button
+            onClick={() => setTab("saved")}
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 shrink-0 transition-all ${
+              tab === "saved"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            <IconHeart size={15} /> Saved ({wishlistListings.length})
           </button>
-          <button onClick={() => setTab("reviews")} className={`px-4 pb-3 text-sm font-semibold ${tab === "reviews" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            Reviews
+          <button
+            onClick={() => setTab("reviews")}
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 shrink-0 transition-all ${
+              tab === "reviews"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            <IconStarFilled size={15} className="text-amber-400" /> Reviews
           </button>
-          <button onClick={() => setTab("settings")} className={`px-4 pb-3 text-sm font-semibold ${tab === "settings" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            Settings
+          <button
+            onClick={() => setTab("settings")}
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 shrink-0 transition-all ${
+              tab === "settings"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            <IconUser size={15} /> Settings
           </button>
-          <button onClick={() => setTab("security")} className={`px-4 pb-3 text-sm font-semibold ${tab === "security" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            <span className="flex items-center gap-1"><IconShieldLock size={14} /> Security</span>
+          <button
+            onClick={() => setTab("security")}
+            className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 shrink-0 transition-all ${
+              tab === "security"
+                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/25"
+                : "bg-card border border-border text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            }`}
+          >
+            <IconShieldLock size={15} /> Security
           </button>
         </div>
 
