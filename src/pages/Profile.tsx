@@ -73,7 +73,12 @@ type ListingRow = {
   status: string;
   created_at: string;
   views: number;
-  
+  image?: string;
+  images?: string[];
+  image_url?: string;
+  mileage?: number;
+  city?: string;
+  location?: string;
 };
 
 type SavedSearch = {
@@ -303,6 +308,9 @@ export default function Profile() {
         id: l.id, title: l.title, make: l.make, model: l.model,
         year: l.year, price: l.price, currency: l.currency,
         status: "approved", created_at: new Date().toISOString(), views: l.views,
+        image: l.image,
+        mileage: l.mileage,
+        location: l.location,
       })));
       return;
     }
@@ -315,11 +323,17 @@ export default function Profile() {
       }
     });
     supabase.from("listings")
-      .select("id, title, make, model, year, price, currency, status, created_at, views")
+      .select("id, title, make, model, year, price, currency, status, created_at, views, images, image_url, mileage, city")
       .eq("seller_id", user.id)
       .order("created_at", { ascending: false })
       .then(({ data }) => {
-        if (data) setListings(data as ListingRow[]);
+        if (data) {
+          setListings(data.map((row: any) => ({
+            ...row,
+            image: row.image_url || (Array.isArray(row.images) && row.images.length > 0 ? row.images[0] : undefined),
+            location: row.city || undefined,
+          })));
+        }
       });
     // saved_searches table not yet created - skip for now
   }, [user]);
@@ -610,24 +624,32 @@ export default function Profile() {
                     View all ({listings.length})
                   </button>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   {listings.slice(0, 3).map((l) => (
-                    <div key={l.id} className="bg-muted/30 border border-border/80 rounded-xl p-3 flex items-center justify-between gap-3 hover:border-primary/40 transition-colors">
+                    <div key={l.id} className="bg-muted/30 border border-border/80 rounded-xl p-3 flex items-center gap-3 hover:border-primary/40 transition-colors">
+                      <Link to={`/listing/${l.id}`} className="shrink-0">
+                        <img
+                          src={l.image || "/placeholder.svg"}
+                          alt={l.title}
+                          className="w-14 h-14 rounded-lg object-cover bg-muted border border-border/60"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
+                        />
+                      </Link>
                       <div className="min-w-0 flex-1">
-                        <Link to={`/listing/${l.id}`} className="text-sm font-semibold text-foreground hover:text-primary truncate block">
+                        <Link to={`/listing/${l.id}`} className="text-sm font-bold text-foreground hover:text-primary truncate block">
                           {l.title}
                         </Link>
-                        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
-                          <span className={`text-[10px] px-2 py-0.2 rounded-full font-bold uppercase tracking-wider ${
-                            l.status === "approved" ? "bg-success/15 text-success" :
+                        <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                          <span className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider ${
+                            l.status === "approved" ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400" :
                             l.status === "pending" ? "bg-amber-500/15 text-amber-600 dark:text-amber-400" :
                             l.status === "sold" ? "bg-muted text-muted-foreground" :
                             "bg-destructive/15 text-destructive"
                           }`}>{l.status}</span>
-                          <span className="font-bold text-foreground">{l.currency} {Number(l.price).toLocaleString()}</span>
+                          <span className="font-extrabold text-foreground">{l.currency} {Number(l.price).toLocaleString()}</span>
                         </div>
                       </div>
-                      <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1">
+                      <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1 bg-muted/60 px-2 py-1 rounded-full">
                         <IconEye size={13} /> {l.views || 0}
                       </span>
                     </div>
@@ -678,45 +700,67 @@ export default function Profile() {
             ) : (
               <div className="space-y-3">
                 {listings.map((l) => (
-                  <div key={l.id} className="bg-card border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs hover:border-primary/40 transition-colors">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Link to={`/listing/${l.id}`} className="font-bold text-foreground hover:text-primary text-sm sm:text-base truncate block">
-                          {l.title}
-                        </Link>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase tracking-wider ${
-                          l.status === "approved" ? "bg-success/15 text-success" :
-                          l.status === "pending" ? "bg-amber-500/15 text-amber-600 dark:text-amber-400" :
-                          l.status === "sold" ? "bg-muted text-muted-foreground" :
-                          "bg-destructive/15 text-destructive"
-                        }`}>
-                          {l.status}
-                        </span>
-                        <span className="font-bold text-foreground">
-                          {l.currency} {Number(l.price).toLocaleString()}
-                        </span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          <IconEye size={13} /> {l.views || 0} views
-                        </span>
-                      </div>
+                  <div key={l.id} className="bg-card border border-border rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row gap-3.5 sm:gap-4 shadow-xs hover:border-primary/40 transition-all">
+                    <div className="relative shrink-0 w-full sm:w-36 h-36 sm:h-28 rounded-xl overflow-hidden bg-muted border border-border">
+                      <Link to={`/listing/${l.id}`}>
+                        <img
+                          src={l.image || "/placeholder.svg"}
+                          alt={l.title}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform"
+                          onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
+                        />
+                      </Link>
+                      <span className={`absolute top-2 left-2 px-2 py-0.5 rounded-md font-extrabold text-[10px] uppercase tracking-wider shadow-xs backdrop-blur-md ${
+                        l.status === "approved" ? "bg-emerald-500/90 text-white" :
+                        l.status === "pending" ? "bg-amber-500/90 text-white" :
+                        l.status === "sold" ? "bg-zinc-700/90 text-white" :
+                        "bg-destructive/90 text-white"
+                      }`}>
+                        {l.status}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
-                      <Button variant="outline" size="sm" asChild className="gap-1 text-xs font-semibold">
-                        <Link to={`/listing/${l.id}`}>
-                          <IconExternalLink size={14} /> View
-                        </Link>
-                      </Button>
-                      {l.status !== "sold" && (
-                        <Button variant="outline" size="sm" onClick={() => markSold(l.id)} className="gap-1 text-xs font-semibold text-success hover:text-success">
-                          <IconCheck size={14} /> Sold
+
+                    <div className="flex-1 min-w-0 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-start justify-between gap-2">
+                          <Link to={`/listing/${l.id}`} className="font-extrabold text-foreground hover:text-primary text-base leading-tight truncate">
+                            {l.title}
+                          </Link>
+                          <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1 bg-muted/60 px-2 py-0.5 rounded-full">
+                            <IconEye size={13} /> {l.views || 0} views
+                          </span>
+                        </div>
+
+                        <p className="text-base font-black text-primary mt-1">
+                          {l.currency} {Number(l.price).toLocaleString()}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-muted-foreground">
+                          {l.year && <span className="bg-muted px-2 py-0.5 rounded-md font-semibold">{l.year}</span>}
+                          {l.mileage ? <span className="bg-muted px-2 py-0.5 rounded-md font-semibold">{l.mileage.toLocaleString()} km</span> : null}
+                          {l.location && (
+                            <span className="flex items-center gap-1 text-muted-foreground">
+                              <IconMapPin size={12} /> {l.location}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0 pt-3 mt-3 border-t border-border">
+                        <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs font-bold rounded-lg">
+                          <Link to={`/listing/${l.id}`}>
+                            <IconExternalLink size={14} /> View Ad
+                          </Link>
                         </Button>
-                      )}
-                      <Button variant="ghost" size="sm" onClick={() => deleteListing(l.id)} className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2">
-                        <IconTrash size={16} />
-                      </Button>
+                        {l.status !== "sold" && (
+                          <Button variant="outline" size="sm" onClick={() => markSold(l.id)} className="gap-1.5 text-xs font-bold rounded-lg text-emerald-600 hover:text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/10">
+                            <IconCheck size={14} /> Mark as Sold
+                          </Button>
+                        )}
+                        <Button variant="ghost" size="sm" onClick={() => deleteListing(l.id)} className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2 ml-auto rounded-lg" title="Delete listing">
+                          <IconTrash size={16} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
