@@ -7,7 +7,33 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { IconUser, IconEdit, IconTrash, IconEye, IconCheck, IconCamera, IconShieldLock, IconQrcode, IconBookmark, IconAlertTriangle, IconRefresh, IconLayoutDashboard, IconCar, IconHeart, IconMessageCircle, IconChevronRight, IconBuildingStore, IconHelpCircle } from "@tabler/icons-react";
+import {
+  IconUser,
+  IconEdit,
+  IconTrash,
+  IconEye,
+  IconCheck,
+  IconCamera,
+  IconShieldLock,
+  IconQrcode,
+  IconBookmark,
+  IconAlertTriangle,
+  IconRefresh,
+  IconLayoutDashboard,
+  IconCar,
+  IconHeart,
+  IconHeartFilled,
+  IconMessageCircle,
+  IconChevronRight,
+  IconBuildingStore,
+  IconHelpCircle,
+  IconLock,
+  IconPlus,
+  IconExternalLink,
+  IconSearch,
+  IconStarFilled,
+  IconMapPin,
+} from "@tabler/icons-react";
 import ReviewsSection from "@/components/ReviewsSection";
 import { Link, useNavigate } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
@@ -147,6 +173,95 @@ function MfaSection() {
       ) : (
         <Button onClick={startEnroll} className="gap-2"><IconQrcode size={16} /> Enable 2FA</Button>
       )}
+    </div>
+  );
+}
+
+function ChangePasswordSection() {
+  const { toast } = useToast();
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword || newPassword.length < 6) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Passwords do not match",
+        description: "Please make sure both passwords match.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      toast({
+        title: "Password updated! 🔒",
+        description: "Your account password has been changed successfully.",
+      });
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to change password";
+      toast({ title: "Error updating password", description: msg, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-5 md:p-6 shadow-xs">
+      <div className="flex items-center gap-2 mb-2">
+        <IconLock size={20} className="text-primary" />
+        <h3 className="text-base font-bold text-foreground">Change Password</h3>
+      </div>
+      <p className="text-xs text-muted-foreground mb-4">
+        Enter your new password below to secure your Motokah account.
+      </p>
+      <form onSubmit={handleUpdatePassword} className="space-y-3 max-w-sm">
+        <div>
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">
+            New Password
+          </label>
+          <Input
+            type="password"
+            placeholder="At least 6 characters"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="h-10 bg-background"
+            required
+            minLength={6}
+          />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">
+            Confirm New Password
+          </label>
+          <Input
+            type="password"
+            placeholder="Repeat new password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="h-10 bg-background"
+            required
+            minLength={6}
+          />
+        </div>
+        <Button type="submit" disabled={loading} className="w-full font-semibold">
+          {loading ? "Updating password..." : "Update Password"}
+        </Button>
+      </form>
     </div>
   );
 }
@@ -434,161 +549,256 @@ export default function Profile() {
               <p className="text-sm text-muted-foreground">Here's a summary of your Motokah activity</p>
             </div>
 
-            {/* Stats */}
+            {/* Stats row */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-card border border-border rounded-xl p-4 text-center">
-                <IconCar size={22} className="mx-auto text-primary mb-1" />
-                <p className="text-2xl font-extrabold text-foreground">{listings.filter(l => l.status === "approved").length}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Active Listings</p>
-              </div>
-              <div className="bg-card border border-border rounded-xl p-4 text-center">
-                <IconHeart size={22} className="mx-auto text-destructive mb-1" />
-                <p className="text-2xl font-extrabold text-foreground">{wishlistIds.size}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Wishlisted</p>
-              </div>
-              <div className="bg-card border border-border rounded-xl p-4 text-center">
-                <IconMessageCircle size={22} className="mx-auto text-accent mb-1" />
-                <p className="text-2xl font-extrabold text-foreground">—</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Messages</p>
-              </div>
+              <button
+                type="button"
+                onClick={() => setTab("listings")}
+                className="bg-card border border-border hover:border-primary/50 rounded-2xl p-4 text-center transition-all group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
+                  <IconCar size={20} />
+                </div>
+                <p className="text-2xl font-black text-foreground">{listings.length}</p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">My Listings</p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTab("saved")}
+                className="bg-card border border-border hover:border-primary/50 rounded-2xl p-4 text-center transition-all group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
+                  <IconHeart size={20} />
+                </div>
+                <p className="text-2xl font-black text-foreground">{wishlistIds.size}</p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Saved Cars</p>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate("/messages")}
+                className="bg-card border border-border hover:border-primary/50 rounded-2xl p-4 text-center transition-all group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
+                  <IconMessageCircle size={20} />
+                </div>
+                <p className="text-2xl font-black text-foreground">0</p>
+                <p className="text-xs font-semibold text-muted-foreground mt-0.5">Messages</p>
+              </button>
             </div>
 
             {/* Quick actions */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <Button onClick={() => navigate("/sell")} className="gap-2 justify-start h-12">
-                <IconCar size={18} /> Post New Ad
+              <Button onClick={() => navigate("/sell")} className="gap-2 justify-start h-12 font-bold shadow-xs">
+                <IconPlus size={18} /> Post a Vehicle
               </Button>
-              <Button variant="outline" onClick={() => navigate("/search")} className="gap-2 justify-start h-12">
-                <IconLayoutDashboard size={18} /> Browse Cars
+              <Button variant="outline" onClick={() => setTab("saved")} className="gap-2 justify-start h-12 font-semibold">
+                <IconHeart size={18} className="text-destructive" /> My Saved Cars ({wishlistIds.size})
               </Button>
-              <Button variant="outline" onClick={() => navigate("/wishlist")} className="gap-2 justify-start h-12">
-                <IconHeart size={18} /> My Wishlist
+              <Button variant="outline" onClick={() => setTab("settings")} className="gap-2 justify-start h-12 font-semibold">
+                <IconLock size={18} className="text-primary" /> Password & Settings
               </Button>
             </div>
 
             {/* Recent listings */}
-            {listings.length > 0 && (
-              <div>
+            {listings.length > 0 ? (
+              <div className="bg-card border border-border rounded-2xl p-5 shadow-xs">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-foreground text-sm">Recent Listings</h3>
-                  <button onClick={() => setTab("listings")} className="text-xs text-primary hover:underline">View all</button>
+                  <h3 className="font-bold text-foreground text-sm">Recent Vehicle Listings</h3>
+                  <button onClick={() => setTab("listings")} className="text-xs text-primary font-semibold hover:underline">
+                    View all ({listings.length})
+                  </button>
                 </div>
                 <div className="space-y-2">
-                  {listings.slice(0, 3).map(l => (
-                    <div key={l.id} className="bg-card border border-border rounded-lg p-3 flex items-center justify-between gap-3">
+                  {listings.slice(0, 3).map((l) => (
+                    <div key={l.id} className="bg-muted/30 border border-border/80 rounded-xl p-3 flex items-center justify-between gap-3 hover:border-primary/40 transition-colors">
                       <div className="min-w-0 flex-1">
-                        <Link to={`/listing/${l.id}`} className="text-sm font-medium text-foreground hover:text-primary truncate block">{l.title}</Link>
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold ${
-                          l.status === "approved" ? "bg-success/20 text-success" :
-                          l.status === "pending" ? "bg-accent/20 text-accent" :
-                          l.status === "sold" ? "bg-muted text-muted-foreground" :
-                          "bg-destructive/20 text-destructive"
-                        }`}>{l.status}</span>
+                        <Link to={`/listing/${l.id}`} className="text-sm font-semibold text-foreground hover:text-primary truncate block">
+                          {l.title}
+                        </Link>
+                        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
+                          <span className={`text-[10px] px-2 py-0.2 rounded-full font-bold uppercase tracking-wider ${
+                            l.status === "approved" ? "bg-success/15 text-success" :
+                            l.status === "pending" ? "bg-amber-500/15 text-amber-600 dark:text-amber-400" :
+                            l.status === "sold" ? "bg-muted text-muted-foreground" :
+                            "bg-destructive/15 text-destructive"
+                          }`}>{l.status}</span>
+                          <span className="font-bold text-foreground">{l.currency} {Number(l.price).toLocaleString()}</span>
+                        </div>
                       </div>
-                      <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-0.5">
-                        <IconEye size={12} /> {l.views}
+                      <span className="text-xs text-muted-foreground shrink-0 flex items-center gap-1">
+                        <IconEye size={13} /> {l.views || 0}
                       </span>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-
-            {listings.length === 0 && (
-              <div className="text-center py-8 bg-card border border-border rounded-xl">
-                <IconCar size={36} className="mx-auto text-muted-foreground mb-3 opacity-40" />
-                <p className="font-semibold text-foreground mb-1">Ready to sell your car?</p>
-                <p className="text-sm text-muted-foreground mb-4">Post your first listing in minutes</p>
-                <Button onClick={() => navigate("/sell")}>Post Your First Ad</Button>
+            ) : (
+              <div className="text-center py-8 bg-card border border-border rounded-2xl p-6 shadow-xs">
+                <IconCar size={36} className="mx-auto text-primary/40 mb-3" />
+                <p className="font-bold text-foreground mb-1">Ready to sell your vehicle?</p>
+                <p className="text-xs text-muted-foreground mb-4 max-w-xs mx-auto">
+                  Post your listing in under 2 minutes and connect with buyers directly.
+                </p>
+                <Button onClick={() => navigate("/sell")} className="gap-2 font-bold shadow-sm">
+                  <IconPlus size={16} /> Post Your First Listing
+                </Button>
               </div>
             )}
           </div>
         )}
 
+        {/* TAB: MY LISTINGS */}
         {tab === "listings" && (
-          <div className="space-y-3">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">My Vehicle Listings</h2>
+                <p className="text-xs text-muted-foreground">Manage, view, and track your active vehicle posts</p>
+              </div>
+              <Button onClick={() => navigate("/sell")} className="gap-1.5 shadow-sm font-bold text-xs sm:text-sm">
+                <IconPlus size={16} /> Post New Ad
+              </Button>
+            </div>
+
             {listings.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <p className="mb-4">You haven't posted any listings yet.</p>
-                <Link to="/sell"><Button>Post Your First Ad</Button></Link>
+              <div className="bg-card border border-border rounded-2xl p-8 text-center shadow-xs">
+                <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+                  <IconCar size={28} />
+                </div>
+                <h3 className="font-bold text-base text-foreground mb-1">You haven't posted any vehicles yet</h3>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto mb-5">
+                  Reach thousands of serious buyers across Tanzania, Kenya, and East Africa with a free listing.
+                </p>
+                <Button onClick={() => navigate("/sell")} className="gap-2 font-bold shadow-md">
+                  <IconPlus size={18} /> Post Your Vehicle in 2 Minutes
+                </Button>
               </div>
             ) : (
-              listings.map((l) => {
-                const daysLeft = null;
-                const isExpiringSoon = false;
-                const isExpired = false;
-                return (
-                  <div key={l.id} className={`bg-card border rounded-lg p-4 flex items-center justify-between ${isExpired ? "border-destructive/50" : isExpiringSoon ? "border-accent/50" : "border-border"}`}>
-                    <div>
-                      <Link to={`/listing/${l.id}`} className="font-semibold text-foreground hover:text-primary text-sm">{l.title}</Link>
-                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-muted-foreground">
-                        <span className={`px-2 py-0.5 rounded-full font-semibold ${statusColors[l.status] || ""}`}>{l.status}</span>
-                        <span>{l.currency} {l.price.toLocaleString()}</span>
-                        <span className="flex items-center gap-0.5"><IconEye size={12} /> {l.views}</span>
-                        {isExpired && (
-                          <span className="flex items-center gap-0.5 text-destructive font-semibold">
-                            <IconAlertTriangle size={12} /> Expired
-                          </span>
-                        )}
-                        {isExpiringSoon && (
-                          <span className="flex items-center gap-0.5 text-accent font-semibold">
-                            <IconAlertTriangle size={12} /> Expires in {daysLeft}d
-                          </span>
-                        )}
-                        {!isExpired && !isExpiringSoon && daysLeft !== null && (
-                          <span className="text-muted-foreground/70">Expires in {daysLeft}d</span>
-                        )}
+              <div className="space-y-3">
+                {listings.map((l) => (
+                  <div key={l.id} className="bg-card border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs hover:border-primary/40 transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Link to={`/listing/${l.id}`} className="font-bold text-foreground hover:text-primary text-sm sm:text-base truncate block">
+                          {l.title}
+                        </Link>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] uppercase tracking-wider ${
+                          l.status === "approved" ? "bg-success/15 text-success" :
+                          l.status === "pending" ? "bg-amber-500/15 text-amber-600 dark:text-amber-400" :
+                          l.status === "sold" ? "bg-muted text-muted-foreground" :
+                          "bg-destructive/15 text-destructive"
+                        }`}>
+                          {l.status}
+                        </span>
+                        <span className="font-bold text-foreground">
+                          {l.currency} {Number(l.price).toLocaleString()}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <IconEye size={13} /> {l.views || 0} views
+                        </span>
                       </div>
                     </div>
-                    <div className="flex gap-1">
-                      {(isExpired || isExpiringSoon) && (
-                        <Button variant="ghost" size="icon" onClick={() => renewListing(l.id)} title="Renew for 60 days">
-                          <IconRefresh size={16} className="text-primary" />
-                        </Button>
-                      )}
+                    <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border">
+                      <Button variant="outline" size="sm" asChild className="gap-1 text-xs font-semibold">
+                        <Link to={`/listing/${l.id}`}>
+                          <IconExternalLink size={14} /> View
+                        </Link>
+                      </Button>
                       {l.status !== "sold" && (
-                        <Button variant="ghost" size="icon" onClick={() => markSold(l.id)} title="Mark as sold">
-                          <IconCheck size={16} className="text-success" />
+                        <Button variant="outline" size="sm" onClick={() => markSold(l.id)} className="gap-1 text-xs font-semibold text-success hover:text-success">
+                          <IconCheck size={14} /> Sold
                         </Button>
                       )}
-                      <Button variant="ghost" size="icon" onClick={() => deleteListing(l.id)} title="Delete">
-                        <IconTrash size={16} className="text-destructive" />
+                      <Button variant="ghost" size="sm" onClick={() => deleteListing(l.id)} className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2">
+                        <IconTrash size={16} />
                       </Button>
                     </div>
                   </div>
-                );
-              })
+                ))}
+              </div>
             )}
           </div>
         )}
 
+        {/* TAB: SAVED CARS / FAVORITES */}
         {tab === "saved" && (
-          <div className="space-y-3">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">Saved Vehicles ({wishlistListings.length})</h2>
+                <p className="text-xs text-muted-foreground">Cars you have favorited across the marketplace</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={() => navigate("/search")} className="text-xs font-semibold">
+                Browse Marketplace
+              </Button>
+            </div>
+
             {wishlistListings.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <IconHeart size={36} className="mx-auto mb-3 opacity-30" />
-                <p className="mb-2">No saved cars yet.</p>
-                <p className="text-xs">Tap the heart icon on any listing to save it here.</p>
-                <Button variant="outline" size="sm" className="mt-4" onClick={() => navigate("/search")}>Browse Cars</Button>
+              <div className="bg-card border border-border rounded-2xl p-8 text-center shadow-xs">
+                <div className="w-14 h-14 rounded-full bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-3">
+                  <IconHeart size={28} />
+                </div>
+                <h3 className="font-bold text-base text-foreground mb-1">No saved cars yet</h3>
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto mb-5">
+                  Tap the heart icon on any vehicle while browsing to save it to your personal favorites here.
+                </p>
+                <Button onClick={() => navigate("/search")} className="gap-2 font-bold shadow-sm">
+                  <IconSearch size={16} /> Explore Vehicles
+                </Button>
               </div>
             ) : (
-              wishlistListings.map((l) => (
-                <Link key={l.id} to={`/listing/${l.id}`}>
-                  <div className="bg-card border border-border rounded-lg p-3 flex items-center gap-3 hover:shadow-sm transition-shadow">
-                    <img src={l.image} alt={l.title} className="w-16 h-16 rounded-lg object-cover shrink-0 bg-muted" />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-foreground truncate">{l.title}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{l.year} · {l.currency} {l.price.toLocaleString()}</p>
-                      {l.location && <p className="text-xs text-muted-foreground">{l.location}</p>}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {wishlistListings.map((l) => (
+                  <div key={l.id} className="bg-card border border-border rounded-xl p-3 flex gap-3 hover:shadow-md transition-shadow relative group">
+                    <Link to={`/listing/${l.id}`} className="shrink-0">
+                      <img src={l.image} alt={l.title} className="w-24 h-24 rounded-lg object-cover bg-muted" />
+                    </Link>
+                    <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                      <div>
+                        <Link to={`/listing/${l.id}`} className="font-bold text-sm text-foreground hover:text-primary truncate block">
+                          {l.title}
+                        </Link>
+                        <p className="text-xs font-extrabold text-primary mt-0.5">
+                          {l.currency} {Number(l.price).toLocaleString()}
+                        </p>
+                        {l.location && (
+                          <p className="text-[11px] text-muted-foreground flex items-center gap-1 mt-1 truncate">
+                            <IconMapPin size={12} className="shrink-0" /> {l.location}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex items-center justify-between pt-2">
+                        <Link to={`/listing/${l.id}`} className="text-xs font-bold text-primary hover:underline">
+                          View Car &rarr;
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            await supabase.from("wishlist").delete().eq("user_id", user?.id).eq("listing_id", l.id);
+                            setWishlistListings(prev => prev.filter(x => x.id !== l.id));
+                            toast({ title: "Removed from favorites" });
+                          }}
+                          className="p-1.5 rounded-full hover:bg-destructive/10 text-destructive transition-colors"
+                          title="Remove from saved"
+                        >
+                          <IconHeartFilled size={16} />
+                        </button>
+                      </div>
                     </div>
-                    <IconChevronRight size={16} className="text-muted-foreground shrink-0" />
                   </div>
-                </Link>
-              ))
+                ))}
+              </div>
             )}
           </div>
         )}
 
+        {/* TAB: REVIEWS */}
         {tab === "reviews" && user && (
           <ReviewsSection
             sellerId={user.id}
@@ -596,95 +806,126 @@ export default function Profile() {
           />
         )}
 
+        {/* TAB: SETTINGS & PASSWORD */}
         {tab === "settings" && (
-          <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold text-foreground">Profile Settings</h2>
-              {!editing && <Button variant="outline" size="sm" onClick={() => setEditing(true)}><IconEdit size={14} className="mr-1" /> Edit</Button>}
-            </div>
-            {editing ? (
-              <div className="space-y-3">
+          <div className="space-y-6">
+            <div className="bg-card border border-border rounded-2xl p-5 md:p-6 space-y-4 shadow-xs">
+              <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Display Name</label>
-                  <Input value={editName} onChange={(e) => setEditName(e.target.value)} />
+                  <h2 className="text-base md:text-lg font-bold text-foreground">Personal Information</h2>
+                  <p className="text-xs text-muted-foreground">Update your seller profile details</p>
                 </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">Phone</label>
-                  <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="+255..." />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground mb-1 block">City</label>
-                  <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} />
-                </div>
-                <div className="flex gap-2">
-                  <Button onClick={saveProfile}>Save</Button>
-                  <Button variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
-                </div>
+                {!editing && (
+                  <Button variant="outline" size="sm" onClick={() => setEditing(true)} className="font-semibold text-xs">
+                    <IconEdit size={14} className="mr-1.5" /> Edit Profile
+                  </Button>
+                )}
               </div>
-            ) : (
-               <div className="space-y-2 text-sm">
-                 <p><span className="font-semibold text-foreground">Email:</span> <span className="text-muted-foreground">{user?.email}</span></p>
-                 <p><span className="font-semibold text-foreground">Name:</span> <span className="text-muted-foreground">{profile?.display_name || "—"}</span></p>
-                 <p><span className="font-semibold text-foreground">Phone:</span> <span className="text-muted-foreground">{profile?.phone || "—"}</span></p>
-                 <p><span className="font-semibold text-foreground">City:</span> <span className="text-muted-foreground">{profile?.city || "—"}</span></p>
-               </div>
+              {editing ? (
+                <div className="space-y-3 pt-2">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Display Name</label>
+                    <Input value={editName} onChange={(e) => setEditName(e.target.value)} className="h-10 bg-background" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">Mobile / WhatsApp</label>
+                    <Input value={editPhone} onChange={(e) => setEditPhone(e.target.value)} placeholder="+255..." className="h-10 bg-background" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">City</label>
+                    <Input value={editCity} onChange={(e) => setEditCity(e.target.value)} className="h-10 bg-background" />
+                  </div>
+                  <div className="flex gap-2 pt-2">
+                    <Button onClick={saveProfile} className="font-semibold">Save Changes</Button>
+                    <Button variant="outline" onClick={() => setEditing(false)}>Cancel</Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-sm">
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Email Address</p>
+                    <p className="font-medium text-foreground mt-0.5 truncate">{user?.email}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Full Name</p>
+                    <p className="font-medium text-foreground mt-0.5">{profile?.display_name || "—"}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Phone Number</p>
+                    <p className="font-medium text-foreground mt-0.5">{profile?.phone || "—"}</p>
+                  </div>
+                  <div className="p-3 rounded-xl bg-muted/30 border border-border">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase">Location / City</p>
+                    <p className="font-medium text-foreground mt-0.5">{profile?.city || "—"}</p>
+                  </div>
+                </div>
               )}
-              
-              {/* Help & Support */}
-              <div className="border-t border-border pt-4 mt-4">
-                <h3 className="text-sm font-semibold text-foreground mb-3">Help & Support</h3>
-                <button
-                  onClick={() => navigate("/how-it-works")}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl border-2 border-border hover:border-primary/50 hover:bg-muted/30 transition-all"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <IconHelpCircle size={20} className="text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <div className="font-medium text-sm">How to Use Motokah</div>
-                    <div className="text-xs text-muted-foreground">Learn how to search, post, and use all features</div>
-                  </div>
-                  <IconChevronRight size={18} className="ml-auto text-muted-foreground" />
-                </button>
-              </div>
-
-               <div className="border-t border-border pt-4 mt-4">
-                 <h3 className="text-sm font-semibold text-destructive mb-1">Delete account</h3>
-                 <p className="text-xs text-muted-foreground mb-3">
-                   Permanently delete your profile, listings, messages, saved items, and account access.
-                 </p>
-                 <AlertDialog>
-                   <AlertDialogTrigger asChild>
-                     <Button variant="destructive" disabled={deletingAccount} className="scroll-mb-28">
-                       <IconTrash size={16} className="mr-2" /> Delete my account
-                     </Button>
-                   </AlertDialogTrigger>
-                   <AlertDialogContent>
-                     <AlertDialogHeader>
-                       <AlertDialogTitle>Delete your Motokah account?</AlertDialogTitle>
-                       <AlertDialogDescription>
-                         This permanently removes your account and associated marketplace data. This action cannot be undone.
-                       </AlertDialogDescription>
-                     </AlertDialogHeader>
-                     <AlertDialogFooter>
-                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                       <AlertDialogAction
-                         onClick={handleDeleteAccount}
-                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                       >
-                         {deletingAccount ? "Deleting..." : "Permanently delete"}
-                       </AlertDialogAction>
-                     </AlertDialogFooter>
-                   </AlertDialogContent>
-                 </AlertDialog>
-               </div>
             </div>
-          )}
 
-        {tab === "security" && <MfaSection />}
+            {/* Change Password Component */}
+            <ChangePasswordSection />
+
+            {/* Help & Support */}
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-xs">
+              <h3 className="text-sm font-bold text-foreground mb-3">Help & Support</h3>
+              <button
+                onClick={() => navigate("/how-it-works")}
+                className="w-full flex items-center gap-3 p-3.5 rounded-xl border border-border hover:border-primary/50 hover:bg-muted/30 transition-all text-left"
+              >
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                  <IconHelpCircle size={20} />
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-foreground">How Motokah Works</div>
+                  <div className="text-xs text-muted-foreground">Complete buyer and seller guide with FAQs</div>
+                </div>
+                <IconChevronRight size={18} className="ml-auto text-muted-foreground" />
+              </button>
+            </div>
+
+            {/* Delete Account */}
+            <div className="bg-card border border-border rounded-2xl p-5 shadow-xs">
+              <h3 className="text-sm font-bold text-destructive mb-1">Delete Account</h3>
+              <p className="text-xs text-muted-foreground mb-4">
+                Permanently delete your profile, listings, messages, saved vehicles, and account access.
+              </p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" disabled={deletingAccount} className="font-semibold">
+                    <IconTrash size={16} className="mr-1.5" /> Delete My Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete your Motokah account?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This permanently removes your account and associated marketplace data. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {deletingAccount ? "Deleting..." : "Permanently delete"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: SECURITY & 2FA */}
+        {tab === "security" && (
+          <div className="space-y-6">
+            <ChangePasswordSection />
+            <MfaSection />
+          </div>
+        )}
       </div>
       <Footer />
-      
     </div>
   );
 }
