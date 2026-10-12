@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation as useRouterLocation, useNavigate } from "react-router-dom";
-import { IconArrowLeft, IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown, IconHelpCircle } from "@tabler/icons-react";
+import { IconArrowLeft, IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown, IconHelpCircle, IconShieldCheck } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -27,7 +27,7 @@ const navLinks = [
 
 export default function Header() {
   const { theme, toggleTheme } = useTheme();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { t, lang } = useLanguage();
   const { city, country } = useLocation();
   const navigate = useNavigate();
@@ -89,6 +89,17 @@ export default function Header() {
           {/* Notifications */}
           <NotificationBell />
 
+          {isAdmin && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => navigate("/admin")}
+              className="hidden sm:inline-flex border border-primary/30 text-primary bg-primary/10 hover:bg-primary/20 font-bold gap-1.5 text-xs shadow-2xs"
+            >
+              <IconShieldCheck size={16} /> Admin
+            </Button>
+          )}
+
           {user ? (
             <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="hidden sm:inline-flex border-border text-foreground hover:bg-secondary gap-1">
               <IconUser size={16} /> {t("nav.profile")}
@@ -112,6 +123,17 @@ export default function Header() {
             <SheetContent side="right" className="bg-surface-2 border-border flex flex-col overflow-hidden" onOpenAutoFocus={e => e.preventDefault()}>
               <SheetTitle className="text-primary font-bold text-lg">Motokah</SheetTitle>
               <nav className="flex flex-col gap-1 mt-6 overflow-y-auto flex-1">
+                {isAdmin && (
+                  <SheetClose asChild>
+                    <Link
+                      to="/admin"
+                      className="flex items-center gap-2 px-3 py-3 text-sm font-extrabold text-primary bg-primary/15 border border-primary/30 rounded-lg transition-colors mb-1"
+                    >
+                      <IconShieldCheck size={18} stroke={2.5} />
+                      Admin Dashboard
+                    </Link>
+                  </SheetClose>
+                )}
                 {navLinks.map(link => (
                   <SheetClose asChild key={link.key}>
                     <Link to={link.href} className="px-3 py-3 text-sm text-secondary-foreground hover:text-primary hover:bg-secondary rounded-md transition-colors">

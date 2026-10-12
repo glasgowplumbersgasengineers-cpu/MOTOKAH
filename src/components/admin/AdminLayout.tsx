@@ -1,19 +1,19 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth, checkUserIsAdmin } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "./AdminSidebar";
 
 export default function AdminLayout() {
-  const { user, loading: authLoading, isAdmin: demoIsAdmin } = useAuth();
+  const { user, loading: authLoading, isAdmin: authContextAdmin } = useAuth();
 
   const { data: supabaseIsAdmin, isLoading: roleLoading } = useQuery({
     queryKey: ["is-admin", user?.id],
     queryFn: async () => {
       if (!user) return false;
-      // Demo admin — skip Supabase RPC
-      if (user.id.startsWith("demo-")) return demoIsAdmin;
+      if (checkUserIsAdmin(user)) return true;
+      if (user.id.startsWith("demo-")) return authContextAdmin;
       const { data } = await supabase
         .from("user_roles")
         .select("role")
@@ -24,7 +24,7 @@ export default function AdminLayout() {
     enabled: !!user,
   });
 
-  const isAdmin = demoIsAdmin || supabaseIsAdmin;
+  const isAdmin = authContextAdmin || supabaseIsAdmin || checkUserIsAdmin(user);
 
   if (authLoading || roleLoading) {
     return (

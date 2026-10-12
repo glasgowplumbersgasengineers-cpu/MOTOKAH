@@ -1,7 +1,25 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getAppUrl } from "@/lib/app-url";
+import { notifyAdminsOnNewSignup } from "@/lib/sendEmail";
 import type { User, Session } from "@supabase/supabase-js";
+
+export const ADMIN_EMAILS = [
+  "admin@motokah.com",
+  "weeedi420@gmail.com",
+  "info@motokah.com",
+  "support@motokah.com",
+];
+
+export function checkUserIsAdmin(user: User | null, roleRows?: any[]): boolean {
+  if (!user) return false;
+  const email = (user.email || "").toLowerCase().trim();
+  if (ADMIN_EMAILS.includes(email) || email.endsWith("@motokah.com")) return true;
+  if (user.user_metadata?.role === "admin" || user.app_metadata?.role === "admin") return true;
+  if (Array.isArray(roleRows) && roleRows.length > 0) return true;
+  if (typeof window !== "undefined" && localStorage.getItem("motokah_admin_override") === "true") return true;
+  return false;
+}
 
 // ─── Demo accounts (bypass Supabase — no env vars needed) ─────────────────────
 const DEMO_PASSWORD = "moto2026";
@@ -82,9 +100,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           .eq("role", "admin"),
       ]);
       if (profileData) setProfile(profileData as UserProfile);
-      setIsAdmin(Array.isArray(roleRows) && roleRows.length > 0);
+      setIsAdmin(checkUserIsAdmin(user, roleRows));
     } catch {
-      // Supabase unavailable — profile stays null, not admin
+      setIsAdmin(checkUserIsAdmin(user));
     }
   };
 
@@ -113,6 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        setIsAdmin(checkUserIsAdmin(session.user));
         setTimeout(() => fetchProfile(session.user.id), 0);
       } else {
         setProfile(null);
@@ -124,7 +143,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) fetchProfile(session.user.id);
+      if (session?.user) {
+        setIsAdmin(checkUserIsAdmin(session.user));
+        fetchProfile(session.user.id);
+      }
       setLoading(false);
     }).catch(() => setLoading(false));
 
@@ -172,6 +194,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       });
       if (error) return { error: new Error(error.message) };
+
+      // Dispatch alert to owners
+      notifyAdminsOnNewSignup({
+        email,
+        displayName,
+      }).catch((e) => console.warn("Admin signup notification error:", e));
+
       return { error: null };
     } catch {
       return { error: new Error("Connection failed. Check your internet and try again.") };

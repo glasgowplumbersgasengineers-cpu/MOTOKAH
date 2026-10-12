@@ -26,6 +26,7 @@ import {
 } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { africanCities, carMakes, cityToCountry, currencies } from "@/data/mockData";
+import { notifyAdminsOnNewListing } from "@/lib/sendEmail";
 
 const topEastAfricaMakes = [
   "Toyota",
@@ -346,6 +347,20 @@ export default function SellCar() {
           await supabase.from("listings").update({ video_url: videoUrl.publicUrl }).eq("id", listing.id);
         }
       }
+
+      // Notify platform administrators immediately via email
+      notifyAdminsOnNewListing({
+        listingId: listing.id,
+        title,
+        price: form.price,
+        currency: form.currency,
+        make: form.make,
+        model: form.model,
+        sellerName: user.user_metadata?.display_name || user.email || "Seller",
+        sellerEmail: user.email,
+        phone: form.phone,
+        city: form.city,
+      }).catch(e => console.warn("Admin notification dispatch failed:", e));
 
       localStorage.removeItem("sellCarDraft");
       localStorage.removeItem("sellCarFeatures");

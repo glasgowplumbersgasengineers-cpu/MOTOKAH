@@ -272,7 +272,7 @@ function ChangePasswordSection() {
 }
 
 export default function Profile() {
-  const { user, signOut, deleteAccount, isDealer } = useAuth();
+  const { user, signOut, deleteAccount, isDealer, isAdmin } = useAuth();
   const { wishlistIds } = useWishlist();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -539,6 +539,27 @@ export default function Profile() {
 
         {tab === "dashboard" && (
           <div className="space-y-5">
+            {/* Admin Portal banner */}
+            {isAdmin && (
+              <div className="bg-gradient-to-r from-primary/15 via-primary/5 to-card border border-primary/40 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-xs">
+                    <IconShieldLock size={22} />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="font-extrabold text-foreground text-sm">Platform Administrator</p>
+                      <span className="text-[10px] bg-primary text-primary-foreground font-black px-1.5 py-0.2 rounded uppercase">Admin</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Moderate listings, approve vehicle ads, review signups & platform analytics</p>
+                  </div>
+                </div>
+                <Button size="sm" onClick={() => navigate("/admin")} className="shrink-0 gap-1.5 font-bold shadow-xs">
+                  Admin Dashboard <IconChevronRight size={14} />
+                </Button>
+              </div>
+            )}
+
             {/* Dealer redirect banner */}
             {isDealer && (
               <div className="bg-primary/10 border border-primary/30 rounded-xl p-4 flex items-center justify-between gap-3">
