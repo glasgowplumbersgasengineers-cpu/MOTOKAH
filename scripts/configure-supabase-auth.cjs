@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const PROJECT_REF = process.env.PROJECT_REF || "eiofmomywxcsezbyzjth";
+const PROJECT_REF = process.env.PROJECT_REF || "dimywnbmmliluounwqfb";
 const APP_URL = (process.env.APP_URL || "https://www.motokah.com").replace(/\/$/, "");
 const TOKEN = process.env.SUPABASE_ACCESS_TOKEN;
 
