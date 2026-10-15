@@ -172,7 +172,7 @@ export default function ListingDetail() {
   const handleBlockSeller = () => {
     if (!user) { navigate("/auth"); return; }
     if (!listing) return;
-    blockSeller(listing);
+    blockSeller(listing, user.id);
     toast.success(`${listing.sellerName} has been blocked. Their listings will no longer appear.`);
     navigate("/search", { replace: true });
   };
@@ -317,7 +317,11 @@ export default function ListingDetail() {
                       ))}
                       <Button className="w-full" disabled={!reportReason} onClick={async () => {
                         if (!user) { navigate("/auth"); return; }
-                        await supabase.from("reports").insert({ reporter_id: user.id, listing_id: id!, reason: reportReason });
+                        const { error } = await supabase.from("reports").insert({ reporter_id: user.id, listing_id: id!, reason: reportReason });
+                        if (error) {
+                          toast.error("Report could not be submitted. Please try again.");
+                          return;
+                        }
                         toast.success("Report submitted. Thank you.");
                         setReportOpen(false);
                         setReportReason("");

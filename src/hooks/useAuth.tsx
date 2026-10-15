@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 import { getAppUrl } from "@/lib/app-url";
 import { notifyAdminsOnNewSignup } from "@/lib/sendEmail";
+import { syncBlockedSellersFromServer } from "@/lib/blockedSellers";
 import type { User, Session } from "@supabase/supabase-js";
 
 export const ADMIN_EMAILS = [
@@ -133,6 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         setIsAdmin(checkUserIsAdmin(session.user));
         setTimeout(() => fetchProfile(session.user.id), 0);
+        syncBlockedSellersFromServer(session.user.id);
       } else {
         setProfile(null);
         setIsAdmin(false);
@@ -146,6 +148,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         setIsAdmin(checkUserIsAdmin(session.user));
         fetchProfile(session.user.id);
+        syncBlockedSellersFromServer(session.user.id);
       }
       setLoading(false);
     }).catch(() => setLoading(false));
