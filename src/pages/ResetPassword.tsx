@@ -9,13 +9,31 @@ import { IconLock } from "@tabler/icons-react";
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(true);
   const [ready, setReady] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    const hash = window.location.hash;
-    if (hash.includes("type=recovery")) setReady(true);
+    let active = true;
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!active) return;
+      if (event === "PASSWORD_RECOVERY" || session) setReady(true);
+      setChecking(false);
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active) return;
+      setReady(Boolean(session));
+      setChecking(false);
+    }).catch(() => {
+      if (active) setChecking(false);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,6 +48,14 @@ export default function ResetPassword() {
     }
     setLoading(false);
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <p className="text-muted-foreground">Checking reset link...</p>
+      </div>
+    );
+  }
 
   if (!ready) {
     return (

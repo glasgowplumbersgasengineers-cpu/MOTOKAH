@@ -68,7 +68,7 @@ const bundle = await request(`${uploadApi}/applications/${PACKAGE}/edits/${editI
   headers: { "Content-Type": "application/octet-stream" },
   body: fs.readFileSync(AAB),
 });
-if (String(bundle.versionCode) !== "10") throw new Error(`Expected uploaded version code 10, received ${bundle.versionCode}`);
+if (String(bundle.versionCode) !== "11") throw new Error(`Expected uploaded version code 11, received ${bundle.versionCode}`);
 console.log(`Bundle uploaded: version ${bundle.versionCode}`);
 
 const listing = JSON.parse(fs.readFileSync(path.join(ASSETS, "listing-en-GB.json"), "utf8"));
@@ -94,8 +94,8 @@ await request(`${api}/applications/${PACKAGE}/edits/${editId}/tracks/internal`, 
   body: JSON.stringify({
     track: "internal",
     releases: [{
-      name: "1.9 Internal testing",
-      versionCodes: ["10"],
+      name: "1.10 Internal testing",
+      versionCodes: ["11"],
       status: "completed",
       releaseNotes: [{ language: "en-GB", text: "Fixed the commercial filter showing SUVs instead of trucks/pickups, added Lexus to the make list, removed placeholder demo listings, fixed the car-search filter, cut ~30MB of unused stock images/data." }],
     }],
