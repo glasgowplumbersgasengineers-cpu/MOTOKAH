@@ -124,7 +124,7 @@ if (smtpComplete) {
   Object.assign(payload, {
     smtp_admin_email: smtpValues.SMTP_ADMIN_EMAIL,
     smtp_host: smtpValues.SMTP_HOST,
-    smtp_port: Number(smtpValues.SMTP_PORT),
+    smtp_port: String(smtpValues.SMTP_PORT),
     smtp_user: smtpValues.SMTP_USER,
     smtp_pass: smtpValues.SMTP_PASS,
     smtp_sender_name: process.env.SMTP_SENDER_NAME || "Motokah",
