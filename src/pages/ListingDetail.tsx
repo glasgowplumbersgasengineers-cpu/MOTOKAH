@@ -20,6 +20,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePriceFormatter } from "@/lib/prices";
 import { isStaticListingId } from "@/lib/listingQuality";
 import { blockSeller } from "@/lib/blockedSellers";
+import { trackEvent } from "@/lib/analytics";
 
 const reportReasons = ["Fake listing", "Wrong price", "Duplicate", "Inappropriate content", "Scam / Fraud", "Other"];
 
@@ -154,6 +155,7 @@ export default function ListingDetail() {
     const cleanPhone = formatWhatsAppNumber(sellerPhone, listing.location);
     const msg = encodeURIComponent(`Hi, I'm interested in your ${listing.title} listed on Motokah.`);
     if (cleanPhone) {
+      trackEvent("contact_seller", { method: "whatsapp", listingId: listing.id, userId: user?.id });
       window.open(`https://wa.me/${cleanPhone}?text=${msg}`, "_blank");
     } else {
       toast.error("Seller has not provided a valid WhatsApp number.");
@@ -166,6 +168,7 @@ export default function ListingDetail() {
       return;
     }
     const cleanPhone = formatWhatsAppNumber(sellerPhone, listing?.location);
+    trackEvent("contact_seller", { method: "call", listingId: listing?.id, userId: user?.id });
     window.open(`tel:+${cleanPhone}`);
   };
 

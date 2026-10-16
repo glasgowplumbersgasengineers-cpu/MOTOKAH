@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { getAppUrl } from "@/lib/app-url";
 import { notifyAdminsOnNewSignup } from "@/lib/sendEmail";
 import { syncBlockedSellersFromServer } from "@/lib/blockedSellers";
+import { trackEvent } from "@/lib/analytics";
 import type { User, Session } from "@supabase/supabase-js";
 
 export const ADMIN_EMAILS = [
@@ -203,6 +204,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email,
         displayName,
       }).catch((e) => console.warn("Admin signup notification error:", e));
+
+      trackEvent("sign_up");
 
       return { error: null };
     } catch {

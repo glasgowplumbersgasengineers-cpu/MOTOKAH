@@ -10,6 +10,7 @@ import {
   IconBuildingStore,
   IconArrowLeft,
   IconCalendarEvent,
+  IconChartBar,
 } from "@tabler/icons-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -29,6 +30,7 @@ import {
 
 const navItems = [
   { title: "Overview", url: "/admin", icon: IconLayoutDashboard },
+  { title: "Analytics", url: "/admin/analytics", icon: IconChartBar },
   { title: "Listings", url: "/admin/listings", icon: IconCar },
   { title: "Users", url: "/admin/users", icon: IconUsers },
   { title: "Reports", url: "/admin/reports", icon: IconFlag },
@@ -50,10 +52,7 @@ export function AdminSidebar() {
       .from("dealer_applications")
       .select("id", { count: "exact", head: true })
       .eq("status", "pending")
-      .then(({ count }) => {
-        if (count && count > 0) setPendingDealers(count);
-        else setPendingDealers(3); // mock fallback for demo
-      });
+      .then(({ count }) => setPendingDealers(count ?? 0));
   }, []);
 
   return (

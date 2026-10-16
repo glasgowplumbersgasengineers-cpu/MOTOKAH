@@ -27,6 +27,7 @@ import {
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { africanCities, carMakes, cityToCountry, currencies } from "@/data/mockData";
 import { notifyAdminsOnNewListing } from "@/lib/sendEmail";
+import { trackEvent } from "@/lib/analytics";
 
 const topEastAfricaMakes = [
   "Toyota",
@@ -277,7 +278,8 @@ export default function SellCar() {
     // Auto-save phone to profile
     if (user && activePhone && (!profile?.phone || profile.phone !== activePhone)) {
       try {
-        await supabase.from("profiles").update({ phone: activePhone }).eq("id", user.id);
+        const { error: profileError } = await supabase.from("profiles").update({ phone: activePhone }).eq("user_id", user.id);
+        if (profileError) console.warn("Auto-saving phone to profile:", profileError.message);
       } catch (e) {
         console.warn("Auto-saving phone to profile:", e);
       }
@@ -316,6 +318,8 @@ export default function SellCar() {
       }).select().single();
 
       if (error) throw error;
+
+      trackEvent("listing_posted", { userId: user.id, make: form.make, model: form.model, city: form.city });
 
       // Upload Images
       for (let i = 0; i < images.length; i++) {

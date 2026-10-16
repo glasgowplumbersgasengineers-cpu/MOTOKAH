@@ -4,6 +4,7 @@ import { type Listing, mockListings, commercialTypes as COMMERCIAL_TYPES } from 
 import { getJijiListings } from "@/data/jijiListings";
 import { hasUsablePhone, isContactPendingListing, isGenericScraperSeller, isJijiImage, isLaunchQualityListing } from "@/lib/listingQuality";
 import { getBlockedSellerKeys, sellerBlockKey } from "@/lib/blockedSellers";
+import { trackEvent } from "@/lib/analytics";
 
 export interface SearchFilters {
   q?: string;
@@ -80,6 +81,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.q?.trim()) {
         const kw = filters.q.trim();
         query = query.or(`title.ilike.%${kw}%,make.ilike.%${kw}%,model.ilike.%${kw}%`);
+        trackEvent("search_performed", { query: kw, city: filters.city, make: filters.make });
       }
 
       if (filters.make) query = query.eq("make", filters.make);

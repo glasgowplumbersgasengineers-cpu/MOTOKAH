@@ -63,6 +63,7 @@ const DealerProfilePage = lazy(() => import("./pages/DealerProfile.tsx"));
 const BecomeDealer = lazy(() => import("./pages/BecomeDealer.tsx"));
 const DealerDashboard = lazy(() => import("./pages/DealerDashboard.tsx"));
 const AdminOverview = lazy(() => import("./pages/admin/AdminOverview.tsx"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics.tsx"));
 const AdminListings = lazy(() => import("./pages/admin/AdminListings.tsx"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers.tsx"));
 const AdminReports = lazy(() => import("./pages/admin/AdminReports.tsx"));
@@ -143,6 +144,7 @@ function AnimatedRoutes() {
               <Route path="/dealer-dashboard" element={<ProtectedRoute><DealerDashboard /></ProtectedRoute>} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminOverview />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="listings" element={<AdminListings />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="reports" element={<AdminReports />} />
