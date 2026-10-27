@@ -119,6 +119,7 @@ export default function ListingDetail() {
   // Increment view count once per session
   useEffect(() => {
     if (!id) return;
+    trackEvent("listing_viewed", { listingId: id });
     if (isStaticListingId(id)) return;
     const viewed = JSON.parse(sessionStorage.getItem("viewedListings") || "[]");
     if (viewed.includes(id)) return;

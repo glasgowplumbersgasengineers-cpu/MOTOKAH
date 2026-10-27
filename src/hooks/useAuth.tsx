@@ -181,6 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return { error: new Error(error.message) };
+      trackEvent("sign_in");
       return { error: null };
     } catch {
       return { error: new Error("Connection failed. Check your internet and try again.") };
@@ -200,10 +201,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) return { error: new Error(error.message) };
 
       // Dispatch alert to owners
-      notifyAdminsOnNewSignup({
+      const adminNotified = await notifyAdminsOnNewSignup({
         email,
         displayName,
-      }).catch((e) => console.warn("Admin signup notification error:", e));
+      }).catch(() => false);
+      if (!adminNotified) console.warn("Signup succeeded, but the admin email was not accepted");
 
       trackEvent("sign_up");
 

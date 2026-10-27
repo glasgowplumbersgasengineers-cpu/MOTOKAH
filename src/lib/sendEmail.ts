@@ -10,29 +10,35 @@ interface SendEmailOptions {
 }
 
 /**
- * Invoke the send-email edge function. Silently swallows errors so that the
- * caller's primary action (status update, notification) is never blocked by
- * an email failure or a missing RESEND_API_KEY.
+ * Invoke the send-email edge function. Report delivery failures to callers,
+ * which can log them without losing the user's primary action.
  */
 export async function sendEmail({ toUserId, toEmail, subject, html }: SendEmailOptions) {
   try {
-    await supabase.functions.invoke("send-email", {
+    const { data, error } = await supabase.functions.invoke("send-email", {
       body: { to_user_id: toUserId, to_email: toEmail, subject, html },
     });
-  } catch {
-    // Email is best-effort — never block the primary action
+    if (error) throw error;
+    if (!data?.sent) throw new Error(data?.reason || data?.error || "Email was not sent");
+    return true;
+  } catch (error) {
+    console.error("Motokah email delivery failed:", error);
+    return false;
   }
 }
 
 export function getAdminNotificationEmails(): string[] {
+  const official = "motokahafrica@gmail.com";
   const custom = localStorage.getItem("motokah_admin_notification_emails");
   if (custom) {
     try {
       const parsed = JSON.parse(custom);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) {
+        return [...new Set([official, ...parsed.filter((email): email is string => typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))])];
+      }
     } catch {}
   }
-  return ["admin@motokah.com", "info@motokah.com"];
+  return [official];
 }
 
 export async function notifyAdminsOnNewListing(params: {
@@ -85,13 +91,12 @@ export async function notifyAdminsOnNewListing(params: {
   </div>
 </div>`;
 
-  for (const email of adminEmails) {
-    await sendEmail({
+  const results = await Promise.all(adminEmails.map((email) => sendEmail({
       toEmail: email,
       subject: `🚗 New Listing Pending Approval: ${params.title}`,
       html,
-    });
-  }
+    })));
+  return results.some(Boolean);
 }
 
 export async function notifyAdminsOnNewSignup(params: {
@@ -134,13 +139,12 @@ export async function notifyAdminsOnNewSignup(params: {
   </div>
 </div>`;
 
-  for (const email of adminEmails) {
-    await sendEmail({
+  const results = await Promise.all(adminEmails.map((email) => sendEmail({
       toEmail: email,
       subject: `👤 New Motokah User Sign-Up: ${params.displayName || params.email}`,
       html,
-    });
-  }
+    })));
+  return results.some(Boolean);
 }
 
 // ── Pre-built templates ──────────────────────────────────────────────────

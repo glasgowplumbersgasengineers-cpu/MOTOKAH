@@ -17,34 +17,22 @@ function topCounts(values: (string | null | undefined)[], limit = 10) {
 export default function AdminAnalytics() {
   const since = new Date(Date.now() - WINDOW_DAYS * 864e5).toISOString();
 
-  const { data: pageViews = [], isLoading: loadingViews } = useQuery({
-    queryKey: ["admin-analytics-page-views"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("page_views")
-        .select("session_id, page, referrer, country, device_type, created_at")
-        .gte("created_at", since)
-        .limit(10000);
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const { data: events = [], isLoading: loadingEvents } = useQuery({
+  const { data: events = [], isLoading, error: analyticsError } = useQuery({
     queryKey: ["admin-analytics-events"],
+    refetchInterval: 30_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("analytics_events")
         .select("session_id, event_name, page, metadata, created_at")
         .gte("created_at", since)
+        .order("created_at", { ascending: false })
         .limit(10000);
       if (error) throw error;
       return data;
     },
   });
 
-  const isLoading = loadingViews || loadingEvents;
-
+  const pageViews = events.filter((e) => e.event_name === "page_view");
   const uniqueSessions = new Set(pageViews.map((v) => v.session_id)).size;
   const signUps = events.filter((e) => e.event_name === "sign_up");
   const listingsPosted = events.filter((e) => e.event_name === "listing_posted");
@@ -56,16 +44,12 @@ export default function AdminAnalytics() {
   const sessionsThatContacted = new Set(contactsSeller.map((e) => e.session_id));
 
   const topPages = topCounts(pageViews.map((v) => v.page));
-  const topReferrers = topCounts(
-    pageViews.map((v) => {
-      if (!v.referrer) return null;
-      try {
-        return new URL(v.referrer).hostname;
-      } catch {
-        return v.referrer;
-      }
-    })
-  );
+  const topReferrers = topCounts(pageViews.map((v) => (v.metadata as any)?.referrer));
+  const platforms = topCounts(pageViews.map((v) => (v.metadata as any)?.platform));
+  const recentSessions = [...new Set(events.map((e) => e.session_id))].slice(0, 20).map((id) => ({
+    id,
+    activity: events.filter((e) => e.session_id === id).slice(0, 12),
+  }));
   const topSearches = topCounts(events.filter((e) => e.event_name === "search_performed").map((e) => (e.metadata as any)?.query));
   const contactMethods = topCounts(contactsSeller.map((e) => (e.metadata as any)?.method));
 
@@ -83,12 +67,15 @@ export default function AdminAnalytics() {
   if (isLoading) {
     return <div className="p-6 text-muted-foreground">Loading analytics...</div>;
   }
+  if (analyticsError) {
+    return <div className="p-6 text-destructive">Could not load analytics. Sign in with a real admin account and check your connection.</div>;
+  }
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-xl font-semibold">Analytics</h2>
-        <p className="text-sm text-muted-foreground">Last {WINDOW_DAYS} days. Resets to empty on every real launch -- this is live visitor data, not a demo.</p>
+        <p className="text-sm text-muted-foreground">Last {WINDOW_DAYS} days of first-party website and app activity.</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -97,6 +84,16 @@ export default function AdminAnalytics() {
         {stat("Sign-ups", signUps.length)}
         {stat("Listings posted", listingsPosted.length)}
       </div>
+
+      <Card>
+        <CardHeader><CardTitle className="text-base">Website and app</CardTitle></CardHeader>
+        <CardContent className="flex flex-wrap gap-3 text-sm">
+          {platforms.map(([platform, count]) => (
+            <span key={platform} className="rounded bg-muted px-3 py-2">{platform}: {count} page views</span>
+          ))}
+          {platforms.length === 0 && <span className="text-muted-foreground">No visits recorded yet</span>}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -185,6 +182,23 @@ export default function AdminAnalytics() {
           </CardContent>
         </Card>
       </div>
+
+      <Card>
+        <CardHeader><CardTitle className="text-base">Recent visitor journeys</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          {recentSessions.map(({ id, activity }) => (
+            <div key={id} className="border-b pb-3 last:border-0">
+              <div className="text-xs text-muted-foreground mb-1">
+                {id.slice(0, 8)} · {(activity[0]?.metadata as any)?.platform || "web"} · {new Date(activity[0].created_at).toLocaleString()}
+              </div>
+              <div className="text-sm break-words">
+                {[...activity].reverse().map((e) => e.event_name === "page_view" ? e.page : e.event_name.replaceAll("_", " ")).join(" → ")}
+              </div>
+            </div>
+          ))}
+          {recentSessions.length === 0 && <p className="text-sm text-muted-foreground">No activity recorded yet</p>}
+        </CardContent>
+      </Card>
     </div>
   );
 }

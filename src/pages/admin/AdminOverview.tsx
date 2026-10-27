@@ -76,7 +76,7 @@ export default function AdminOverview() {
     }
 
     localStorage.setItem("motokah_admin_notification_emails", JSON.stringify(list));
-    toast.success(`Admin alert recipients updated: ${list.join(", ")}`);
+    toast.success("Additional recipients saved on this device. motokahafrica@gmail.com always receives alerts.");
     setAlertSettingsOpen(false);
   };
 
@@ -747,23 +747,23 @@ export default function AdminOverview() {
               <IconBell size={18} className="text-primary" /> Owner Email Alert Preferences
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Configure which email addresses receive instant notifications whenever a new user signs up or a vehicle ad is submitted for review.
+              Motokah alerts go to motokahafrica@gmail.com. Extra addresses saved here apply only to submissions from this device.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div>
               <label className="text-xs font-bold text-foreground block mb-1">
-                Notification Email Addresses (comma separated)
+                Additional Email Addresses (comma separated)
               </label>
               <Input
                 value={alertEmailsText}
                 onChange={(e) => setAlertEmailsText(e.target.value)}
-                placeholder="admin@motokah.com, owner@example.com"
+                placeholder="owner@example.com"
                 className="text-xs h-10"
               />
               <p className="text-[11px] text-muted-foreground mt-1">
-                Separate multiple emails with commas. Default: admin@motokah.com
+                Separate multiple emails with commas. The Motokah Gmail address cannot be removed.
               </p>
             </div>
 

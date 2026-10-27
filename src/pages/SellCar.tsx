@@ -353,7 +353,7 @@ export default function SellCar() {
       }
 
       // Notify platform administrators immediately via email
-      notifyAdminsOnNewListing({
+      const adminNotified = await notifyAdminsOnNewListing({
         listingId: listing.id,
         title,
         price: form.price,
@@ -364,7 +364,8 @@ export default function SellCar() {
         sellerEmail: user.email,
         phone: form.phone,
         city: form.city,
-      }).catch(e => console.warn("Admin notification dispatch failed:", e));
+      }).catch(() => false);
+      if (!adminNotified) console.warn("Listing saved, but the admin email was not accepted");
 
       localStorage.removeItem("sellCarDraft");
       localStorage.removeItem("sellCarFeatures");

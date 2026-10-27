@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconBuildingStore, IconCheck, IconLoader } from "@tabler/icons-react";
 import { Link, Navigate } from "react-router-dom";
+import { getAdminNotificationEmails, sendEmail } from "@/lib/sendEmail";
+import { trackEvent } from "@/lib/analytics";
 
 export default function BecomeDealer() {
   usePageTitle("Become a Dealer — Motokah");
@@ -54,6 +56,15 @@ export default function BecomeDealer() {
     if (error) {
       toast.error("Failed to submit application. Please try again.");
     } else {
+      trackEvent("dealer_application_submitted", { userId: user.id });
+      const businessName = form.business_name.replace(/[&<>"']/g, "");
+      const city = form.city.replace(/[&<>"']/g, "");
+      const results = await Promise.all(getAdminNotificationEmails().map((email) => sendEmail({
+        toEmail: email,
+        subject: `New Motokah dealer application: ${form.business_name}`,
+        html: `<p>A dealer application needs review.</p><p><strong>${businessName}</strong> in ${city}</p><p><a href="https://www.motokah.com/admin/dealers">Review dealer applications</a></p>`,
+      })));
+      if (!results.some(Boolean)) console.warn("Dealer application saved, but the admin email was not accepted");
       setSubmitted(true);
       toast.success("Application submitted! We'll review it shortly.");
     }

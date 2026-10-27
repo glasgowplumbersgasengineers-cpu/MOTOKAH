@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { Capacitor } from "@capacitor/core";
 
 function getOrCreateSessionId(): string {
   const key = "motokah_sid";
@@ -23,7 +24,13 @@ export function trackEvent(eventName: string, metadata: Record<string, unknown> 
       event_name: eventName,
       page: typeof window !== "undefined" ? window.location.pathname : null,
       user_id: userId ?? null,
-      metadata: rest,
+      metadata: {
+        ...rest,
+        platform: Capacitor.isNativePlatform() ? Capacitor.getPlatform() : "web",
+        device_type: /iPad|Tablet|Android(?!.*Mobile)/i.test(navigator.userAgent)
+          ? "tablet"
+          : /Mobi|iPhone|Android/i.test(navigator.userAgent) ? "mobile" : "desktop",
+      },
     })
     .then(({ error }) => {
       if (error) console.error(`[analytics] failed to track "${eventName}":`, error.message);
