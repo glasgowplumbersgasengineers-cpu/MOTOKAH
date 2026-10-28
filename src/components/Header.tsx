@@ -48,9 +48,9 @@ export default function Header() {
               <IconArrowLeft size={21} stroke={2.5} />
             </button>
           )}
-        <Link to="/" className="flex flex-col">
-          <span className="text-2xl font-extrabold text-primary tracking-tight">Motokah</span>
-          <span className="text-[10px] text-muted-foreground hidden sm:block">Find Your Perfect Ride</span>
+        <Link to="/" aria-label="Motokah home" className="flex w-[122px] shrink-0 items-center sm:w-[136px]">
+          <img src="/brand-2026/motokah-logo-horizontal.svg" alt="Motokah" className="block w-full dark:hidden" />
+          <img src="/brand-2026/motokah-logo-horizontal-white.svg" alt="" aria-hidden="true" className="hidden w-full dark:block" />
         </Link>
         </div>
 

@@ -7,6 +7,7 @@ const PACKAGE = "com.motokah.app";
 const KEY_FILE = path.join(ROOT, "secrets", "google-play-service-account.json");
 const AAB = path.join(ROOT, "android", "app", "build", "outputs", "bundle", "release", "app-release.aab");
 const ASSETS = path.join(ROOT, "reports", "play-store-assets");
+const BRAND_ASSETS = path.join(ROOT, "public", "brand-2026");
 const SCREENSHOTS = path.join(ROOT, "reports", "store-screenshots");
 const APPLY = process.argv.includes("--apply");
 
@@ -14,8 +15,8 @@ const required = [
   KEY_FILE,
   AAB,
   path.join(ASSETS, "listing-en-GB.json"),
-  path.join(ASSETS, "app-icon-512.png"),
-  path.join(ASSETS, "feature-graphic-1024x500.png"),
+  path.join(BRAND_ASSETS, "play-app-icon-512.png"),
+  path.join(BRAND_ASSETS, "play-feature-graphic-1024x500.png"),
   ...["01-home.png", "02-search-tanzania.png", "03-listing.png", "04-dealers.png", "05-sell.png"].map((name) => path.join(SCREENSHOTS, name)),
 ];
 
@@ -81,8 +82,8 @@ await request(`${api}/applications/${PACKAGE}/edits/${editId}/listings/en-GB`, {
 for (const imageType of ["icon", "featureGraphic", "phoneScreenshots"]) {
   await request(`${api}/applications/${PACKAGE}/edits/${editId}/listings/en-GB/${imageType}`, { method: "DELETE" });
 }
-await upload(editId, "icon", path.join(ASSETS, "app-icon-512.png"));
-await upload(editId, "featureGraphic", path.join(ASSETS, "feature-graphic-1024x500.png"));
+await upload(editId, "icon", path.join(BRAND_ASSETS, "play-app-icon-512.png"));
+await upload(editId, "featureGraphic", path.join(BRAND_ASSETS, "play-feature-graphic-1024x500.png"));
 for (const name of ["01-home.png", "02-search-tanzania.png", "03-listing.png", "04-dealers.png", "05-sell.png"]) {
   await upload(editId, "phoneScreenshots", path.join(SCREENSHOTS, name));
 }
