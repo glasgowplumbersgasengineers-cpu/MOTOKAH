@@ -49,5 +49,22 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Motokah needs camera access to let you take photos of your vehicle when posting a listing.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Motokah needs photo library access to let you select vehicle photos for your listing.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Motokah needs permission to save photos to your library.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.motokah.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.motokah.app</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
