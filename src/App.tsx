@@ -86,6 +86,7 @@ const InstagramShowroom = lazy(() => import("./pages/InstagramShowroom.tsx"));
 const PromoVideo = lazy(() => import("./pages/PromoVideo.tsx"));
 const ModelLandingPage = lazy(() => import("./pages/ModelLandingPage.tsx"));
 const BrandCentre = lazy(() => import("./pages/BrandCentre.tsx"));
+const CityMakeLandingPage = lazy(() => import("./pages/CityMakeLandingPage.tsx"));
 
 function CapacitorDeepLinkHandler() {
   useEffect(() => {
@@ -186,6 +187,7 @@ function AnimatedRoutes() {
               <Route path="/showroom/:username" element={<InstagramShowroom />} />
               <Route path="/promo" element={<PromoVideo />} />
               <Route path="/brand-centre" element={<BrandCentre />} />
+              <Route path="/cars/:make/in/:city" element={<CityMakeLandingPage />} />
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />
               <Route path="*" element={<NotFound />} />
         </Routes>
