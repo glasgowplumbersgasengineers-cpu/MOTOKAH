@@ -57,7 +57,7 @@ function fmt(n: number, currency = "USD"): string {
 }
 
 export default function DutyCalculator() {
-  usePageTitle("Import Duty Calculator — Motokah");
+  usePageTitle("TRA Vehicle Duty Calculator Tanzania | Car Import Tax — Motokah");
 
   const [vin, setVin] = useState("");
   const [cif, setCif] = useState("");
