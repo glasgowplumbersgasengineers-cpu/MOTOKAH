@@ -87,6 +87,8 @@ const PromoVideo = lazy(() => import("./pages/PromoVideo.tsx"));
 const ModelLandingPage = lazy(() => import("./pages/ModelLandingPage.tsx"));
 const BrandCentre = lazy(() => import("./pages/BrandCentre.tsx"));
 const CityMakeLandingPage = lazy(() => import("./pages/CityMakeLandingPage.tsx"));
+const ModelCityLandingPage = lazy(() => import("./pages/ModelCityLandingPage.tsx"));
+const DiasporaLandingPage = lazy(() => import("./pages/DiasporaLandingPage.tsx"));
 
 function CapacitorDeepLinkHandler() {
   useEffect(() => {
@@ -187,6 +189,8 @@ function AnimatedRoutes() {
               <Route path="/showroom/:username" element={<InstagramShowroom />} />
               <Route path="/promo" element={<PromoVideo />} />
               <Route path="/brand-centre" element={<BrandCentre />} />
+              <Route path="/buy-car-for-family-in-east-africa" element={<DiasporaLandingPage />} />
+              <Route path="/cars/:make/:model/in/:city" element={<ModelCityLandingPage />} />
               <Route path="/cars/:make/in/:city" element={<CityMakeLandingPage />} />
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />
               <Route path="*" element={<NotFound />} />
