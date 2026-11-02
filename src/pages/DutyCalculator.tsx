@@ -262,7 +262,25 @@ export default function DutyCalculator() {
           </p>
         </div>
 
-        {/* CTA */}
+        {/* Buyer CTA — shown after result */}
+        {result && (
+          <div className="bg-primary/5 border border-primary/30 rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <IconSearch size={22} className="text-primary shrink-0" />
+              <div>
+                <p className="font-semibold text-foreground">Browse cars already landed in Tanzania</p>
+                <p className="text-xs text-muted-foreground">Skip the import — buy direct from local sellers, no duty hassle</p>
+              </div>
+            </div>
+            <Link to="/search?country=Tanzania">
+              <Button className="gap-1.5 shrink-0">
+                <IconSearch size={15} /> Browse Cars
+              </Button>
+            </Link>
+          </div>
+        )}
+
+        {/* Seller CTA */}
         <div className="bg-card border border-border rounded-xl p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <IconCar size={22} className="text-primary shrink-0" />
@@ -272,7 +290,7 @@ export default function DutyCalculator() {
             </div>
           </div>
           <Link to="/sell">
-            <Button className="gap-1.5 shrink-0">
+            <Button variant="outline" className="gap-1.5 shrink-0">
               <IconExternalLink size={15} /> Post an Ad
             </Button>
           </Link>
