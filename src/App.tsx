@@ -89,6 +89,7 @@ const BrandCentre = lazy(() => import("./pages/BrandCentre.tsx"));
 const CityMakeLandingPage = lazy(() => import("./pages/CityMakeLandingPage.tsx"));
 const ModelCityLandingPage = lazy(() => import("./pages/ModelCityLandingPage.tsx"));
 const DiasporaLandingPage = lazy(() => import("./pages/DiasporaLandingPage.tsx"));
+const CountryMakeLandingPage = lazy(() => import("./pages/CountryMakeLandingPage.tsx"));
 
 function CapacitorDeepLinkHandler() {
   useEffect(() => {
@@ -190,6 +191,7 @@ function AnimatedRoutes() {
               <Route path="/promo" element={<PromoVideo />} />
               <Route path="/brand-centre" element={<BrandCentre />} />
               <Route path="/buy-car-for-family-in-east-africa" element={<DiasporaLandingPage />} />
+              <Route path="/country/:country/:make" element={<CountryMakeLandingPage />} />
               <Route path="/cars/:make/:model/in/:city" element={<ModelCityLandingPage />} />
               <Route path="/cars/:make/in/:city" element={<CityMakeLandingPage />} />
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />
