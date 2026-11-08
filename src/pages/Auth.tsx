@@ -4,12 +4,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconMail, IconLock, IconUser, IconArrowLeft, IconBrandGoogle, IconBrandFacebook, IconSparkles, IconBuildingStore } from "@tabler/icons-react";
+import { IconMail, IconLock, IconUser, IconArrowLeft, IconSparkles, IconBuildingStore } from "@tabler/icons-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { getAppUrl } from "@/lib/app-url";
-import { Capacitor } from "@capacitor/core";
-import { Browser } from "@capacitor/browser";
 
 type Tab = "login" | "register" | "forgot" | "otp";
 
@@ -48,7 +46,6 @@ export default function Auth() {
   const [isDealer, setIsDealer] = useState(false);
   const [otpEmail, setOtpEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<string | null>(null);
   const { signIn, signUp, resetPassword, user, isAdmin, isDealer: userIsDealer } = useAuth();
   const navigate = useNavigate();
   const routeLocation = useLocation();
@@ -77,37 +74,6 @@ export default function Auth() {
   }, [routeLocation.search, toast]);
 
   if (user) return null;
-
-  const handleSocialLogin = async (provider: "google" | "apple" | "facebook") => {
-    setSocialLoading(provider);
-    try {
-      const isNative = Capacitor.isNativePlatform();
-      const redirectTo = isNative
-        ? "com.motokah.app://login-callback"
-        : getAppUrl("/auth");
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo,
-          skipBrowserRedirect: isNative,
-        },
-      });
-
-      if (error) throw error;
-
-      if (isNative && data?.url) {
-        await Browser.open({ url: data.url, windowName: "_self" });
-        // Session is picked up by appUrlOpen handler in App.tsx
-        setSocialLoading(null);
-        return;
-      }
-    } catch (err: unknown) {
-      toast({ title: "Error", description: (err as Error).message, variant: "destructive" });
-    } finally {
-      setSocialLoading(null);
-    }
-  };
 
   const handleOtp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,7 +120,7 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-background overflow-y-auto">
-      <div className="w-full max-w-md mx-auto px-4 py-8 md:py-12">
+      <div className="w-full max-w-md mx-auto px-4" style={{ paddingTop: "max(2rem, env(safe-area-inset-top))", paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}>
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-primary">Motokah</h1>
           <p className="text-muted-foreground text-sm mt-1">Find Your Perfect Ride</p>
@@ -196,42 +162,6 @@ export default function Auth() {
             </>
           ) : (
             <>
-              {/* Social Login Buttons */}
-              <div className="space-y-2 mb-5">
-                <Button type="button" variant="outline" className="w-full gap-2 font-medium" onClick={() => handleSocialLogin("google")} disabled={!!socialLoading}>
-                  {socialLoading === "google" ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" /> : <IconBrandGoogle size={18} />}
-                  Continue with Google
-                </Button>
-                {/* Apple Sign In — official Apple button design per HIG */}
-                <button
-                  type="button"
-                  onClick={() => handleSocialLogin("apple")}
-                  disabled={!!socialLoading}
-                  className="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold disabled:opacity-50 transition-opacity"
-                  style={{ backgroundColor: "#000000", color: "#FFFFFF", fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif", minHeight: 44 }}
-                >
-                  {socialLoading === "apple" ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" viewBox="0 0 814 1000" aria-hidden="true">
-                      <path fill="white" d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105-37.3-155.5-127.4C46.3 656.1 0 560.1 0 479.8c0-223.5 146.4-342.1 290.4-342.1 74.5 0 136.6 49 185 49s110.6-52 197.2-52c30.9 0 173.6 2.6 264.5 126.1zm-174.2-236.5c37.1-44.5 63.6-107.2 63.6-169.9 0-8.9-.6-17.8-2.6-24.7-58.8 2.3-129.4 38.7-170.7 84.9-32.8 36.8-62.6 97.3-62.6 160.6 0 9.5 1.9 19.1 2.6 22.1 3.9.6 10.4 1.3 16.8 1.3 52.4 0 118.6-35.4 152.9-74.3z"/>
-                    </svg>
-                  )}
-                  Sign in with Apple
-                </button>
-                <Button type="button" variant="outline" className="w-full gap-2 font-medium" onClick={() => handleSocialLogin("facebook")} disabled={!!socialLoading}>
-                  {socialLoading === "facebook" ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-foreground" /> : <IconBrandFacebook size={18} className="text-[#1877F2]" />}
-                  Continue with Facebook
-                </Button>
-              </div>
-
-              <div className="relative mb-5">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-2 bg-card text-muted-foreground">or continue with email</span>
-                </div>
-              </div>
-
               {/* Tabs */}
               <div className="flex mb-5 border-b border-border">
                 <button onClick={() => setTab("login")} className={`flex-1 pb-3 text-sm font-semibold transition-colors ${tab === "login" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
