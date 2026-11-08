@@ -1,8 +1,5 @@
 import { Component, lazy, Suspense, useEffect, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Capacitor } from "@capacitor/core";
-import { App as CapApp } from "@capacitor/app";
-import { supabase } from "@/integrations/supabase/client";
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -90,26 +87,6 @@ const CityMakeLandingPage = lazy(() => import("./pages/CityMakeLandingPage.tsx")
 const ModelCityLandingPage = lazy(() => import("./pages/ModelCityLandingPage.tsx"));
 const DiasporaLandingPage = lazy(() => import("./pages/DiasporaLandingPage.tsx"));
 const CountryMakeLandingPage = lazy(() => import("./pages/CountryMakeLandingPage.tsx"));
-
-function CapacitorDeepLinkHandler() {
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-    let cleanup: (() => void) | undefined;
-    CapApp.addListener("appUrlOpen", async ({ url }) => {
-      if (url.includes("login-callback")) {
-        const urlObj = new URL(url);
-        const code = urlObj.searchParams.get("code");
-        if (code) {
-          await supabase.auth.exchangeCodeForSession(code);
-        }
-      }
-    }).then((listener) => {
-      cleanup = () => listener.remove();
-    });
-    return () => cleanup?.();
-  }, []);
-  return null;
-}
 
 function RouteLoader() {
   return (
@@ -217,7 +194,6 @@ const App = () => (
                     <Toaster />
                     <Sonner />
                     <PWAInstallBanner />
-                    <CapacitorDeepLinkHandler />
                     <BrowserRouter>
                       <BottomNav />
                       <AnimatedRoutes />
