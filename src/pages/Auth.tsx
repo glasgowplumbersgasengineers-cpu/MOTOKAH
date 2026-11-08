@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,9 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { getAppUrl } from "@/lib/app-url";
 
 type Tab = "login" | "register" | "forgot" | "otp";
+
+// Magic-link emails open in Safari, which App Review rejects as "sign-in outside the app".
+const isNative = Capacitor.isNativePlatform();
 
 function PasswordStrength({ password }: { password: string }) {
   const getStrength = (p: string) => {
@@ -208,6 +212,15 @@ export default function Auth() {
                   </label>
                 )}
 
+                {tab === "register" && (
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    By creating an account you agree to our{" "}
+                    <Link to="/terms" className="text-primary underline">Terms of Use</Link> and{" "}
+                    <Link to="/privacy" className="text-primary underline">Privacy Policy</Link>.
+                    Motokah has zero tolerance for objectionable content or abusive users.
+                  </p>
+                )}
+
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Please wait..." : tab === "login" ? "Sign In" : "Create Account"}
                 </Button>
@@ -218,9 +231,11 @@ export default function Auth() {
                   <button onClick={() => setTab("forgot")} className="text-sm text-primary hover:underline">
                     Forgot password?
                   </button>
-                  <button onClick={() => setTab("otp")} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
-                    <IconSparkles size={14} /> Sign in with Magic Link
-                  </button>
+                  {!isNative && (
+                    <button onClick={() => setTab("otp")} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
+                      <IconSparkles size={14} /> Sign in with Magic Link
+                    </button>
+                  )}
                 </div>
               )}
             </>

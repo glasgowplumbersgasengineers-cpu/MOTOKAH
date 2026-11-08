@@ -12,7 +12,7 @@ import {
   IconCheck, IconTrash, IconExternalLink, IconPlus, IconChartBar,
   IconStarFilled, IconMapPin, IconPhone, IconAlertCircle,
 } from "@tabler/icons-react";
-import { mockDealers, mockListings } from "@/data/mockData";
+import { mockDealers } from "@/data/mockData";
 import type { Listing } from "@/data/mockData";
 
 type DealerListing = {
@@ -57,28 +57,7 @@ export default function DealerDashboard() {
         .eq("seller_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (!error && data && data.length > 0) {
-        setListings(data as DealerListing[]);
-      } else {
-        // Mock fallback: use listings matching the dealer's display_name
-        const dealerName = profile?.display_name;
-        const mock = dealerName
-          ? mockListings.filter(l => l.sellerName === dealerName)
-          : mockListings.filter(l => l.sellerType === "dealer").slice(0, 5);
-
-        setListings(mock.map(l => ({
-          id: l.id,
-          title: l.title,
-          price: l.price,
-          currency: l.currency,
-          status: "approved",
-          views: l.views,
-          created_at: new Date(Date.now() - Math.random() * 60 * 24 * 3600 * 1000).toISOString(),
-          make: l.make,
-          model: l.model,
-          year: l.year,
-        })));
-      }
+      setListings(!error && data ? (data as DealerListing[]) : []);
       setLoading(false);
     })();
   }, [user, profile]);

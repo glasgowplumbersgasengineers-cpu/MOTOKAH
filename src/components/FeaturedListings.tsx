@@ -3,6 +3,7 @@ import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useLocation } from "@/contexts/LocationContext";
 import { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function FeaturedListings() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -36,20 +37,21 @@ export default function FeaturedListings() {
 
   return (
     <section className="container mx-auto py-7 md:py-10">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <IconFlame size={24} stroke={2.5} className="text-destructive" /> Hot Deals & Featured
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <h2 className="min-w-0 text-xl md:text-2xl font-bold flex items-center gap-2 whitespace-nowrap">
+          <IconFlame size={22} stroke={2.5} className="shrink-0 text-destructive" />
+          <span className="truncate">Hot Deals & Featured</span>
         </h2>
-        <div className="flex items-center gap-2">
-          <button onClick={() => scroll("left")} disabled={!canScrollLeft}
-            className="w-8 h-8 rounded-full border border-border flex items-center justify-center disabled:opacity-30 hover:bg-accent/10 transition-colors">
+        <div className="flex shrink-0 items-center gap-2">
+          <button onClick={() => scroll("left")} disabled={!canScrollLeft} aria-label="Scroll left"
+            className="hidden md:flex w-8 h-8 rounded-full border border-border items-center justify-center disabled:opacity-30 hover:bg-accent/10 transition-colors">
             <IconChevronLeft size={18} stroke={2.5} />
           </button>
-          <button onClick={() => scroll("right")} disabled={!canScrollRight}
-            className="w-8 h-8 rounded-full border border-border flex items-center justify-center disabled:opacity-30 hover:bg-accent/10 transition-colors">
+          <button onClick={() => scroll("right")} disabled={!canScrollRight} aria-label="Scroll right"
+            className="hidden md:flex w-8 h-8 rounded-full border border-border items-center justify-center disabled:opacity-30 hover:bg-accent/10 transition-colors">
             <IconChevronRight size={18} stroke={2.5} />
           </button>
-          <a href="/search" className="text-sm text-primary hover:underline ml-2">View All →</a>
+          <Link to="/search" className="text-sm text-primary hover:underline md:ml-2 whitespace-nowrap">View All →</Link>
         </div>
       </div>
       {loading ? (
