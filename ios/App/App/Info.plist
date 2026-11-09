@@ -49,6 +49,8 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Motokah uses your location to show vehicle listings in your country and city. You can also choose your location manually.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Motokah needs camera access to let you take photos of your vehicle when posting a listing.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

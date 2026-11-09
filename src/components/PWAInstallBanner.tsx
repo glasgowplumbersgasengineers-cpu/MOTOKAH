@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { IconDownload, IconX, IconShare } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
+import { Capacitor } from "@capacitor/core";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -24,7 +25,7 @@ export default function PWAInstallBanner() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    if (isInStandaloneMode() || localStorage.getItem("pwa-banner-dismissed") === "true") {
+    if (Capacitor.isNativePlatform() || isInStandaloneMode() || localStorage.getItem("pwa-banner-dismissed") === "true") {
       return;
     }
 

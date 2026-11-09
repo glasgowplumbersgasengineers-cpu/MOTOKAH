@@ -102,7 +102,7 @@ export default function BecomeDealer() {
             <IconBuildingStore size={48} className="mx-auto text-primary mb-4" />
             <h1 className="text-3xl md:text-4xl font-extrabold text-foreground mb-3">Become a Dealer</h1>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Join Motokah as a verified dealer and gain access to premium features, increased visibility, and a dedicated dealer profile.
+              Join Motokah as a verified dealer and get a verified badge, a dedicated dealer profile, and a dashboard to manage your listings. Free to join.
             </p>
           </div>
         </section>
