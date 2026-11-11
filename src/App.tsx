@@ -26,7 +26,6 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/hooks/useAuth";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import PWAInstallBanner from "@/components/PWAInstallBanner";
 import BottomNav from "@/components/BottomNav";
 import { usePageTracking } from "@/hooks/usePageTracking";
 
@@ -73,7 +72,6 @@ const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter.tsx"));
 const AdminDealers = lazy(() => import("./pages/admin/AdminDealers.tsx"));
 const AdminContent = lazy(() => import("./pages/admin/AdminContent.tsx"));
 const DutyCalculator = lazy(() => import("./pages/DutyCalculator.tsx"));
-const DealerLeads = lazy(() => import("./pages/DealerLeads.tsx"));
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 const CityLandingPage = lazy(() => import("./pages/CityLandingPage.tsx"));
 const CountryLandingPage = lazy(() => import("./pages/CountryLandingPage.tsx"));
@@ -161,7 +159,7 @@ function AnimatedRoutes() {
               <Route path="/content" element={<ProtectedRoute><div className="min-h-screen bg-background p-4 md:p-8 max-w-5xl mx-auto"><AdminContent /></div></ProtectedRoute>} />
               <Route path="/marketing-plan" element={<Navigate to="/" replace />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
-              <Route path="/dealer-leads" element={<DealerLeads />} />
+              <Route path="/dealer-leads" element={<Navigate to="/dealers" replace />} />
               <Route path="/city/:slug" element={<CityLandingPage />} />
               <Route path="/country/:slug" element={<CountryLandingPage />} />
               <Route path="/showroom/:username" element={<InstagramShowroom />} />
@@ -193,7 +191,6 @@ const App = () => (
                   <TooltipProvider>
                     <Toaster />
                     <Sonner />
-                    <PWAInstallBanner />
                     <BrowserRouter>
                       <BottomNav />
                       <AnimatedRoutes />
