@@ -8,7 +8,7 @@ import { jsonLdScript, breadcrumbJsonLd, faqJsonLd } from "@/lib/structuredData"
 const faqs = [
   {
     q: "Can I buy a car in Tanzania from the UK?",
-    a: "Yes. Browse verified dealer listings on Motokah, agree a price, and pay the seller directly. Many dealers accept bank transfers from overseas buyers. The car stays with the seller until your family member in Tanzania is ready to collect.",
+    a: "Yes. Browse listings on Motokah, agree a price, and pay the seller directly. Many dealers accept bank transfers from overseas buyers. The car stays with the seller until your family member in Tanzania is ready to collect.",
   },
   {
     q: "How do I buy a car for family in Kenya from abroad?",
@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "Is it safe to buy a car online in East Africa?",
-    a: "Motokah only shows listings from verified dealers and private sellers with real phone numbers. Always have a trusted person inspect the car before payment. Avoid sellers who refuse an in-person inspection or request payment before viewing.",
+    a: "Motokah shows listings with real photos and a working contact number. Always have a trusted person inspect the car before payment. Avoid sellers who refuse an in-person inspection or request payment before viewing.",
   },
   {
     q: "What is the best car to buy for family in East Africa?",
@@ -30,7 +30,7 @@ const faqs = [
 
 export default function DiasporaLandingPage() {
   const title = "Buy a Car for Family in East Africa | Motokah";
-  const description = "Buying a car for family in Tanzania, Kenya or Uganda from the UK, USA or UAE? Browse verified dealer listings on Motokah. Contact sellers directly, no middleman.";
+  const description = "Buying a car for family in Tanzania, Kenya or Uganda from the UK, USA or UAE? Browse real listings on Motokah. Contact sellers directly, no middleman.";
   const canonicalUrl = "https://www.motokah.com/buy-car-for-family-in-east-africa";
 
   const breadcrumbs = [

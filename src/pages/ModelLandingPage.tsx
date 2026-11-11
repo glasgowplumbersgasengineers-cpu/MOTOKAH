@@ -390,7 +390,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayMake: "Subaru",
     displayModel: "Forester",
     title: "Subaru Forester for Sale in Kenya & East Africa | Price & Listings | Motokah",
-    description: "Buy a Subaru Forester in Kenya, Tanzania and Uganda. Browse Forester prices from verified dealers. One of Kenya's most trusted AWD SUVs for highlands and rough roads.",
+    description: "Buy a Subaru Forester in Kenya, Tanzania and Uganda. Browse Forester prices from local sellers. One of Kenya's most trusted AWD SUVs for highlands and rough roads.",
     heroText: "The Subaru Forester is Kenya's most beloved all-wheel-drive SUV — confident in the highlands, capable on dirt roads, and genuinely fun to drive.",
     guide: {
       heading: "Subaru Forester Price in Kenya — Buying Guide",
@@ -442,7 +442,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayMake: "Nissan",
     displayModel: "X-Trail",
     title: "Nissan X-Trail for Sale in Kenya, Tanzania & East Africa | Motokah",
-    description: "Buy a Nissan X-Trail in Kenya, Tanzania, Uganda and East Africa. Browse X-Trail prices from verified dealers. One of East Africa's most popular mid-size 4x4 SUVs.",
+    description: "Buy a Nissan X-Trail in Kenya, Tanzania, Uganda and East Africa. Browse X-Trail prices from local sellers. One of East Africa's most popular mid-size 4x4 SUVs.",
     heroText: "The Nissan X-Trail is East Africa's favourite mid-range 4x4 SUV — spacious, capable off-road, and available at competitive prices across Kenya, Tanzania and Uganda.",
     guide: {
       heading: "Nissan X-Trail Price in Kenya & East Africa — Buying Guide",
@@ -460,7 +460,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayMake: "Nissan",
     displayModel: "Navara",
     title: "Nissan Navara for Sale in Tanzania, Kenya & East Africa | Motokah",
-    description: "Buy a Nissan Navara in Tanzania, Kenya, Uganda and East Africa. Browse Navara prices from verified dealers. A capable double-cab pickup competing with the Toyota Hilux.",
+    description: "Buy a Nissan Navara in Tanzania, Kenya, Uganda and East Africa. Browse Navara prices from local sellers. A capable double-cab pickup competing with the Toyota Hilux.",
     heroText: "The Nissan Navara is a serious rival to the Toyota Hilux — strong towing capacity, comfortable double cab interior, and proven diesel reliability across East Africa.",
     guide: {
       heading: "Nissan Navara Price in East Africa — Buying Guide",
@@ -494,7 +494,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayMake: "Mitsubishi",
     displayModel: "Pajero",
     title: "Mitsubishi Pajero for Sale in Kenya, Tanzania & East Africa | Motokah",
-    description: "Buy a Mitsubishi Pajero in Kenya, Tanzania, Uganda and East Africa. Browse Pajero prices from verified dealers. One of East Africa's most capable 4x4 SUVs.",
+    description: "Buy a Mitsubishi Pajero in Kenya, Tanzania, Uganda and East Africa. Browse Pajero prices from local sellers. One of East Africa's most capable 4x4 SUVs.",
     heroText: "The Mitsubishi Pajero is a legend in East Africa — proven in the Dakar Rally and proven on every challenging track across Kenya, Tanzania and Uganda.",
     guide: {
       heading: "Mitsubishi Pajero Price in East Africa — Buying Guide",
@@ -545,7 +545,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayMake: "Mazda",
     displayModel: "CX-5",
     title: "Mazda CX-5 for Sale in Kenya & East Africa | Motokah",
-    description: "Find a Mazda CX-5 for sale in Kenya, Tanzania and Uganda. Browse CX-5 prices from verified dealers — a premium mid-size SUV with SKYACTIV technology.",
+    description: "Find a Mazda CX-5 for sale in Kenya, Tanzania and Uganda. Browse CX-5 prices from local sellers — a premium mid-size SUV with SKYACTIV technology.",
     heroText: "The Mazda CX-5 combines premium SUV styling with SKYACTIV efficiency — one of the best-looking and best-driving mid-size SUVs available in East Africa.",
     guide: {
       heading: "Mazda CX-5 Price in Kenya — Buying Guide",
@@ -577,7 +577,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayMake: "Honda",
     displayModel: "Vezel",
     title: "Honda Vezel for Sale in Kenya & East Africa | Price & Listings | Motokah",
-    description: "Buy a Honda Vezel in Kenya, Tanzania and Uganda. Browse Vezel prices from verified dealers. A popular compact SUV with hybrid option across East Africa.",
+    description: "Buy a Honda Vezel in Kenya, Tanzania and Uganda. Browse Vezel prices from local sellers. A popular compact SUV with hybrid option across East Africa.",
     heroText: "The Honda Vezel is East Africa's rising star compact SUV — stylish, surprisingly spacious, and the hybrid variant delivers exceptional fuel economy in city traffic.",
     guide: {
       heading: "Honda Vezel Price in Kenya — Buying Guide",
@@ -611,7 +611,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     displayMake: "Honda",
     displayModel: "CRV",
     title: "Honda CR-V for Sale in Kenya & East Africa | Price & Listings | Motokah",
-    description: "Buy a Honda CR-V in Kenya, Tanzania and Uganda. Browse CR-V prices from verified dealers — a well-regarded compact SUV with strong reputation in East Africa.",
+    description: "Buy a Honda CR-V in Kenya, Tanzania and Uganda. Browse CR-V prices from local sellers — a well-regarded compact SUV with strong reputation in East Africa.",
     heroText: "The Honda CR-V is a dependable compact SUV — spacious, well-equipped, and one of East Africa's most sought-after used SUV buys.",
     guide: {
       heading: "Honda CR-V Price in Kenya — Buying Guide",
