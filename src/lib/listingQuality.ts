@@ -1,4 +1,26 @@
 import { type Listing } from "@/data/mockData";
+// One-time audit (2026-11-11): HEAD-checked every image URL referenced by the Instagram/showroom
+// corpus (src/data/showrooms/*.json) against the live R2 CDN. Result: only 657/25,535 (2.6%) of
+// those images actually resolve — 4,767 of 4,888 showroom posts (97.5%) have ZERO working images.
+// This is not an isolated Khushi/Mgaya problem, it's near-total across every scraped dealer.
+// Keyed by the exact listing id ("ig-{username}-{shortcode}") -> true if >=1 of its images is live.
+// Regenerate with the audit script referenced in the session report if the R2 bucket is repopulated.
+import showroomImageHealth from "@/data/showroomImageHealth.json";
+
+/**
+ * For Instagram/showroom-derived listings (id starts with "ig-"), returns false unless the image
+ * audit above confirmed at least one of the post's images actually resolves on the CDN. Listings
+ * not covered by the audit (real Supabase user-submitted listings, mock- ids, jiji- ids) are not
+ * affected — this only guards against the specific R2-hotlink-rot problem found in the Instagram
+ * scrape data.
+ */
+export function hasVerifiedRecoverableImage(listing: Pick<Listing, "id">): boolean {
+  if (!listing.id?.startsWith("ig-")) return true;
+  const verified = (showroomImageHealth as Record<string, boolean>)[listing.id];
+  // Unknown ids (not covered by the audit, e.g. added after the manifest was generated) are not
+  // penalized — absence of data isn't evidence of a broken image.
+  return verified === undefined ? true : verified;
+}
 
 export function isStaticListingId(id?: string | null): boolean {
   return /^(?:mock-|stock-|ig-|ib-|jiji-|boat-)/.test(id || "");
@@ -77,6 +99,7 @@ export function isLaunchQualityListing(listing: Listing): boolean {
   if (!hasPremiumVehicleIdentity(listing)) return false;
   if (!hasPremiumTitle(listing)) return false;
   if (!hasPremiumImages(listing)) return false;
+  if (!hasVerifiedRecoverableImage(listing)) return false;
   if ((listing.description || "").length < 40 && listing.id.startsWith("ig-")) return false;
   return true;
 }

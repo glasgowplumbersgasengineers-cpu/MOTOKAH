@@ -366,16 +366,30 @@ function _normalizeUnicode(s: string): string {
   }).join("");
 }
 
-function _parseMgayaPrice(raw: string | null): number {
+// Exported for regression testing of the Instagram-caption price parser (see mockData.test.ts).
+export function _parseMgayaPrice(raw: string | null): number {
   if (!raw) return 0;
   const spacedMillion = raw.match(/\b(\d{2,3})\s+(\d)\s*(?:m|mil|mln|million|milion)\b/i);
   if (spacedMillion) return Math.round(parseFloat(`${spacedMillion[1]}.${spacedMillion[2]}`) * 1_000_000);
+  // European-style decimal comma used as a millions shorthand, e.g. "42,8" or "42,5 million"
+  // meaning 42.8 / 42.5 million — NOT thousands grouping. Only treat as decimal when the comma
+  // is followed by exactly one digit that is NOT itself followed by another digit (real
+  // thousands grouping like "20,500,000" always has 3-digit groups after a comma).
+  const decimalComma = raw.match(/^\D*(\d{1,3}),(\d)(?!\d)/);
+  if (decimalComma) return Math.round(parseFloat(`${decimalComma[1]}.${decimalComma[2]}`) * 1_000_000);
   const s = raw
     .replace(/\b(KES|KSH|TZS|TZshs|TSh|UGX|USh|USD|RWF|RF|ETB)\b/gi, "")
     .replace(/[,\s]/g, "")
     .replace(/[/=\-+➕]/g, "");
   const mMatch = s.match(/^(\d+(?:\.\d+)?)(?:m|mln|mil(?:ion|lion))/i);
-  if (mMatch) return Math.round(parseFloat(mMatch[1]) * 1_000_000);
+  if (mMatch) {
+    const n = parseFloat(mMatch[1]);
+    // Guard against captions that already write the full price out (e.g. "20,500,000m" or
+    // "40800000 m") where the trailing "m"/"million" is a stray/mislabeled word rather than a
+    // genuine x1,000,000 multiplier — blindly multiplying produced absurd trillion-scale prices.
+    // No real car price is >=1,000 "million" units, so treat those as already-full amounts.
+    return n >= 1_000 ? Math.round(n) : Math.round(n * 1_000_000);
+  }
   const numMatch = s.match(/^(\d+(?:\.\d+)?)/);
   if (numMatch) {
     const n = parseFloat(numMatch[1]);
@@ -505,14 +519,14 @@ function _parseMgayaCaption(caption: string) {
   // "Price Starts From X TZS" must be checked FIRST — otherwise get("price") grabs "Starts From…" as garbage
   const rawPrice =
     (() => { for (const l of lines) { const m = l.match(/price\s+starts?\s+from\s+([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+(?:only|price|for)?|ask(?:ing)?\s+price|price|bei)\s*[:/;-]?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*)?([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/\bbei\s*(?:ni|ya)?\s*[:/]?\s*([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:\/[-=]|TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/([\d,.]+(?:\s+\d)?\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+(?:only|price|for)?|ask(?:ing)?\s+price|price|bei)\s*[:/;-]?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*)?([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/\bbei\s*(?:ni|ya)?\s*[:/]?\s*([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/^([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:\/[-=]|TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
     // "Ask Price Milion 20.9" — million precedes number
     (() => { for (const l of lines) { const m = l.match(/(?:m(?:il(?:ion|lion)|illion)|mln)\s+([\d,.]+)/i); if (m) return `${m[1]}m`; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/([\d,.]+(?:\s+\d)?)\s*(?:m|mln|million|milion)\b/i); if (m) return `${m[1]}m`; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/([\d,.]+(?:\s\d{3})*)\s*(?:m|mln|million|milion)\b/i); if (m) return `${m[1]}m`; } return null; })() ||
     get("bei", "price/bei", "bei/price");
   const price = _parseMgayaPrice(rawPrice);
 

@@ -79,7 +79,7 @@ export default function InstagramShowroom() {
         <div className="flex-1 flex flex-col items-center justify-center gap-4 p-8 text-center">
           <h1 className="text-2xl font-bold text-foreground">Showroom Not Found</h1>
           <p className="text-muted-foreground text-sm">This dealer showroom doesn't exist yet.</p>
-          <Link to="/dealer-leads">
+          <Link to="/dealers">
             <Button variant="outline">Browse All Dealers</Button>
           </Link>
         </div>
@@ -189,22 +189,14 @@ export default function InstagramShowroom() {
             Available Cars
             <span className="ml-2 text-sm font-normal text-muted-foreground">({carCount} listings)</span>
           </h2>
-          <a
-            href={`https://www.instagram.com/${dealer.username}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-          >
-            <IconBrandInstagram size={14} /> View on Instagram
-          </a>
         </div>
         {listings.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <IconPhoto size={40} className="mx-auto mb-3 opacity-30" />
             <p className="text-sm">No listings found for this dealer yet.</p>
-            <a href={`https://www.instagram.com/${dealer.username}/`} target="_blank" rel="noopener noreferrer" className="text-xs text-primary hover:underline mt-1 block">
-              View on Instagram →
-            </a>
+            <Link to="/dealers" className="text-xs text-primary hover:underline mt-1 block">
+              Browse other dealers on Motokah →
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

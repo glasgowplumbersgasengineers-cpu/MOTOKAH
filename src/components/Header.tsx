@@ -20,7 +20,6 @@ const navLinks = [
   { key: "nav.bikes", href: "/search?vehicleType=bike" },
   { key: "nav.boats", href: "/search?vehicleType=boat" },
   { key: "nav.dealers", href: "/dealers" },
-  { key: "nav.dealerContacts", href: "/dealer-leads", label: "Dealer Contacts" },
   { key: "nav.compare", href: "/compare" },
   { key: "nav.blog", href: "/blog" },
 ];
@@ -55,9 +54,9 @@ export default function Header() {
         </div>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden xl:flex items-center gap-1">
           {navLinks.map((link) => (
-            <Link key={link.key} to={link.href} className="px-3 py-2 text-sm text-secondary-foreground hover:text-primary transition-colors rounded-md hover:bg-secondary">
+            <Link key={link.key} to={link.href} className="whitespace-nowrap px-3 py-2 text-sm text-secondary-foreground hover:text-primary transition-colors rounded-md hover:bg-secondary">
               {"label" in link ? link.label : t(link.key)}
             </Link>
           ))}
@@ -116,7 +115,7 @@ export default function Header() {
           {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
+              <Button variant="ghost" size="icon" className="xl:hidden">
                 <IconMenu2 size={22} stroke={2.5} />
               </Button>
             </SheetTrigger>

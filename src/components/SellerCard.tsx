@@ -1,4 +1,4 @@
-import { IconPhone, IconBrandWhatsapp, IconMessage, IconStarFilled, IconShieldCheck, IconUser, IconBuildingStore, IconExternalLink } from "@tabler/icons-react";
+import { IconPhone, IconMessage, IconStarFilled, IconShieldCheck, IconUser, IconBuildingStore, IconExternalLink } from "@tabler/icons-react";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
@@ -16,11 +16,6 @@ export default function SellerCard({ listing }: SellerCardProps) {
   const priceFormatter = usePriceFormatter();
 
   const phone = listing.sellerPhone || "";
-
-  const handleWhatsApp = () => {
-    const msg = encodeURIComponent(`Hi, I'm interested in your ${listing.title} listed on Motokah.`);
-    window.open(phone ? `https://wa.me/${phone.replace(/\D/g, "")}?text=${msg}` : `https://wa.me/?text=${msg}`);
-  };
 
   const handleCall = () => {
     if (phone) window.open(`tel:${phone}`);
@@ -92,17 +87,15 @@ export default function SellerCard({ listing }: SellerCardProps) {
           </>
         ) : (
           <>
-            <button onClick={handleWhatsApp} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition-colors">
-              <IconBrandWhatsapp size={20} stroke={2} />
-              WhatsApp
-            </button>
-            <button onClick={handleCall} disabled={!phone} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              <IconPhone size={18} stroke={2.5} />
-              {phone ? "Call Seller" : "Phone pending"}
-            </button>
-            <button onClick={handleMessage} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-border hover:bg-muted/50 font-semibold text-sm transition-colors">
+            {/* Primary CTA: keep contact on-platform (in-app chat, not an external app handoff) */}
+            <button onClick={handleMessage} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-colors">
               <IconMessage size={18} stroke={2.5} />
-              Send Message
+              Message on Motokah
+            </button>
+            {/* Secondary fallback only — phone call still leaves the app, so it's demoted below the in-app option */}
+            <button onClick={handleCall} disabled={!phone} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-border hover:bg-muted/50 text-xs font-medium text-muted-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              <IconPhone size={14} stroke={2.5} />
+              {phone ? "Or call seller" : "Phone pending"}
             </button>
           </>
         )}
