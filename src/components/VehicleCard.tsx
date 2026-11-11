@@ -241,9 +241,11 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
             {listing.sellerType === "dealer" && <IconBuildingStore size={13} className="text-primary shrink-0" />}
             {listing.sellerName}
           </span>
-          <span className="flex items-center gap-0.5 text-xs">
-            <IconStarFilled size={14} className="text-accent" /> {listing.sellerRating}
-          </span>
+          {listing.sellerRating != null && (
+            <span className="flex items-center gap-0.5 text-xs">
+              <IconStarFilled size={14} className="text-accent" /> {listing.sellerRating}
+            </span>
+          )}
         </div>
       </div>
     </Link>

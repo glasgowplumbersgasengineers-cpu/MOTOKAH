@@ -86,7 +86,6 @@ export function useListing(id: string | undefined) {
         videoUrl: r.video_url || undefined,
         views: r.views || 0,
         sellerName,
-        sellerRating: Number((4.2 + (r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 7) / 10).toFixed(1)),
         sellerType: (profile?.seller_type as "dealer" | "private") || "private",
         sellerListingCount: 1,
         bodyType: r.body_type || undefined,

@@ -51,7 +51,6 @@ export default function Compare() {
             id: r.id, title: r.title, price: Number(r.price), currency: r.currency,
             condition: r.condition, year: r.year, mileage: r.mileage || 0,
             transmission: r.transmission || "Manual", location: r.city || "Africa",
-            image, views: r.views || 0, sellerName: "Seller", sellerRating: 4.5,
             sellerType: "private" as const, sellerListingCount: 1,
             bodyType: r.body_type || undefined, fuelType: r.fuel_type || undefined,
             make: r.make, model: r.model,

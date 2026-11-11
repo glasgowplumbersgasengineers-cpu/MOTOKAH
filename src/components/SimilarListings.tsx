@@ -75,7 +75,6 @@ export default function SimilarListings({ currentId, make, bodyType }: SimilarLi
         image: sorted[0]?.image_url || "",
         views: r.views || 0,
         sellerName: profile?.display_name || "Seller",
-        sellerRating: 4.5,
         sellerType: (profile?.seller_type as "dealer" | "private") || "private",
         sellerListingCount: 1,
         sellerPhone: profile?.phone || undefined,

@@ -215,13 +215,6 @@ function _postImagePrefix(username: string, shortcode: string): string {
   return shortcode.startsWith(`${username}_`) ? shortcode.slice(username.length + 1) : shortcode;
 }
 
-// Deterministic per-dealer rating in the 4.2-4.8 range, same approach used for
-// Supabase-sourced listings in useSearchListings.ts — avoids every showroom
-// dealer showing an identical flat 4.5.
-function _dealerRating(username: string): number {
-  const sum = username.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  return Number((4.2 + (sum % 7) / 10).toFixed(1));
-}
 
 function _postImages(username: string, post: { shortcode?: string; images?: string[] }, index = 0): string[] {
   const sourceImages = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
@@ -326,7 +319,7 @@ export interface Listing {
   videoUrl?: string;
   views: number;
   sellerName: string;
-  sellerRating: number;
+  sellerRating?: number;
   sellerType: "dealer" | "private";
   sellerListingCount: number;
   badge?: "hot" | "featured" | "new";
@@ -651,7 +644,7 @@ function _convertMgayaToListings(): Listing[] {
       images,
       views: Math.max(post.likes * 3, 50),
       sellerName: "Mgaya Motors TZ",
-      sellerRating: 4.8,
+      
       sellerType: "dealer" as const,
       sellerListingCount: posts.length,
       sellerId: "dealer-mgayamotors",
@@ -706,7 +699,7 @@ function _convertAllShowroomsToListings(): Listing[] {
         images,
         views: Math.max(post.likes * 3, 50),
         sellerName: dealer.full_name || username,
-        sellerRating: _dealerRating(username),
+        
         sellerType: "dealer" as const,
         sellerListingCount: carPosts.length,
         sellerId: `dealer-${username}`,
@@ -761,7 +754,7 @@ function _boatImages(slug: string, count: number): string[] {
 function _nicoletteBoatListings(): Listing[] {
   const seller = {
     sellerName: "Nicolette",
-    sellerRating: 4.7,
+    
     sellerType: "dealer" as const,
     sellerListingCount: 7,
     sellerPhone: "+255765407462",
@@ -1484,7 +1477,7 @@ export function getShowroomListings(username: string): Listing[] {
       images: imgs,
       views: post.likes ? post.likes * 3 : 50,
       sellerName: dealer.full_name || username,
-      sellerRating: _dealerRating(username),
+      
       sellerType: "dealer" as const,
       sellerListingCount: carPosts.length,
       sellerId: username,

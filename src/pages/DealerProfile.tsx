@@ -34,7 +34,7 @@ export default function DealerProfile() {
     ? `${dealer.display_name} — Car Dealer${dealerCity ? ` in ${dealerCity}` : ""} | Motokah`
     : "Car Dealer | Motokah";
   const dealerDesc = dealer?.display_name
-    ? `Browse ${listings.length > 0 ? listings.length + " vehicles" : "cars"} from ${dealer.display_name}${dealerCity ? `, a verified car dealer in ${dealerCity}` : ""}. Toyota, Nissan, Subaru and more. Contact on Motokah.`
+    ? `Browse ${listings.length > 0 ? listings.length + " vehicles" : "cars"} from ${dealer.display_name}${dealerCity ? ` in ${dealerCity}` : ""}. Contact the seller on Motokah.`
     : undefined;
   usePageTitle(dealerTitle);
   useSEO({
@@ -80,7 +80,7 @@ export default function DealerProfile() {
     const mock = mockDealers.find(d => d.user_id === mockId || d.user_id === username || d.user_id === id);
 
     if (mock) {
-      setDealer({ ...mock, seller_type: "dealer" });
+      setDealer({ ...mock, verified_at: null, seller_type: "dealer" });
       // Load all posts from showroom JSON for this dealer (full data, no keyword filter)
       const showroomListings = getShowroomListings(username);
       if (showroomListings.length > 0) {
@@ -126,7 +126,6 @@ export default function DealerProfile() {
           image: l.listing_images?.[0]?.image_url || "",
           views: l.views,
           sellerName: profile?.display_name || "Dealer",
-          sellerRating: 0,
           sellerType: "dealer",
           sellerListingCount: 0,
           make: l.make,
@@ -165,10 +164,6 @@ export default function DealerProfile() {
       </div>
     );
   }
-
-  const avgRating = dealer.rating ?? (listings.length > 0
-    ? listings.reduce((s, l) => s + l.sellerRating, 0) / listings.length
-    : 4.5);
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -234,7 +229,7 @@ export default function DealerProfile() {
               </div>
 
               {/* Actions */}
-              <div className="flex gap-2 shrink-0">
+              <div className="flex flex-wrap gap-2 shrink-0">
                 {dealer.phone && (
                   <Button variant="outline" size="sm" className="gap-1.5" asChild>
                     <a href={`tel:${dealer.phone}`}><IconPhone size={15} /> Call</a>
@@ -249,6 +244,15 @@ export default function DealerProfile() {
                 )}
               </div>
             </div>
+            <Link
+              to={`/contact?${new URLSearchParams({
+                subject: `Manage ${dealer.display_name || "dealer"} on Motokah`,
+                message: `I represent ${dealer.display_name || "this showroom"} and would like to manage this dealer page: https://www.motokah.com/dealer/${id}. My public WhatsApp number and current stock details are: `,
+              })}`}
+              className="mt-4 inline-block text-sm font-medium text-primary underline-offset-4 hover:underline"
+            >
+              Own this showroom? Manage this page
+            </Link>
           </div>
         </section>
 

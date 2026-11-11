@@ -218,7 +218,6 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           videoUrl: r.video_url || undefined,
           views: r.views || 0,
           sellerName: profile?.display_name || "Private Seller",
-          sellerRating: Number((4.2 + (r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0) % 7) / 10).toFixed(1)),
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
           sellerPhone: profile?.phone || undefined,

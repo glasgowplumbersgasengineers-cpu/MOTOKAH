@@ -107,8 +107,6 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         const imgs = (r.listing_images as { image_url: string; display_order: number }[]) || [];
         const sortedImages = [...imgs].sort((a, b) => a.display_order - b.display_order);
         const mainImage = sortedImages[0]?.image_url || "";
-        // Deterministic 4.2–4.8 rating per row so cards are not all flat 4.5
-        const ratingSeed = r.id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
 
         return {
           id: r.id,
@@ -125,7 +123,6 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
           videoUrl: r.video_url || undefined,
           views: r.views || 0,
           sellerName: profile?.display_name || "Private Seller",
-          sellerRating: Number((4.2 + (ratingSeed % 7) / 10).toFixed(1)),
           sellerType: (profile?.seller_type as "dealer" | "private") || "private",
           sellerListingCount: 1,
           sellerPhone: profile?.phone || undefined,

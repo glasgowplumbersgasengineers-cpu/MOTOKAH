@@ -62,8 +62,12 @@ export default function SellerCard({ listing }: SellerCardProps) {
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             {isDealer ? (
               <>
-                <IconStarFilled size={14} className="text-accent" />
-                <span className="font-medium">{listing.sellerRating}</span>
+                {listing.sellerRating != null && (
+                  <>
+                    <IconStarFilled size={14} className="text-accent" />
+                    <span className="font-medium">{listing.sellerRating}</span>
+                  </>
+                )}
                 <span>• Dealer • {listing.sellerListingCount} listings</span>
               </>
             ) : (
