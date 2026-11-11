@@ -1,0 +1,22 @@
+# Motokah
+
+> Motokah is a vehicle marketplace for East Africa (Tanzania, Kenya, Uganda, Ethiopia), aggregating dealer inventory and letting buyers search by city, make, price and body type.
+
+Motokah Africa Limited operates the platform under license from 1Point Solutions.
+
+## Guides
+
+- [Car Import Duty Tanzania (TRA Guide)](https://www.motokah.com/blog/car-import-duty-tanzania-tra-guide)
+- [Car Import Duty Kenya 2026 (KRA Rates)](https://www.motokah.com/blog/car-import-duty-kenya-2026-kra-rates)
+- [Buying a Car in Tanzania or Kenya From the UK, USA or UAE](https://www.motokah.com/blog/buying-a-car-tanzania-kenya-from-uk-usa-uae-diaspora-guide)
+- [Toyota Harrier vs Toyota Prado for Tanzania's Roads](https://www.motokah.com/blog/toyota-harrier-vs-prado-tanzania-2026)
+- [Best Cars for Dar es Salaam Roads](https://www.motokah.com/blog/best-cars-dar-es-salaam-roads-2026)
+- [Buying a Used Car in Kampala](https://www.motokah.com/blog/buying-used-car-kampala-uganda-guide-2026)
+- [What's Actually Listed on Motokah: Most-Listed Cars in East Africa](https://www.motokah.com/blog/most-listed-cars-east-africa-motokah-data-2026)
+- [How to Import a Car to Uganda From Japan](https://www.motokah.com/blog/how-to-import-car-uganda-from-japan)
+
+## Tools
+
+- [TRA Vehicle Duty Calculator](https://www.motokah.com/duty-calculator)
+- [Search Listings](https://www.motokah.com/search)
+- [Dealer Showrooms](https://www.motokah.com/dealers)

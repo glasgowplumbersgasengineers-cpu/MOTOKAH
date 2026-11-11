@@ -5,6 +5,15 @@
       "headers": [
         { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
       ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" }
+      ]
     }
   ],
   "rewrites": [{ "source": "/((?!.*\\.(?:xml|xsl|txt|ico|svg|png|jpg|jpeg|gif|webp|json|css|js|woff|woff2|map|webmanifest)$).*)", "destination": "/index.html" }],

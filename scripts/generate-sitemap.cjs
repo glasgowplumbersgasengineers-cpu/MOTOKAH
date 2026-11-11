@@ -4,9 +4,9 @@
  */
 const fs = require("fs");
 const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env.local"), quiet: true });
 
 const BASE = "https://www.motokah.com";
-const TODAY = new Date().toISOString().split("T")[0];
 
 const BLOCKED_SHOWROOM_USERS = new Set(["servemarinekenya", "ukajapantz", "twenderide", "toyota.tanzania"]);
 
@@ -58,17 +58,15 @@ const staticPages = [
   { path: "/search",         freq: "daily",   pri: 0.9 },
   { path: "/sell",           freq: "weekly",  pri: 0.8 },
   { path: "/dealers",        freq: "weekly",  pri: 0.8 },
-  { path: "/dealer-leads",   freq: "weekly",  pri: 0.8 },
   { path: "/how-it-works",   freq: "monthly", pri: 0.7 },
   { path: "/duty-calculator",freq: "monthly", pri: 0.7 },
   { path: "/compare",        freq: "weekly",  pri: 0.6 },
   { path: "/blog",           freq: "weekly",  pri: 0.6 },
   { path: "/about",          freq: "monthly", pri: 0.5 },
+  { path: "/brand-centre",   freq: "monthly", pri: 0.5 },
   { path: "/contact",        freq: "monthly", pri: 0.5 },
   { path: "/faq",            freq: "monthly", pri: 0.4 },
   { path: "/safety",         freq: "monthly", pri: 0.4 },
-  { path: "/terms",          freq: "monthly", pri: 0.3 },
-  { path: "/privacy",        freq: "monthly", pri: 0.3 },
 ];
 
 const showroomPages = igShowrooms.map(u => ({ path: `/showroom/${u}`, freq: "weekly", pri: 0.65 }));
@@ -175,12 +173,6 @@ const categorySearchPages = [
   { path: "/search?country=Tanzania&bodyType=Pickup", freq: "weekly", pri: 0.7 },
   { path: "/search?country=Tanzania&bodyType=SUV", freq: "weekly", pri: 0.75 },
 ];
-const dealerLeadPages = [
-  { path: "/dealer-leads?country=Tanzania", freq: "weekly", pri: 0.78 },
-  { path: "/dealer-leads?country=Kenya", freq: "weekly", pri: 0.72 },
-  { path: "/dealer-leads?country=Uganda", freq: "weekly", pri: 0.66 },
-  { path: "/dealer-leads?country=Rwanda", freq: "weekly", pri: 0.62 },
-];
 
 // Model landing pages — /cars/:make/:model (high-volume keyword targets)
 const modelPages = [
@@ -215,18 +207,19 @@ const modelPages = [
   pri,
 }));
 
-// Blog posts (add slug here when publishing new posts)
-const blogPostSlugs = [
-  "how-to-import-a-car-to-kenya-2026",
-  "best-used-cars-under-2-million-nairobi-2026",
-  "bei-ya-magari-mitumba-tanzania-2026",
-  "toyota-alphard-price-kenya-2026",
-];
-const blogPostPages = blogPostSlugs.map(slug => ({
-  path: `/blog/${slug}`,
-  freq: "monthly",
-  pri: 0.7,
-}));
+// Blog posts — pulled live from Supabase so the sitemap can never list a
+// slug that isn't actually published (a hardcoded list silently drifts).
+async function loadPublishedBlogPosts() {
+  const endpoint = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!endpoint || !key) return [];
+  const query = new URL(`${endpoint.replace(/\/$/, "")}/rest/v1/blog_posts`);
+  query.searchParams.set("select", "slug,created_at");
+  query.searchParams.set("published", "eq.true");
+  const response = await fetch(query, { headers: { apikey: key }, signal: AbortSignal.timeout(15000) });
+  if (!response.ok) throw new Error(`Published blog post sitemap query failed (${response.status})`);
+  return await response.json();
+}
 
 // Country-level landing pages
 const countryPages = [
@@ -243,13 +236,49 @@ const countryPages = [
   pri,
 }));
 
-function url(loc, changefreq, priority, lastmod = TODAY) {
+function url(loc, _changefreq, _priority, lastmod) {
   return `  <url>
     <loc>${loc.replace(/&/g, "&amp;")}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority.toFixed(2)}</priority>
+${/^\d{4}-\d{2}-\d{2}$/.test(lastmod || "") ? `    <lastmod>${lastmod}</lastmod>\n` : ""}
   </url>`;
+}
+
+async function loadApprovedListings() {
+  const endpoint = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!endpoint || !key) return [];
+
+  const rows = [];
+  for (let offset = 0; ; offset += 1000) {
+    const query = new URL(`${endpoint.replace(/\/$/, "")}/rest/v1/listings`);
+    query.searchParams.set("select", "id,seller_id,updated_at,listing_images(image_url)");
+    query.searchParams.set("status", "eq.approved");
+    query.searchParams.set("order", "updated_at.desc");
+    query.searchParams.set("limit", "1000");
+    query.searchParams.set("offset", String(offset));
+    const response = await fetch(query, { headers: { apikey: key }, signal: AbortSignal.timeout(15000) });
+    if (!response.ok) throw new Error(`Approved listing sitemap query failed (${response.status})`);
+    const page = await response.json();
+    rows.push(...page);
+    if (page.length < 1000) break;
+  }
+
+  const candidates = rows.filter((row) => /^[0-9a-f-]{36}$/i.test(row.id)
+    && row.listing_images?.some((image) => /^https:\/\//.test(image.image_url || "")));
+  const visible = [];
+  for (let start = 0; start < candidates.length; start += 100) {
+    const batch = candidates.slice(start, start + 100);
+    const ids = [...new Set(batch.map((row) => row.seller_id))];
+    const query = new URL(`${endpoint.replace(/\/$/, "")}/rest/v1/profiles`);
+    query.searchParams.set("select", "user_id,phone");
+    query.searchParams.set("user_id", `in.(${ids.join(",")})`);
+    const response = await fetch(query, { headers: { apikey: key }, signal: AbortSignal.timeout(15000) });
+    if (!response.ok) throw new Error(`Seller sitemap query failed (${response.status})`);
+    const profiles = await response.json();
+    const sellers = new Set(profiles.filter((profile) => hasUsablePhone(profile.phone)).map((profile) => profile.user_id));
+    visible.push(...batch.filter((row) => sellers.has(row.seller_id)));
+  }
+  return visible;
 }
 
 const lines = [
@@ -272,7 +301,6 @@ const lines = [
   ...modelCountryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  ...dealerLeadPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
   "  <!-- City landing pages -->",
   ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
@@ -286,14 +314,23 @@ const lines = [
   "  <!-- Model landing pages -->",
   ...modelPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
   "",
-  "  <!-- Blog posts -->",
-  ...blogPostPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
   "</urlset>",
 ];
 
-const out = lines.join("\n");
-const dest = path.join(__dirname, "../public/sitemap.xml");
-fs.writeFileSync(dest, out, "utf8");
-console.log(`Sitemap written: ${dest}`);
-console.log(`URLs: ${staticPages.length + countryPages.length + countrySearchPages.length + makePages.length + modelCountryPages.length + cityMakePages.length + categorySearchPages.length + dealerLeadPages.length + cities.length + dealerPages.length + showroomPages.length + modelPages.length + blogPostPages.length}`);
+Promise.all([loadApprovedListings(), loadPublishedBlogPosts()]).then(([listings, posts]) => {
+  lines.splice(-1, 0,
+    "  <!-- Approved listings with images and seller contact -->",
+    ...listings.map((listing) => url(`${BASE}/listing/${listing.id}`, undefined, undefined, listing.updated_at?.slice(0, 10))),
+    "",
+    "  <!-- Blog posts (live from Supabase, published only) -->",
+    ...posts.map((post) => url(`${BASE}/blog/${post.slug}`, "monthly", 0.7, post.created_at?.slice(0, 10))),
+    "",
+  );
+  const dest = path.join(__dirname, "../public/sitemap.xml");
+  fs.writeFileSync(dest, lines.join("\n"), "utf8");
+  console.log(`Sitemap written: ${dest}`);
+  console.log(`URLs: ${(lines.join("\n").match(/<url>/g) || []).length} (${listings.length} approved listings, ${posts.length} blog posts)`);
+}).catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

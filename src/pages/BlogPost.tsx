@@ -8,6 +8,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconCalendar, IconArrowLeft } from "@tabler/icons-react";
 import { format } from "date-fns";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
+import { renderBlogMarkdown } from "@/lib/blogMarkdown";
 
 type BlogPostData = {
   id: string;
@@ -25,7 +26,14 @@ export default function BlogPost() {
   usePageTitle(post ? `${post.title} | Motokah Blog` : "Blog Post");
 
   const seoDesc = post
-    ? sanitizeCalloutPricingText(post.content.replace(/\n+/g, " ").trim().slice(0, 160))
+    ? sanitizeCalloutPricingText(
+        post.content
+          .replace(/^#{1,3}\s.*$/gm, "")
+          .replace(/[*`>]/g, "")
+          .replace(/\n+/g, " ")
+          .trim()
+          .slice(0, 160),
+      )
     : undefined;
   const canonicalUrl = post
     ? `https://www.motokah.com/blog/${post.slug}`
@@ -97,9 +105,12 @@ export default function BlogPost() {
               <IconCalendar size={14} />
               {format(new Date(post.created_at), "MMMM d, yyyy")}
             </div>
-            <div className="prose prose-sm max-w-none text-foreground leading-relaxed whitespace-pre-wrap">
-              {post.content}
-            </div>
+            <div
+              className="prose prose-sm max-w-none text-foreground leading-relaxed"
+              dangerouslySetInnerHTML={{
+                __html: `<p class='mb-4'>${renderBlogMarkdown(post.content)}</p>`,
+              }}
+            />
           </article>
         )}
       </div>
