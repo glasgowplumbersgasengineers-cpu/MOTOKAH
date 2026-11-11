@@ -175,7 +175,7 @@ const categorySearchPages = [
 ];
 
 // Model landing pages — /cars/:make/:model (high-volume keyword targets)
-const modelPages = [
+const modelPageDefs = [
   { make: "toyota",   model: "alphard",      pri: 0.9 },
   { make: "toyota",   model: "harrier",      pri: 0.9 },
   { make: "toyota",   model: "probox",       pri: 0.9 },
@@ -201,11 +201,7 @@ const modelPages = [
   { make: "nissan",   model: "navara",       pri: 0.8 },
   { make: "mitsubishi", model: "pajero",     pri: 0.8 },
   { make: "mitsubishi", model: "outlander",  pri: 0.7 },
-].map(({ make, model, pri }) => ({
-  path: `/cars/${make}/${model}`,
-  freq: "weekly",
-  pri,
-}));
+];
 
 // Blog posts — pulled live from Supabase so the sitemap can never list a
 // slug that isn't actually published (a hardcoded list silently drifts).
@@ -235,6 +231,124 @@ const countryPages = [
   freq: "daily",
   pri,
 }));
+
+// --- Thin-content gating ---------------------------------------------------
+// 2026-11 SEO audit: 91% of programmatic landing pages (city, city x make,
+// model x city, make/model, country x make) rendered with ZERO real listings
+// after an earlier fix gated listing quality on real image health. A sitemap
+// full of near-empty doorway pages is a strong negative ranking/indexing
+// signal, so every programmatic URL below is now only written to the sitemap
+// once we've actually counted real quality-gated listings for it.
+//
+// "Real quality-gated listings" here means the exact same data + filter a
+// visitor sees on the page: src/data/mockData.ts's `mockListings` (currently
+// the dominant inventory source — the live Supabase `listings` table is
+// close to empty) filtered by src/lib/listingQuality.ts's
+// `isLaunchQualityListing`, plus live approved Supabase listings run through
+// the same gate, matched with src/lib/pageListingCounts.ts's
+// `matchesListingFilter` (the same pure function a future client change could
+// call too — see that file's header comment for why the logic lives there
+// once instead of being re-derived per page).
+//
+// mockData.ts uses Vite-only `import.meta.glob`, so this plain Node/CJS
+// script can't `require()` it directly. Instead we spin up Vite's
+// `ssrLoadModule` just for this computation (no dev server, no HTTP) — this
+// runs the actual production source files, so there is no second copy of the
+// caption-parsing/image-health logic to keep in sync.
+const ANCHOR_CITY_SLUGS = new Set(["dar-es-salaam", "nairobi", "kampala", "addis-ababa"]);
+const ANCHOR_COUNTRY_SLUGS = new Set(["tanzania", "kenya", "uganda", "ethiopia"]);
+
+function cityNameFromSlug(slug) {
+  // Mirrors CityLandingPage.tsx's `slug?.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase())`
+  // exactly, so the count here matches what useSearchListings actually filters by on the page.
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+}
+// Mirrors ModelLandingPage.tsx's local `slugToTitle` — same transform, used for make/model slugs.
+const titleFromSlug = cityNameFromSlug;
+
+async function loadQualityCheckedListings() {
+  const { createServer } = await import("vite");
+  const server = await createServer({
+    configFile: path.join(__dirname, "../vite.config.ts"),
+    server: { middlewareMode: true, hmr: false },
+    appType: "custom",
+    logLevel: "warn",
+  });
+  try {
+    const mockMod = await server.ssrLoadModule("/src/data/mockData.ts");
+    const qualityMod = await server.ssrLoadModule("/src/lib/listingQuality.ts");
+    const countMod = await server.ssrLoadModule("/src/lib/pageListingCounts.ts");
+    const approved = await loadApprovedListingsForCounting();
+    const listings = [...mockMod.mockListings, ...approved].filter(qualityMod.isLaunchQualityListing);
+    return { listings, countQualityListings: countMod.countQualityListings, MIN_LISTINGS_FOR_SITEMAP: countMod.MIN_LISTINGS_FOR_SITEMAP };
+  } finally {
+    await server.close();
+  }
+}
+
+const reverseCurrencyCountry = { TZS: "TZ", KES: "KE", UGX: "UG", RWF: "RW", ETB: "ET", BIF: "BI", NGN: "NG" };
+
+// Same live Supabase 'listings' table as loadApprovedListings() below, but with the extra
+// columns needed to test city/make/model/country membership, shaped like the Listing type
+// so it can be run through the real `isLaunchQualityListing` gate.
+async function loadApprovedListingsForCounting() {
+  const endpoint = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!endpoint || !key) return [];
+
+  const rows = [];
+  for (let offset = 0; ; offset += 1000) {
+    const query = new URL(`${endpoint.replace(/\/$/, "")}/rest/v1/listings`);
+    query.searchParams.set("select", "id,title,price,currency,condition,year,city,make,model,body_type,fuel_type,description,seller_id,listing_images(image_url)");
+    query.searchParams.set("status", "eq.approved");
+    query.searchParams.set("limit", "1000");
+    query.searchParams.set("offset", String(offset));
+    const response = await fetch(query, { headers: { apikey: key }, signal: AbortSignal.timeout(15000) });
+    if (!response.ok) throw new Error(`Approved listing count query failed (${response.status})`);
+    const page = await response.json();
+    rows.push(...page);
+    if (page.length < 1000) break;
+  }
+  if (rows.length === 0) return [];
+
+  const sellerIds = [...new Set(rows.map((row) => row.seller_id))];
+  const profileQuery = new URL(`${endpoint.replace(/\/$/, "")}/rest/v1/profiles`);
+  profileQuery.searchParams.set("select", "user_id,display_name,seller_type,phone");
+  profileQuery.searchParams.set("user_id", `in.(${sellerIds.join(",")})`);
+  const profileResponse = await fetch(profileQuery, { headers: { apikey: key }, signal: AbortSignal.timeout(15000) });
+  const profiles = profileResponse.ok ? await profileResponse.json() : [];
+  const profileMap = new Map(profiles.map((p) => [p.user_id, p]));
+
+  return rows.map((row) => {
+    const profile = profileMap.get(row.seller_id);
+    const images = (row.listing_images || []).map((i) => i.image_url);
+    return {
+      id: row.id,
+      title: row.title,
+      price: Number(row.price),
+      currency: row.currency,
+      condition: row.condition,
+      year: row.year,
+      mileage: 0,
+      transmission: "Automatic",
+      location: row.city || "",
+      country: reverseCurrencyCountry[row.currency],
+      image: images[0] || "",
+      images,
+      views: 0,
+      sellerName: profile?.display_name || "Private Seller",
+      sellerType: profile?.seller_type || "private",
+      sellerListingCount: 1,
+      sellerPhone: profile?.phone || undefined,
+      sellerId: row.seller_id,
+      bodyType: row.body_type || undefined,
+      fuelType: row.fuel_type || undefined,
+      make: row.make,
+      model: row.model,
+      description: row.description || "",
+    };
+  });
+}
 
 function url(loc, _changefreq, _priority, lastmod) {
   return `  <url>
@@ -281,56 +395,129 @@ async function loadApprovedListings() {
   return visible;
 }
 
-const lines = [
-  `<?xml version="1.0" encoding="UTF-8"?>`,
-  `<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>`,
-  `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"`,
-  `        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`,
-  `        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9`,
-  `          http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">`,
-  "",
-  "  <!-- Static pages -->",
-  ...staticPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
-  "  <!-- Country landing pages -->",
-  ...countryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
-  "  <!-- Curated search landing pages -->",
-  ...countrySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  ...makePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  ...modelCountryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
-  "  <!-- City landing pages -->",
-  ...cities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
-  "",
-  "  <!-- Dealer landing pages -->",
-  ...dealerPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
-  "  <!-- Instagram showroom pages -->",
-  ...showroomPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
-  "  <!-- Model landing pages -->",
-  ...modelPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-  "",
-  "</urlset>",
-];
+async function main() {
+  const [{ listings: qualityListings, countQualityListings, MIN_LISTINGS_FOR_SITEMAP }, approvedListings, blogPosts] = await Promise.all([
+    loadQualityCheckedListings(),
+    loadApprovedListings(),
+    loadPublishedBlogPosts(),
+  ]);
 
-Promise.all([loadApprovedListings(), loadPublishedBlogPosts()]).then(([listings, posts]) => {
+  const countFor = (filter) => countQualityListings(qualityListings, filter);
+
+  // City pages: keep only cities with >= MIN_LISTINGS_FOR_SITEMAP real listings, PLUS the
+  // named anchor cities (real stock confirmed by audit) even if their count is thin — never
+  // a city with zero, though.
+  const keptCities = cities.filter((c) => {
+    const n = countFor({ city: cityNameFromSlug(c.slug) });
+    return n >= MIN_LISTINGS_FOR_SITEMAP || (ANCHOR_CITY_SLUGS.has(c.slug) && n > 0);
+  });
+  const droppedCities = cities.filter((c) => !keptCities.includes(c));
+
+  // Country pages: same rule, anchor countries named by the audit.
+  const countryPageDefs = ["Tanzania", "Kenya", "Uganda", "Rwanda", "Ethiopia", "Burundi", "Nigeria"]
+    .map((country) => ({ country, slug: country.toLowerCase().replace(/\s+/g, "-") }));
+  const keptCountrySlugs = new Set(
+    countryPageDefs
+      .filter((c) => {
+        const n = countFor({ country: c.country });
+        return n >= MIN_LISTINGS_FOR_SITEMAP || (ANCHOR_COUNTRY_SLUGS.has(c.slug) && n > 0);
+      })
+      .map((c) => c.slug)
+  );
+  const keptCountryPages = countryPages.filter((p) => keptCountrySlugs.has(p.path.split("/").pop()));
+  const droppedCountryPages = countryPages.filter((p) => !keptCountryPages.includes(p));
+
+  // Make/model pages (/cars/:make/:model): no anchor exception here — these are thin almost
+  // everywhere (caption-derived model text rarely matches the clean model name the page uses).
+  const keptModelDefs = modelPageDefs.filter((m) => countFor({ make: titleFromSlug(m.make), model: titleFromSlug(m.model) }) >= MIN_LISTINGS_FOR_SITEMAP);
+  const keptModelPages = keptModelDefs.map(({ make, model, pri }) => ({ path: `/cars/${make}/${model}`, freq: "weekly", pri }));
+  const droppedModelDefs = modelPageDefs.filter((m) => !keptModelDefs.includes(m));
+
+  // City x make pages (/cars/:make/in/:city) and country x make pages (/country/:country/:make):
+  // these were absent from the sitemap entirely before this pass. Only add a combination that
+  // actually clears the threshold today — computed from real data, not a hand-picked list.
+  const cityMakeLandingPages = [];
+  for (const c of cities) {
+    for (const make of priorityMakes) {
+      const n = countFor({ city: cityNameFromSlug(c.slug), make });
+      if (n >= MIN_LISTINGS_FOR_SITEMAP) {
+        cityMakeLandingPages.push({ path: `/cars/${make.toLowerCase()}/in/${c.slug}`, freq: "weekly", pri: 0.75 });
+      }
+    }
+  }
+  const countryMakeLandingPages = [];
+  for (const cdef of countryPageDefs) {
+    for (const make of priorityMakes) {
+      const n = countFor({ country: cdef.country, make });
+      if (n >= MIN_LISTINGS_FOR_SITEMAP) {
+        countryMakeLandingPages.push({ path: `/country/${cdef.slug}/${make.toLowerCase()}`, freq: "weekly", pri: 0.7 });
+      }
+    }
+  }
+
+  console.log(`City pages: ${keptCities.length} kept / ${droppedCities.length} dropped (0 or thin listings): ${droppedCities.map((c) => c.slug).join(", ")}`);
+  console.log(`Country pages: ${keptCountryPages.length} kept / ${droppedCountryPages.length} dropped: ${droppedCountryPages.map((p) => p.path).join(", ")}`);
+  console.log(`Make/model pages: ${keptModelPages.length} kept / ${droppedModelDefs.length} dropped`);
+  console.log(`City x make pages added: ${cityMakeLandingPages.length}`);
+  console.log(`Country x make pages added: ${countryMakeLandingPages.length}`);
+
+  const lines = [
+    `<?xml version="1.0" encoding="UTF-8"?>`,
+    `<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"`,
+    `        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"`,
+    `        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9`,
+    `          http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">`,
+    "",
+    "  <!-- Static pages -->",
+    ...staticPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "  <!-- Country landing pages -->",
+    ...keptCountryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "  <!-- Country x make landing pages (>= 3 real listings) -->",
+    ...countryMakeLandingPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "  <!-- Curated search landing pages -->",
+    ...countrySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    ...makePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    ...modelCountryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "  <!-- City landing pages (>= 3 real listings, or an anchor city with stock) -->",
+    ...keptCities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),
+    "",
+    "  <!-- City x make landing pages (>= 3 real listings) -->",
+    ...cityMakeLandingPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "  <!-- Dealer landing pages -->",
+    ...dealerPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "  <!-- Instagram showroom pages -->",
+    ...showroomPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "  <!-- Model landing pages (>= 3 real listings) -->",
+    ...keptModelPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "",
+    "</urlset>",
+  ];
+
   lines.splice(-1, 0,
     "  <!-- Approved listings with images and seller contact -->",
-    ...listings.map((listing) => url(`${BASE}/listing/${listing.id}`, undefined, undefined, listing.updated_at?.slice(0, 10))),
+    ...approvedListings.map((listing) => url(`${BASE}/listing/${listing.id}`, undefined, undefined, listing.updated_at?.slice(0, 10))),
     "",
     "  <!-- Blog posts (live from Supabase, published only) -->",
-    ...posts.map((post) => url(`${BASE}/blog/${post.slug}`, "monthly", 0.7, post.created_at?.slice(0, 10))),
+    ...blogPosts.map((post) => url(`${BASE}/blog/${post.slug}`, "monthly", 0.7, post.created_at?.slice(0, 10))),
     "",
   );
   const dest = path.join(__dirname, "../public/sitemap.xml");
   fs.writeFileSync(dest, lines.join("\n"), "utf8");
   console.log(`Sitemap written: ${dest}`);
-  console.log(`URLs: ${(lines.join("\n").match(/<url>/g) || []).length} (${listings.length} approved listings, ${posts.length} blog posts)`);
-}).catch((error) => {
+  console.log(`URLs: ${(lines.join("\n").match(/<url>/g) || []).length} (${approvedListings.length} approved listings, ${blogPosts.length} blog posts)`);
+}
+
+main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
 });

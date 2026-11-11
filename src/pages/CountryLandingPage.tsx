@@ -7,6 +7,7 @@ import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2, IconMapPin } from "@tabler/icons-react";
 import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
+import { robotsContentForCount } from "@/lib/pageListingCounts";
 
 const countries: Record<string, { name: string; cities: string[]; description: string; guide: string }> = {
   tanzania: {
@@ -96,12 +97,14 @@ export default function CountryLandingPage() {
   const description = country?.description || `Browse cars for sale in ${countryName}. Find used vehicles from sellers on Motokah.`;
   const canonicalUrl = `https://www.motokah.com/country/${slug}`;
   const faqs = countryFaqs[slug] || [];
+  const robotsContent = robotsContentForCount(listings.length);
 
   return (
     <>
       <Helmet>
         <title>{`Cars for Sale in ${countryName} | Motokah`}</title>
         <meta name="description" content={description} />
+        <meta name="robots" content={robotsContent} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={`Cars for Sale in ${countryName} | Motokah`} />
         <meta property="og:description" content={description} />
@@ -186,7 +189,9 @@ export default function CountryLandingPage() {
           ) : (
             <div className="rounded-xl border border-border bg-card p-8 text-center">
               <p className="text-lg font-semibold">No listings found in {countryName} yet.</p>
-              <p className="mt-2 text-sm text-muted-foreground">Try another city or browse all available vehicles.</p>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Try another city above, or <Link to="/search" className="text-primary hover:underline">browse all available vehicles</Link>.
+              </p>
             </div>
           )}
         </section>

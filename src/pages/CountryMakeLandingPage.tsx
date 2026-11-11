@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { IconLoader2 } from "@tabler/icons-react";
 import { Helmet } from "react-helmet-async";
 import { jsonLdScript, breadcrumbJsonLd, faqJsonLd } from "@/lib/structuredData";
+import { robotsContentForCount } from "@/lib/pageListingCounts";
 
 const MAKE_DISPLAY: Record<string, string> = {
   toyota: "Toyota", nissan: "Nissan", subaru: "Subaru", mitsubishi: "Mitsubishi",
@@ -363,6 +364,7 @@ export default function CountryMakeLandingPage() {
   const canonicalUrl = `https://www.motokah.com/country/${countrySlug}/${makeSlug}`;
 
   const { listings, loading } = useSearchListings({ country: countryName, make: makeName }, "newest");
+  const robotsContent = robotsContentForCount(listings.length);
 
   const breadcrumbs = [
     { name: "Home", url: "https://www.motokah.com/" },
@@ -378,6 +380,7 @@ export default function CountryMakeLandingPage() {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="robots" content={robotsContent} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />

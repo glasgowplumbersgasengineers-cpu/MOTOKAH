@@ -73,19 +73,21 @@
 
   </url>
   <url>
-    <loc>https://www.motokah.com/country/rwanda</loc>
-
-  </url>
-  <url>
     <loc>https://www.motokah.com/country/ethiopia</loc>
 
   </url>
+
+  <!-- Country x make landing pages (>= 3 real listings) -->
   <url>
-    <loc>https://www.motokah.com/country/burundi</loc>
+    <loc>https://www.motokah.com/country/tanzania/toyota</loc>
 
   </url>
   <url>
-    <loc>https://www.motokah.com/country/nigeria</loc>
+    <loc>https://www.motokah.com/country/tanzania/mazda</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/country/ethiopia/toyota</loc>
 
   </url>
 
@@ -463,85 +465,9 @@
 
   </url>
 
-  <!-- City landing pages -->
+  <!-- City landing pages (>= 3 real listings, or an anchor city with stock) -->
   <url>
     <loc>https://www.motokah.com/city/dar-es-salaam</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/arusha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/mwanza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/dodoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/zanzibar</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/mbeya</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/moshi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/tanga</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/morogoro</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/iringa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/kigoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/tabora</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/lindi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/shinyanga</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/kahama</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/musoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/sumbawanga</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/songea</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/bukoba</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/mtwara</loc>
 
   </url>
   <url>
@@ -549,91 +475,25 @@
 
   </url>
   <url>
-    <loc>https://www.motokah.com/city/mombasa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/nakuru</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/kisumu</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/eldoret</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/thika</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/naivasha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/nyeri</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/machakos</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/meru</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/kitale</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/malindi</loc>
-
-  </url>
-  <url>
     <loc>https://www.motokah.com/city/kampala</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/entebbe</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/jinja</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/mbarara</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/gulu</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/fort-portal</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/kigali</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/city/butare</loc>
 
   </url>
   <url>
     <loc>https://www.motokah.com/city/addis-ababa</loc>
 
   </url>
+
+  <!-- City x make landing pages (>= 3 real listings) -->
   <url>
-    <loc>https://www.motokah.com/city/adama</loc>
+    <loc>https://www.motokah.com/cars/toyota/in/dar-es-salaam</loc>
 
   </url>
   <url>
-    <loc>https://www.motokah.com/city/dire-dawa</loc>
+    <loc>https://www.motokah.com/cars/mazda/in/dar-es-salaam</loc>
+
+  </url>
+  <url>
+    <loc>https://www.motokah.com/cars/toyota/in/addis-ababa</loc>
 
   </url>
 
@@ -1005,107 +865,7 @@
 
   </url>
 
-  <!-- Model landing pages -->
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/alphard</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/harrier</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/probox</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/fielder</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/vitz</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/land-cruiser</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/hilux</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/prado</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/noah</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/succeed</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/toyota/axio</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/mazda/demio</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/mazda/cx-5</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/mazda/atenza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/honda/vezel</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/honda/fit</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/honda/crv</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/subaru/forester</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/subaru/outback</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/subaru/impreza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/nissan/x-trail</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/nissan/note</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/nissan/navara</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/mitsubishi/pajero</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/cars/mitsubishi/outlander</loc>
-
-  </url>
+  <!-- Model landing pages (>= 3 real listings) -->
 
   <!-- Approved listings with images and seller contact -->
 

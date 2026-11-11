@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { IconLoader2 } from "@tabler/icons-react";
 import { Helmet } from "react-helmet-async";
 import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd } from "@/lib/structuredData";
+import { robotsContentForCount } from "@/lib/pageListingCounts";
 
 const cityDescriptions: Record<string, string> = {
   "dar-es-salaam": "Find used cars for sale in Dar es Salaam. Buy direct from local dealers: Toyota, Nissan, Honda, Suzuki and more. Tanzania's commercial capital.",
@@ -71,6 +72,7 @@ export default function CityLandingPage() {
     { city: cityName },
     "newest"
   );
+  const robotsContent = robotsContentForCount(listings.length);
 
   const [relatedCities] = useState(() => {
     const all = [
@@ -87,6 +89,7 @@ export default function CityLandingPage() {
       <Helmet>
         <title>{`Cars for Sale in ${cityName} | Motokah`}</title>
         <meta name="description" content={description} />
+        <meta name="robots" content={robotsContent} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={`Cars for Sale in ${cityName} — Motokah`} />
         <meta property="og:description" content={description} />
@@ -155,7 +158,8 @@ export default function CityLandingPage() {
             <div className="text-center py-20">
               <p className="text-lg text-muted-foreground">No cars found in {cityName} yet.</p>
               <p className="text-sm text-muted-foreground mt-2">
-                Be the first to <Link to="/sell" className="text-primary hover:underline">list your car</Link>.
+                Be the first to <Link to="/sell" className="text-primary hover:underline">list your car</Link>,
+                or <Link to="/search" className="text-primary hover:underline">browse all current listings</Link> across East Africa.
               </p>
             </div>
           )}

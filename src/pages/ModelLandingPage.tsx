@@ -8,6 +8,7 @@ import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
 import { IconLoader2, IconChevronRight } from "@tabler/icons-react";
 import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
+import { robotsContentForCount } from "@/lib/pageListingCounts";
 
 // --- Static SEO content per model ---
 
@@ -703,6 +704,7 @@ export default function ModelLandingPage() {
     { make: makeTitle, model: modelTitle },
     "newest"
   );
+  const robotsContent = robotsContentForCount(listings.length);
 
   const related = RELATED_MODELS[key] ?? [];
 
@@ -713,6 +715,7 @@ export default function ModelLandingPage() {
       <Helmet>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDesc} />
+        <meta name="robots" content={robotsContent} />
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDesc} />
