@@ -37,7 +37,7 @@ function countryToIso(country: string): string | undefined {
   return Object.entries(isoToCountry).find(([, n]) => n === country)?.[0];
 }
 
-export function useListings(options?: { limit?: number; orderBy?: string; country?: string }) {
+export function useListings(options?: { limit?: number; orderBy?: string; country?: string; bodyType?: string[] }) {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,6 +45,9 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
     const fetchListings = async () => {
       const limit = options?.limit || 20;
       const country = options?.country;
+      const bodyType = options?.bodyType;
+      const matchesBodyType = (listing: { bodyType?: string }) =>
+        !bodyType || (!!listing.bodyType && bodyType.includes(listing.bodyType));
 
       let query = supabase
         .from("listings")
@@ -59,6 +62,10 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         if (currencies.length > 0) {
           query = query.in("currency", currencies);
         }
+      }
+
+      if (bodyType?.length) {
+        query = query.in("body_type", bodyType);
       }
 
       const { data: rows, error } = await query;
@@ -77,7 +84,8 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         }
         const blockedSellers = getBlockedSellerKeys();
         const fallback = [...mocks.filter(isLaunchQualityListing), ...jijiItems.filter(isLaunchQualityListing)]
-          .filter((listing) => !blockedSellers.has(sellerBlockKey(listing)));
+          .filter((listing) => !blockedSellers.has(sellerBlockKey(listing)))
+          .filter(matchesBodyType);
         fallback.sort(() => Math.random() - 0.5);
         setListings(fallback.slice(0, limit));
         setLoading(false);
@@ -131,8 +139,8 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
 
       const dbIds = new Set(mapped.map((m) => m.id));
       const jiji = await getJijiListings(country);
-      let fillMocks = [...mockListings].filter((m) => !dbIds.has(m.id) && isLaunchQualityListing(m));
-      let fillJiji = [...jiji].filter((m) => !dbIds.has(m.id) && isLaunchQualityListing(m));
+      let fillMocks = [...mockListings].filter((m) => !dbIds.has(m.id) && isLaunchQualityListing(m) && matchesBodyType(m));
+      let fillJiji = [...jiji].filter((m) => !dbIds.has(m.id) && isLaunchQualityListing(m) && matchesBodyType(m));
 
       if (country && country !== "All") {
         const cities = countryCitiesMap[country] || [];
@@ -162,14 +170,16 @@ export function useListings(options?: { limit?: number; orderBy?: string; countr
         catchMocks = catchMocks.filter(m => cities.some(c => m.location?.includes(c)) || (iso && m.country === iso));
         catchJiji = catchJiji.filter(m => cities.some(c => m.location?.includes(c)));
       }
+      const catchBodyType = options?.bodyType;
       const blockedSellers = getBlockedSellerKeys();
       const all = [...catchMocks.filter(isLaunchQualityListing), ...catchJiji.filter(isLaunchQualityListing)]
-        .filter((listing) => !blockedSellers.has(sellerBlockKey(listing)));
+        .filter((listing) => !blockedSellers.has(sellerBlockKey(listing)))
+        .filter((listing) => !catchBodyType || (!!listing.bodyType && catchBodyType.includes(listing.bodyType)));
       all.sort(() => Math.random() - 0.5);
       setListings(all.slice(0, options?.limit || 20));
       setLoading(false);
     });
-  }, [options?.limit, options?.orderBy, options?.country]);
+  }, [options?.limit, options?.orderBy, options?.country, options?.bodyType?.join(",")]);
 
   return { listings, loading };
 }

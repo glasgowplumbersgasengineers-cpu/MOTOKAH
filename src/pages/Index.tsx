@@ -4,13 +4,19 @@ import HeroSearch from "@/components/HeroSearch";
 import BrowseSection from "@/components/BrowseSection";
 import FeaturedListings from "@/components/FeaturedListings";
 import LatestListingsGrid from "@/components/LatestListingsGrid";
+import CategorySection from "@/components/CategorySection";
 import SellCTA from "@/components/SellCTA";
 import PopularModelsSection from "@/components/PopularModelsSection";
 import FuelPriceSection from "@/components/FuelPriceSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
 import { Link } from "react-router-dom";
-import { IconArrowRight } from "@tabler/icons-react";
+import { IconArrowRight, IconMotorbike, IconAnchor, IconTruck, IconSteeringWheel } from "@tabler/icons-react";
+
+const BIKE_TYPES = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
+const BIG_VEHICLE_TYPES = ["Truck", "Bus", "Pickup", "Minibus", "Tipper", "SUV"];
+const RICKSHAW_TYPES = ["Tuk-tuk"];
+const BOAT_TYPES = ["Boat"];
 
 const Index = () => {
   return (
@@ -44,6 +50,10 @@ const Index = () => {
       </section>
       <FeaturedListings />
       <LatestListingsGrid />
+      <CategorySection title="Big Vehicles & Trucks" icon={<IconTruck size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BIG_VEHICLE_TYPES} viewAllHref="/search?vehicleType=commercial" />
+      <CategorySection title="Bikes & Scooters" icon={<IconMotorbike size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BIKE_TYPES} viewAllHref="/search?vehicleType=bike" />
+      <CategorySection title="Rickshaws & Tuk-tuks" icon={<IconSteeringWheel size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={RICKSHAW_TYPES} viewAllHref="/search?vehicleType=commercial" />
+      <CategorySection title="Boats" icon={<IconAnchor size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BOAT_TYPES} viewAllHref="/search?vehicleType=boat" />
       <PopularModelsSection />
       <FuelPriceSection />
       <SellCTA />
