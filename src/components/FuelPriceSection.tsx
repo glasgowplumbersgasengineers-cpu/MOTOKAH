@@ -44,7 +44,7 @@ export default function FuelPriceSection() {
                 <IconGasStation size={20} stroke={2.2} />
               </span>
               <h2 className="text-xl md:text-2xl font-extrabold text-foreground tracking-tight">
-                Live Fuel Prices
+                Fuel Prices
               </h2>
             </div>
             <p className="text-xs text-muted-foreground mt-1">

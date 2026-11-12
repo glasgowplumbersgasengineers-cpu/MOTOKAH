@@ -88,6 +88,18 @@ Every entry below is a confirmed defect found by reading actual code/config/live
 - This is the same documented, pre-existing, site-wide problem noted at the top of `listingQuality.ts`: 97.5% of all scraped-dealer images across the entire site are dead links on R2, not a bikes-specific or newly-introduced issue. Today's parsing fix was necessary but not sufficient — nothing can render without a real image, by design.
 - **Not fixed this session** — this needs either re-scraping and re-uploading those dealers' images to R2, or a product decision on how to handle listings with dead photos (show with a placeholder vs. drop entirely). Flagging as a strategic/data-pipeline issue for Owner Weedi Sir to decide, not something to unilaterally patch.
 
+## 12. "Live Fuel Prices" heading contradicted the "Checked and updated monthly" disclaimer — FIXED
+
+- The very first task at the start of this session was removing a false "real-time" claim from the fuel price footer. That fix was correct but incomplete — the section's prominent `<h2>` heading still literally said "Live Fuel Prices", directly above the honest "Checked and updated monthly" subtitle. A user skimming only the big heading gets the opposite impression from the fine print.
+- Found while doing a full visual check of the homepage (confirming the hidden-Bikes-category empty state doesn't leave a layout gap — it doesn't, confirmed via screenshot, no gap >80px anywhere).
+- **Fix**: heading changed to "Fuel Prices". No other "live"/"real-time" wording found elsewhere in the component.
+
+## 13. Fuel-price automation has never actually run on its own schedule yet — real finding, not a bug
+
+- `src/data/fuelPrices.json` has exactly one commit (2026-11-12 07:05 UTC) — my own manual run earlier this session. Checked real GitHub Actions run history for `update-fuel-prices.yml` on both `origin` (billing-locked, confirmed earlier — Actions can never run there) and `gpg-mirror` (workflow file only landed there during this session) — **zero runs on either**, ever.
+- Re-ran the scraper locally just now: still works, pulled live data successfully, byte-identical to the committed file (expected — these are weekly/monthly regulator prices, not something that changes multiple times a day; confirms the scraper hits real sources, not hardcoded data).
+- **Not a bug, but a real gap in confidence**: the daily cron's first real unattended trigger (3am UTC) hasn't happened yet as of this check. Tomorrow's data should be checked to confirm the schedule actually fires and the mirror-repo Action successfully commits fresh data on its own.
+
 ## Still open / blocked
 
 - Sunny's actual symptom when trying to reply was never fully confirmed (what exactly happens — error shown? box clears with nothing? box stuck?). The `send()` fix above addresses the most likely cause found by code inspection, but isn't confirmed as *the* cause without his exact symptom or a repro.
