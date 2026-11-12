@@ -21,11 +21,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run tests
+        run: npx vitest run --maxWorkers=1
+
+      - name: Verify advertised sign-in providers
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run preflight:mobile-auth
+
       - name: Build web app
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build
+
+      - name: Install browser for layout QA
+        run: npx playwright install chromium
+
+      - name: Verify iPhone and iPad layouts
+        env:
+          PLAYWRIGHT_CHANNEL: chromium
+        run: npm run qa:review-layout
 
       - name: Sync Capacitor iOS
         run: npx cap sync ios

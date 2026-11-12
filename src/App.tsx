@@ -156,7 +156,10 @@ function AnimatedRoutes() {
                 <Route path="dealers" element={<AdminDealers />} />
                 <Route path="content" element={<AdminContent />} />
               </Route>
-              <Route path="/content" element={<ProtectedRoute><div className="min-h-screen bg-background p-4 md:p-8 max-w-5xl mx-auto"><AdminContent /></div></ProtectedRoute>} />
+              {/* Was an unguarded duplicate of /admin/content — any logged-in user (not just admins)
+                  could reach the admin content-management UI. Writes were still RLS-protected
+                  server-side, but the UI itself had no role check. Redirect to the real, role-gated route. */}
+              <Route path="/content" element={<Navigate to="/admin/content" replace />} />
               <Route path="/marketing-plan" element={<Navigate to="/" replace />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
               <Route path="/dealer-leads" element={<Navigate to="/dealers" replace />} />

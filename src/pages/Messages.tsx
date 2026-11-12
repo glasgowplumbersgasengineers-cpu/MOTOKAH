@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { IconSend, IconMessageCircle, IconArrowLeft, IconSearch } from "@tabler/icons-react";
 import { createNotification } from "@/lib/notifications";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Capacitor } from "@capacitor/core";
+import { Keyboard } from "@capacitor/keyboard";
+import { toast } from "sonner";
 
 interface Conversation {
   id: string;
@@ -122,7 +125,7 @@ export default function Messages() {
       .channel(`messages-${active}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${active}` }, (payload) => {
         const newMsg = payload.new as Message;
-        setMessages(prev => [...prev, newMsg]);
+        setMessages(prev => prev.some(m => m.id === newMsg.id) ? prev : [...prev, newMsg]);
         setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
 
         // Mark as read if it's from the other user
@@ -140,12 +143,41 @@ export default function Messages() {
     return () => { supabase.removeChannel(channel); };
   }, [active, user]);
 
-  const send = async () => {
-    if (!text.trim() || !active || !user) return;
-    const content = text.trim().slice(0, MAX_CHARS);
-    setText("");
+  // Native keyboard: scroll the active message into view once the keyboard
+  // finishes animating open, so the input/last message isn't left hidden
+  // behind it (body-resize alone doesn't guarantee scroll position).
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+    const showSub = Keyboard.addListener("keyboardDidShow", () => {
+      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+    });
+    return () => { showSub.then(s => s.remove()); };
+  }, []);
 
-    await supabase.from("messages").insert({ conversation_id: active, sender_id: user.id, content });
+  const [sending, setSending] = useState(false);
+
+  const send = async () => {
+    if (!text.trim() || !active || !user || sending) return;
+    const content = text.trim().slice(0, MAX_CHARS);
+    setSending(true);
+
+    const { data: inserted, error } = await supabase
+      .from("messages")
+      .insert({ conversation_id: active, sender_id: user.id, content })
+      .select()
+      .single();
+    if (error || !inserted) {
+      setSending(false);
+      toast.error("Message didn't send. Check your connection and try again.");
+      return;
+    }
+    setText("");
+    setSending(false);
+    // Optimistic append — don't rely solely on the realtime subscription to
+    // show the sender their own message (dedupe by id if realtime also delivers it).
+    setMessages(prev => prev.some(m => m.id === inserted.id) ? prev : [...prev, inserted as Message]);
+    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+
     await supabase.from("conversations").update({ last_message_at: new Date().toISOString() }).eq("id", active);
 
     const convo = conversations.find(c => c.id === active);
@@ -304,7 +336,7 @@ export default function Messages() {
                       onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
                       className="flex-1"
                     />
-                    <Button onClick={send} size="icon" disabled={!text.trim()}>
+                    <Button onClick={send} size="icon" disabled={!text.trim() || sending}>
                       <IconSend size={18} />
                     </Button>
                   </div>
