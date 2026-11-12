@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export default function Privacy() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Helmet>
         <title>Privacy Policy | Motokah</title>
         <meta name="robots" content="noindex,follow" />

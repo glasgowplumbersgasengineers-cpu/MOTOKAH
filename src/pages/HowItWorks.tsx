@@ -21,7 +21,7 @@ export default function HowItWorks() {
   usePageTitle("How It Works");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-3xl font-bold text-foreground mb-2 text-center">How It Works</h1>

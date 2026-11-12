@@ -52,7 +52,7 @@ export default function FAQ() {
   usePageTitle("FAQ & Help Center");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         <h1 className="text-3xl font-bold text-foreground mb-2 text-center">FAQ & Help Center</h1>

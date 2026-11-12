@@ -391,7 +391,7 @@ export default function CountryMakeLandingPage() {
 
       <Header />
 
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-background pb-20 lg:pb-0">
         <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
 
           <nav className="flex gap-2 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">

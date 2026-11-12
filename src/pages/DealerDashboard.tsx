@@ -77,7 +77,7 @@ export default function DealerDashboard() {
     .map(l => ({ name: `${l.make} ${l.model}`.slice(0, 12), views: l.views || 0 }));
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Header />
       <div className="container mx-auto px-4 py-8 max-w-5xl">
 

@@ -111,7 +111,7 @@ export default function CityLandingPage() {
 
       <Header />
 
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-background pb-20 lg:pb-0">
         {/* Hero */}
         <div className="bg-primary/5 border-b border-border">
           <div className="container mx-auto py-12 px-4">

@@ -127,7 +127,7 @@ export default function CountryLandingPage() {
 
       <Header />
 
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-background pb-20 lg:pb-0">
         <section className="border-b border-border bg-primary/5">
           <div className="container mx-auto px-4 py-12">
             <nav className="mb-4 text-sm text-muted-foreground">

@@ -70,7 +70,7 @@ export default function DiasporaLandingPage() {
 
       <Header />
 
-      <main className="min-h-screen bg-background">
+      <main className="min-h-screen bg-background pb-20 lg:pb-0">
         {/* Hero */}
         <section className="bg-card border-b">
           <div className="max-w-4xl mx-auto px-4 py-14 sm:px-6">

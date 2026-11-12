@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 export default function Terms() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <Helmet>
         <title>Terms of Service | Motokah</title>
         <meta name="robots" content="noindex,follow" />
