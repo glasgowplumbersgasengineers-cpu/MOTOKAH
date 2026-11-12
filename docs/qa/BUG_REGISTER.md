@@ -63,8 +63,26 @@ Every entry below is a confirmed defect found by reading actual code/config/live
 - **Real, separate finding kept open**: the 5.6MB `mockData` chunk is a genuine performance concern for Motokah's actual market (East Africa, often slower/metered mobile connections) — worth code-splitting or lazy-loading later. Not fixed this session; flagged, not buried.
 - **Verification**: re-ran full suite — **24/24 passed**, ~1 minute, real Chrome via `channel: "chrome"` (system-installed, not the flaky Playwright-managed chromium download which kept losing its lock file mid-download on this machine).
 
+## 9. "Message on Motokah" button does nothing for ~100% of live inventory — FIXED, severity P0/P1
+
+- Discovered by creating a real seeded test account (`1pointplumbinguk+motokahqa2@gmail.com`, signed up through the actual UI, admin-confirmed since email confirmation is required) and driving a real customer journey: login → search → open a real listing → click the primary "Message on Motokah" CTA.
+- **Reproduced live**: button click did nothing visible — no navigation, no toast, no error. Captured the actual network response: `POST .../rest/v1/conversations` → `400 {"code":"22P02", "message":"invalid input syntax for type uuid: \"dealer-al_husnainmotors\""}`.
+- **Root cause**: `src/components/SellerCard.tsx`'s `handleMessage()` only checks `if (!listing.sellerId) return`, but scraped Instagram/Jiji dealer listings get a synthetic `sellerId` like `"dealer-al_husnainmotors"` (confirmed in `mockData.ts`), not a real `auth.users` UUID. `conversations.participant2_id` is a `uuid` column, so the insert always throws for any scraped listing. The catch block only did `console.error` — zero user-facing feedback.
+- **Impact**: since the live site currently has essentially zero real registered sellers (confirmed earlier this same session — "no one has posted an ad yet"), this means the core contact-seller flow was silently broken for virtually all real traffic.
+- **Fix**: added a UUID-format check before attempting the insert; shows a toast directing the user to WhatsApp/call instead of silently failing. Also added a toast to the genuine-failure path (valid seller, insert fails for another reason), which was equally silent before.
+- **Verification**: re-ran the same real browser journey after the fix — the `22P02` error is gone, button now surfaces the toast instead of doing nothing. `npx tsc --noEmit` clean.
+
+## 10. Profile page's "my listings" query 400s on every load — FIXED
+
+- Same authenticated test pass, found on page load (not an interaction): `/profile` fired `GET .../rest/v1/listings?select=...images,image_url...` → `400 {"code":"42703","message":"column listings.images does not exist"}` (and after a first guessed fix, `image_url` also didn't exist).
+- **Root cause**: confirmed against the live `information_schema.columns` for `listings` — it has neither `images` nor `image_url`. Images only exist via the related `listing_images` table, exactly like `useListings.ts`/`useListing.ts` already handle correctly elsewhere. `Profile.tsx`'s query was never updated to match.
+- **Impact**: the `.then(({ data }) => { if (data) ... })` pattern meant a failed query just silently left the listings list empty — a real seller would never see their own posted listings on their own profile page, with no error shown anywhere.
+- **Fix**: query now joins `listing_images(image_url, display_order)` like the rest of the codebase, and logs (doesn't yet toast — this is a background load, not a user action) the error if it recurs.
+- **Verification**: re-ran the real authenticated browser session after the fix — zero console/network errors on `/profile` load (confirmed via full error capture, not just visual check).
+
 ## Still open / blocked
 
 - Sunny's actual symptom when trying to reply was never fully confirmed (what exactly happens — error shown? box clears with nothing? box stuck?). The `send()` fix above addresses the most likely cause found by code inspection, but isn't confirmed as *the* cause without his exact symptom or a repro.
-- No credentials exist for any authenticated test account — blocks real E2E coverage of Messages, Sell, Profile, Wishlist, Become Dealer, Dealer Dashboard, Admin pages, and blocks verifying the notification-dropdown fix with a real logged-in user in Playwright.
-- Native on-device verification of the keyboard fix (item 3) not yet done — needs a real Android build + install, see ANDROID_VERIFICATION.md once the CI workflow runs.
+- The `/sell` → post-ad → edit/view/delete full lifecycle (Phase 2's demanded 15-step verification) not yet driven end-to-end — found and fixed the two bugs above during a first authenticated pass, haven't yet completed a full real ad posting.
+- Native on-device verification of the keyboard fix (item 3) not yet done on a real device — Android/iOS CI builds now pass (compile-verified on real GitHub-hosted runners), but nothing has tapped the actual keyboard on a running emulator/device yet.
+- `PrivacyInfo.xcprivacy` presence/correctness at the app level still unconfirmed — would need a real signed Xcode archive (App Store Connect surfaces missing required-reason API declarations at upload time, not at local/CI build time).
