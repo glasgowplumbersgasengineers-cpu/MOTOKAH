@@ -10,6 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
+    "preflight:mobile-auth": "node scripts/preflight-mobile-auth.mjs",
+    "qa:review-layout": "node scripts/qa-review-layout.mjs",
     "test:watch": "vitest",
     "build:android": "npm run build && npx cap sync android",
     "android:release": "npm run build:android && powershell -ExecutionPolicy Bypass -File scripts/android-release.ps1",
@@ -92,8 +94,7 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.9",
-    "vite-plugin-pwa": "^1.2.0",
-    "zod": "^3.25.76"
+    "vite-plugin-pwa": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
