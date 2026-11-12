@@ -4,6 +4,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePriceFormatter } from "@/lib/prices";
+import { toast } from "sonner";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 interface SellerCardProps {
   listing: Listing;
@@ -25,6 +28,16 @@ export default function SellerCard({ listing }: SellerCardProps) {
     if (!user) { navigate("/auth"); return; }
     if (!listing.sellerId) return;
 
+    // Scraped dealers (Instagram/Jiji) get a synthetic sellerId like
+    // "dealer-al_husnainmotors", not a real auth.users UUID — there's no
+    // real account to message. conversations.participant2_id is a uuid
+    // column, so inserting one of these threw a silent 400 (22P02) that was
+    // only console.error'd, with zero user feedback. Found live 2026-11-12.
+    if (!UUID_RE.test(listing.sellerId)) {
+      toast.error("In-app messaging isn't available for this dealer yet — use WhatsApp or call below.");
+      return;
+    }
+
     // Check existing conversation
     const { data: existing } = await supabase
       .from("conversations")
@@ -44,7 +57,11 @@ export default function SellerCard({ listing }: SellerCardProps) {
       .select("id")
       .single();
 
-    if (convoErr) { console.error("Could not start conversation:", convoErr.message); return; }
+    if (convoErr) {
+      console.error("Could not start conversation:", convoErr.message);
+      toast.error("Couldn't start the conversation. Try again in a moment.");
+      return;
+    }
     if (newConvo) navigate(`/messages`);
   };
 

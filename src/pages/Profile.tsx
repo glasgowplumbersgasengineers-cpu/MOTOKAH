@@ -323,16 +323,27 @@ export default function Profile() {
       }
     });
     supabase.from("listings")
-      .select("id, title, make, model, year, price, currency, status, created_at, views, images, image_url, mileage, city")
+      // "listings" has neither "images" nor "image_url" columns — images
+      // live only in the related "listing_images" table (confirmed against
+      // live schema; see useListings.ts/useListing.ts for the same pattern).
+      // This query 400'd on every profile load, so a real seller's own
+      // listings never appeared on their profile. Found live 2026-11-12.
+      .select("id, title, make, model, year, price, currency, status, created_at, views, mileage, city, listing_images(image_url, display_order)")
       .eq("seller_id", user.id)
       .order("created_at", { ascending: false })
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) { console.error("Failed to load your listings:", error.message); return; }
         if (data) {
-          setListings(data.map((row: any) => ({
-            ...row,
-            image: row.image_url || (Array.isArray(row.images) && row.images.length > 0 ? row.images[0] : undefined),
-            location: row.city || undefined,
-          })));
+          setListings(data.map((row: any) => {
+            const sortedImages = Array.isArray(row.listing_images)
+              ? [...row.listing_images].sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+              : [];
+            return {
+              ...row,
+              image: sortedImages[0]?.image_url || undefined,
+              location: row.city || undefined,
+            };
+          }));
         }
       });
     // saved_searches table not yet created - skip for now
