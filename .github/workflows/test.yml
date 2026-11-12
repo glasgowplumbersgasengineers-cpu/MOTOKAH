@@ -8,12 +8,16 @@ on:
 
 jobs:
   typecheck-lint-build:
-    runs-on: ubuntu-latest
+    # Pinned, not ubuntu-latest: Capacitor CLI needs Node >=22 (fixed below),
+    # and ubuntu-latest migrated to Ubuntu 26 on 2026-10-19, which broke
+    # Playwright chromium installs in the e2e job (see BUG_REGISTER.md) —
+    # pinning avoids the next silent OS-migration surprise too.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npx tsc --noEmit
@@ -23,16 +27,18 @@ jobs:
       - run: npm test -- --run
 
   e2e:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: typecheck-lint-build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # Uses channel: "chrome" in playwright.config.ts (GitHub's ubuntu runner
+      # images ship Chrome stable preinstalled) instead of Playwright's own
+      # managed chromium download, which doesn't support Ubuntu 26 yet.
       - run: npm run build
       - run: npx playwright test
         env:
