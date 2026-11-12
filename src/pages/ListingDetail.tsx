@@ -21,6 +21,7 @@ import { usePriceFormatter } from "@/lib/prices";
 import { isStaticListingId } from "@/lib/listingQuality";
 import { blockSeller } from "@/lib/blockedSellers";
 import { trackEvent } from "@/lib/analytics";
+import { galleryImageUrl, normalizeImageUrl } from "@/lib/imageUrls";
 
 const reportReasons = ["Fake listing", "Wrong price", "Duplicate", "Inappropriate content", "Scam / Fraud", "Other"];
 
@@ -115,6 +116,24 @@ export default function ListingDetail() {
       document.querySelector('script[data-listing-ld]')?.remove();
     };
   }, [listing, images, id]);
+
+  // Preload the first gallery image at high priority so it's already in the
+  // browser cache before ImageGallery mounts and requests it.
+  useEffect(() => {
+    if (!images[0]) return;
+    const href = galleryImageUrl(normalizeImageUrl(images[0]));
+    let link = document.querySelector('link[data-listing-preload]') as HTMLLinkElement | null;
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
+      link.setAttribute("data-listing-preload", "true");
+      document.head.appendChild(link);
+    }
+    link.href = href;
+    link.setAttribute("fetchpriority", "high");
+    return () => { document.querySelector('link[data-listing-preload]')?.remove(); };
+  }, [images]);
 
   // Increment view count once per session
   useEffect(() => {

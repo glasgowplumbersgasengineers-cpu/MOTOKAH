@@ -98,7 +98,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
               i === activeIndex ? "border-primary" : "border-transparent opacity-60 hover:opacity-90"
             }`}
           >
-            <GalleryImage image={img} alt={`${title} thumbnail ${i + 1}`} className="w-full h-full object-cover" />
+            <GalleryImage image={img} alt={`${title} thumbnail ${i + 1}`} className="w-full h-full object-cover" priority={i === 0} />
           </button>
         ))}
       </div>

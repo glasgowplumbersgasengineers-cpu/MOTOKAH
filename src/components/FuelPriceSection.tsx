@@ -178,7 +178,7 @@ export default function FuelPriceSection() {
         <div className="mt-4 pt-3 border-t border-border/60 flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <IconInfoCircle size={13} className="shrink-0 text-primary" />
           <span>
-            Fuel rates are updated in real-time according to official energy and petroleum regulatory authority gazettes.
+            Pump price caps set by official energy and petroleum regulatory authority gazettes. Checked and updated monthly.
           </span>
         </div>
       </div>
