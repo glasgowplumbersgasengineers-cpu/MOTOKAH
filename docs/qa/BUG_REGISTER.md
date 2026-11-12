@@ -80,6 +80,14 @@ Every entry below is a confirmed defect found by reading actual code/config/live
 - **Fix**: query now joins `listing_images(image_url, display_order)` like the rest of the codebase, and logs (doesn't yet toast — this is a background load, not a user action) the error if it recurs.
 - **Verification**: re-ran the real authenticated browser session after the fix — zero console/network errors on `/profile` load (confirmed via full error capture, not just visual check).
 
+## 11. Bikes category still doesn't render on the homepage — real, pre-existing cause found, not a regression
+
+- Checked the homepage after today's other changes to confirm nothing broke — found "Bikes & Scooters" section missing entirely (zero cards, section hides itself per `CategorySection.tsx:45`). Big Vehicles (9 cards) and Boats (7 cards) sections confirmed fine.
+- Traced fully: the earlier session's Bikes fix (item in this doc from the 029f823 commit, parsing fixes for price/brand/title) is real and still in place — confirmed via `ssrLoadModule` that all 7 bike listings exist in `mockListings` with correctly parsed make/model/price. But a **separate** quality gate, `hasVerifiedRecoverableImage()` in `src/lib/listingQuality.ts` (distinct from the internal `_isLaunchQualityListing` in `mockData.ts` that the earlier fix touched — two different functions, easy to conflate), checks a pre-generated image-health audit (`src/data/showroomImageHealth.json`, dated 2026-11-11) and all 7 bikes are marked `false` — no working image.
+- **Verified live, right now**: sent a real `HEAD` request to one of these listings' actual R2 CDN image URL — genuine `404`. Not stale audit data.
+- This is the same documented, pre-existing, site-wide problem noted at the top of `listingQuality.ts`: 97.5% of all scraped-dealer images across the entire site are dead links on R2, not a bikes-specific or newly-introduced issue. Today's parsing fix was necessary but not sufficient — nothing can render without a real image, by design.
+- **Not fixed this session** — this needs either re-scraping and re-uploading those dealers' images to R2, or a product decision on how to handle listings with dead photos (show with a placeholder vs. drop entirely). Flagging as a strategic/data-pipeline issue for Owner Weedi Sir to decide, not something to unilaterally patch.
+
 ## Still open / blocked
 
 - Sunny's actual symptom when trying to reply was never fully confirmed (what exactly happens — error shown? box clears with nothing? box stuck?). The `send()` fix above addresses the most likely cause found by code inspection, but isn't confirmed as *the* cause without his exact symptom or a repro.
