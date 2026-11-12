@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -137,9 +137,15 @@ const defaultForm: FormData = {
 type SheetKey = "make" | "bodyType" | "city" | "color" | null;
 
 export default function SellCar() {
-  usePageTitle("Sell Your Car — Motokah");
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("edit");
+  usePageTitle(editId ? "Edit Your Listing — Motokah" : "Sell Your Car — Motokah");
   const { country, city } = useLocation();
   const [form, setForm] = useState<FormData>(() => {
+    // Editing an existing listing never resumes a draft meant for a new one.
+    if (editId) {
+      return { ...defaultForm, currency: countryCurrencyMap[country] || defaultForm.currency };
+    }
     const saved = localStorage.getItem("sellCarDraft");
     if (saved) {
       try {
@@ -155,8 +161,13 @@ export default function SellCar() {
       registeredIn: city || "Dar es Salaam",
     };
   });
+  const [loadingExisting, setLoadingExisting] = useState(Boolean(editId));
+  const [existingImages, setExistingImages] = useState<{ id: string; image_url: string }[]>([]);
 
   const [selectedFeatures, setSelectedFeatures] = useState<string[]>(() => {
+    // Editing: the original description's feature list (if any) stays as
+    // plain text the user can edit directly — don't re-parse and re-append it.
+    if (editId) return [];
     const saved = localStorage.getItem("sellCarFeatures");
     if (saved) {
       try {
@@ -187,6 +198,52 @@ export default function SellCar() {
       setPhoneInput(sellerPhone);
     }
   }, [sellerPhone]);
+
+  useEffect(() => {
+    if (!editId || !user) return;
+    let active = true;
+    (async () => {
+      // RLS ("Users can read their own listings") already blocks this from
+      // returning another seller's listing — no extra ownership check needed
+      // beyond what the query itself enforces.
+      const { data, error } = await supabase
+        .from("listings")
+        .select("*, listing_images(id, image_url, display_order)")
+        .eq("id", editId)
+        .single();
+      if (!active) return;
+      if (error || !data) {
+        toast({ title: "Listing not found", description: "It may have been removed, or you don't have permission to edit it.", variant: "destructive" });
+        navigate("/profile");
+        return;
+      }
+      setForm({
+        make: data.make || "",
+        model: data.model || "",
+        year: String(data.year || new Date().getFullYear()),
+        bodyType: data.body_type || defaultForm.bodyType,
+        transmission: data.transmission || defaultForm.transmission,
+        fuelType: data.fuel_type || defaultForm.fuelType,
+        color: data.color || defaultForm.color,
+        mileage: data.mileage != null ? String(data.mileage) : "",
+        condition: data.condition || defaultForm.condition,
+        title: data.title || "",
+        description: data.description || "",
+        assembly: defaultForm.assembly,
+        price: String(data.price ?? ""),
+        currency: data.currency || defaultForm.currency,
+        city: data.city || defaultForm.city,
+        registeredIn: defaultForm.registeredIn,
+        allowWhatsapp: defaultForm.allowWhatsapp,
+      });
+      const sortedImages = Array.isArray(data.listing_images)
+        ? [...data.listing_images].sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+        : [];
+      setExistingImages(sortedImages);
+      setLoadingExisting(false);
+    })();
+    return () => { active = false; };
+  }, [editId, user]);
 
   const availableCities = useMemo(() => {
     if (country === "All") return africanCities;
@@ -246,6 +303,7 @@ export default function SellCar() {
   };
 
   const handleSubmit = async () => {
+    if (loadingExisting) return;
     if (!user) {
       toast({ title: "Sign in required", description: "Please sign in or create an account to post your car." });
       navigate("/auth?returnTo=/sell");
@@ -298,8 +356,7 @@ export default function SellCar() {
         }
       }
 
-      const { data: listing, error } = await supabase.from("listings").insert({
-        seller_id: user.id,
+      const listingFields = {
         title,
         make: form.make,
         model: form.model,
@@ -314,17 +371,32 @@ export default function SellCar() {
         condition: form.condition,
         description: fullDescription || null,
         city: form.city || null,
-        status: "pending" as const,
-      }).select().single();
+      };
+
+      const { data: listing, error } = editId
+        ? await supabase.from("listings")
+            // Send back to "pending" for re-review on any edit — same
+            // moderation requirement a new listing goes through, so an edit
+            // can't be used to slip changed content past review.
+            .update({ ...listingFields, status: "pending" as const })
+            .eq("id", editId)
+            .select()
+            .single()
+        : await supabase.from("listings")
+            .insert({ ...listingFields, seller_id: user.id, status: "pending" as const })
+            .select()
+            .single();
 
       if (error) throw error;
 
       trackEvent("listing_posted", { userId: user.id, make: form.make, model: form.model, city: form.city });
 
-      // Upload Images
+      // Upload Images — new ones append after any existing photos (edit mode),
+      // so display_order never collides with an already-saved image.
+      const displayOrderOffset = existingImages.length;
       for (let i = 0; i < images.length; i++) {
         const file = images[i];
-        const path = `${user.id}/${listing.id}/${i}-${file.name}`;
+        const path = `${user.id}/${listing.id}/${displayOrderOffset + i}-${file.name}`;
         const { error: uploadErr } = await supabase.storage.from("listing-images").upload(path, file);
         if (uploadErr) {
           console.error("Image upload failed:", uploadErr.message);
@@ -334,7 +406,7 @@ export default function SellCar() {
         await supabase.from("listing_images").insert({
           listing_id: listing.id,
           image_url: urlData.publicUrl,
-          display_order: i,
+          display_order: displayOrderOffset + i,
         });
       }
 
@@ -352,27 +424,34 @@ export default function SellCar() {
         }
       }
 
-      // Notify platform administrators immediately via email
-      const adminNotified = await notifyAdminsOnNewListing({
-        listingId: listing.id,
-        title,
-        price: form.price,
-        currency: form.currency,
-        make: form.make,
-        model: form.model,
-        sellerName: user.user_metadata?.display_name || user.email || "Seller",
-        sellerEmail: user.email,
-        phone: form.phone,
-        city: form.city,
-      }).catch(() => false);
-      if (!adminNotified) console.warn("Listing saved, but the admin email was not accepted");
+      // Notify platform administrators only for a genuinely new listing —
+      // an edit re-review doesn't need a fresh "new listing" admin email.
+      if (!editId) {
+        // form.phone was never a real field on FormData (always undefined) —
+        // the actual value lives in phoneInput/activePhone. Found while adding
+        // edit mode; fixed in passing.
+        const adminNotified = await notifyAdminsOnNewListing({
+          listingId: listing.id,
+          title,
+          price: form.price,
+          currency: form.currency,
+          make: form.make,
+          model: form.model,
+          sellerName: user.user_metadata?.display_name || user.email || "Seller",
+          sellerEmail: user.email,
+          phone: activePhone,
+          city: form.city,
+        }).catch(() => false);
+        if (!adminNotified) console.warn("Listing saved, but the admin email was not accepted");
+      }
 
       localStorage.removeItem("sellCarDraft");
       localStorage.removeItem("sellCarFeatures");
-      toast({
-        title: "Listing submitted! 🎉",
-        description: "Your vehicle is uploaded and ready for review. It will go live once verified.",
-      });
+      toast(
+        editId
+          ? { title: "Listing updated", description: "Your changes are saved and back in review." }
+          : { title: "Listing submitted! 🎉", description: "Your vehicle is uploaded and ready for review. It will go live once verified." }
+      );
       navigate("/profile");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
@@ -403,8 +482,8 @@ export default function SellCar() {
             <IconArrowLeft size={16} /> Back
           </button>
           <div className="text-center flex-1 px-2">
-            <h1 className="text-xl md:text-2xl font-black text-foreground tracking-tight">Post Your Vehicle</h1>
-            <p className="text-xs text-muted-foreground">Reach thousands of active car buyers across East Africa</p>
+            <h1 className="text-xl md:text-2xl font-black text-foreground tracking-tight">{editId ? "Edit Your Listing" : "Post Your Vehicle"}</h1>
+            <p className="text-xs text-muted-foreground">{editId ? "Changes go back through review before they're visible again." : "Reach thousands of active car buyers across East Africa"}</p>
           </div>
           <div className="w-16 flex justify-end">
             <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-1 rounded-full">
@@ -425,6 +504,21 @@ export default function SellCar() {
               </div>
               <span className="text-xs text-muted-foreground">{images.length}/10 photos</span>
             </div>
+
+            {existingImages.length > 0 && (
+              <div className="mb-3">
+                <p className="text-xs font-semibold text-muted-foreground mb-2">
+                  Current photos — add more below (removing an existing photo isn't supported yet)
+                </p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5">
+                  {existingImages.map((img) => (
+                    <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden border border-border bg-black/10">
+                      <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Photo Dropzone */}
             <div className="border-2 border-dashed border-border rounded-xl p-4 text-center hover:border-primary/50 transition-colors bg-muted/10">
@@ -913,7 +1007,7 @@ export default function SellCar() {
           <div className="pt-2 pb-12">
             <Button
               onClick={handleSubmit}
-              disabled={submitting}
+              disabled={submitting || loadingExisting}
               className="w-full h-14 text-base font-bold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2"
             >
               {submitting ? (
@@ -924,7 +1018,7 @@ export default function SellCar() {
               ) : (
                 <>
                   <IconCar size={20} />
-                  <span>Post Listing Now</span>
+                  <span>{editId ? "Save Changes" : "Post Listing Now"}</span>
                 </>
               )}
             </Button>

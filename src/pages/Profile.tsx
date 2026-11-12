@@ -785,6 +785,13 @@ export default function Profile() {
                           </Link>
                         </Button>
                         {l.status !== "sold" && (
+                          <Button variant="outline" size="sm" asChild className="gap-1.5 text-xs font-bold rounded-lg">
+                            <Link to={`/sell?edit=${l.id}`}>
+                              <IconEdit size={14} /> Edit
+                            </Link>
+                          </Button>
+                        )}
+                        {l.status !== "sold" && (
                           <Button variant="outline" size="sm" onClick={() => markSold(l.id)} className="gap-1.5 text-xs font-bold rounded-lg text-emerald-600 hover:text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/10">
                             <IconCheck size={14} /> Mark as Sold
                           </Button>
