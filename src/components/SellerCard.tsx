@@ -5,8 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { usePriceFormatter } from "@/lib/prices";
 import { toast } from "sonner";
-
-const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+import { isRealUuid } from "@/lib/uuid";
 
 interface SellerCardProps {
   listing: Listing;
@@ -33,7 +32,7 @@ export default function SellerCard({ listing }: SellerCardProps) {
     // real account to message. conversations.participant2_id is a uuid
     // column, so inserting one of these threw a silent 400 (22P02) that was
     // only console.error'd, with zero user feedback. Found live 2026-11-12.
-    if (!UUID_RE.test(listing.sellerId)) {
+    if (!isRealUuid(listing.sellerId)) {
       toast.error("In-app messaging isn't available for this dealer yet — use WhatsApp or call below.");
       return;
     }

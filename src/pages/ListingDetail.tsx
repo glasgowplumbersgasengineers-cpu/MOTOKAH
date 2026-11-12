@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { usePriceFormatter } from "@/lib/prices";
+import { isRealUuid } from "@/lib/uuid";
 import { isStaticListingId } from "@/lib/listingQuality";
 import { blockSeller } from "@/lib/blockedSellers";
 import { trackEvent } from "@/lib/analytics";
@@ -340,6 +341,14 @@ export default function ListingDetail() {
                       ))}
                       <Button className="w-full" disabled={!reportReason} onClick={async () => {
                         if (!user) { navigate("/auth"); return; }
+                        // reports.listing_id is a uuid column; scraped (Instagram/Jiji)
+                        // listings have synthetic string ids and always fail this insert
+                        // with a real 400 (22P02). Was already showing an honest error
+                        // toast, just skip the doomed network call. Found live 2026-11-12.
+                        if (!isRealUuid(id)) {
+                          toast.error("This listing can't be reported yet — it's sourced from an external dealer page. Use Report on the dealer's own platform instead.");
+                          return;
+                        }
                         const { error } = await supabase.from("reports").insert({ reporter_id: user.id, listing_id: id!, reason: reportReason });
                         if (error) {
                           toast.error("Report could not be submitted. Please try again.");
