@@ -66,12 +66,17 @@ export default function Messages() {
         const convos = await Promise.all(data.map(async (c) => {
           const otherId = c.participant1_id === user.id ? c.participant2_id : c.participant1_id;
 
+          // maybeSingle(), not single(): a brand-new conversation legitimately has
+          // zero messages until the first one is sent (SellerCard.tsx creates the
+          // conversation row before any message exists), and a listing can be
+          // deleted while its conversation remains — single() 406s noisily on
+          // these valid zero-row cases. Found live via a real two-account send test.
           const [profileRes, lastMsgRes, unreadRes, listingRes] = await Promise.all([
-            supabase.from("profiles").select("display_name").eq("user_id", otherId).single(),
-            supabase.from("messages").select("content").eq("conversation_id", c.id).order("created_at", { ascending: false }).limit(1).single(),
+            supabase.from("profiles").select("display_name").eq("user_id", otherId).maybeSingle(),
+            supabase.from("messages").select("content").eq("conversation_id", c.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
             supabase.from("messages").select("id", { count: "exact" }).eq("conversation_id", c.id).eq("read", false).neq("sender_id", user.id),
             c.listing_id
-              ? supabase.from("listings").select("title").eq("id", c.listing_id).single()
+              ? supabase.from("listings").select("title").eq("id", c.listing_id).maybeSingle()
               : Promise.resolve({ data: null }),
           ]);
 

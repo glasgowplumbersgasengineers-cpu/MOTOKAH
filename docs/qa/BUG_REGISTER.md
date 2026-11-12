@@ -100,6 +100,14 @@ Every entry below is a confirmed defect found by reading actual code/config/live
 - Re-ran the scraper locally just now: still works, pulled live data successfully, byte-identical to the committed file (expected — these are weekly/monthly regulator prices, not something that changes multiple times a day; confirms the scraper hits real sources, not hardcoded data).
 - **Not a bug, but a real gap in confidence**: the daily cron's first real unattended trigger (3am UTC) hasn't happened yet as of this check. Tomorrow's data should be checked to confirm the schedule actually fires and the mirror-repo Action successfully commits fresh data on its own.
 
+## 14. Account deletion and two-account messaging — now genuinely E2E tested, not just inspected
+
+Distinguishing actual end-to-end evidence from code/backend inspection, per explicit request:
+
+- **Account deletion**: previously only confirmed the edge function was deployed/ACTIVE — never actually run. Now run for real: created a disposable account, logged in through the real UI, clicked Delete My Account → Permanently delete, confirmed the real toast and redirect, then confirmed via admin API that the `auth.users` row is genuinely gone (404 on lookup). **Real E2E pass.**
+- **Messaging, two real accounts**: previously only verified one side (send() error handling, optimistic append) via code reading + typecheck. Now run for real with two separate disposable accounts in two separate browser contexts: seller posts a listing (admin-approved to simulate the real post-moderation state, since RLS correctly blocks anyone but the owner from viewing a pending listing — found that 406 along the way, confirms the moderation gate works), buyer clicks "Message on Motokah", sends a real message, **seller's own independent login genuinely receives it**, seller replies, buyer reloads and sees the reply. Real cross-account delivery confirmed, not assumed.
+- **Found along the way**: two `.single()` calls in `Messages.tsx`'s conversation-list builder (profile lookup, last-message lookup) threw harmless-but-real 406s on valid zero-row cases (a brand-new conversation has no messages yet; a referenced profile/listing can be absent). Both already degraded gracefully (`?? ""` fallbacks), so no visible bug, but the errors were real. Changed both to `maybeSingle()`. Re-ran the full two-account test after the fix: zero errors.
+
 ## Still open / blocked
 
 - Sunny's actual symptom when trying to reply was never fully confirmed (what exactly happens — error shown? box clears with nothing? box stuck?). The `send()` fix above addresses the most likely cause found by code inspection, but isn't confirmed as *the* cause without his exact symptom or a repro.
