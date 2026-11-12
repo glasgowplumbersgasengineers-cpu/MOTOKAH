@@ -13,6 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Select latest stable Xcode and print real version evidence
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - run: xcodebuild -version
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -29,9 +36,9 @@ jobs:
       - name: Sync Capacitor iOS
         run: npx cap sync ios
 
-      - name: Install CocoaPods dependencies
-        working-directory: ios/App
-        run: pod install --repo-update
+      # This project uses Swift Package Manager for Capacitor plugins
+      # (ios/App/CapApp-SPM/Package.swift) — no Podfile/CocoaPods here.
+      # xcodebuild resolves SPM packages itself during the build step below.
 
       # Builds for the iOS Simulator only — no signing certs needed, unlike
       # ios-appstore.yml which does a real signed archive + App Store upload.
@@ -41,7 +48,7 @@ jobs:
         working-directory: ios/App
         run: |
           xcodebuild \
-            -workspace App.xcworkspace \
+            -project App.xcodeproj \
             -scheme App \
             -configuration Debug \
             -destination "generic/platform=iOS Simulator" \

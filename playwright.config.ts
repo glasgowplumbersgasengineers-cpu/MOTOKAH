@@ -4,7 +4,12 @@ const PORT = 18090;
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  fullyParallel: true,
+  // Not fully parallel: a single `vite preview` instance backs all tests, and
+  // the app's mockData chunk is ~5.6MB — hammering it concurrently caused
+  // real timeouts/blank-page false positives, not actual app bugs. See
+  // docs/qa/BUG_REGISTER.md for the diagnosis.
+  fullyParallel: false,
+  workers: 4,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
   use: {
@@ -13,8 +18,8 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   projects: [
-    { name: "mobile-chrome", use: { ...devices["Pixel 7"] } },
-    { name: "desktop-chrome", use: { ...devices["Desktop Chrome"] } },
+    { name: "mobile-chrome", use: { ...devices["Pixel 7"], channel: "chrome" } },
+    { name: "desktop-chrome", use: { ...devices["Desktop Chrome"], channel: "chrome" } },
   ],
   webServer: {
     command: `npx vite preview --host 127.0.0.1 --port ${PORT} --strictPort`,

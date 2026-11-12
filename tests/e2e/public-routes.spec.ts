@@ -52,7 +52,8 @@ for (const route of PUBLIC_ROUTES) {
     expect(overflow, `${route} has horizontal overflow (${overflow}px) — likely clipped/mispositioned element`).toBeLessThanOrEqual(2);
 
     expect(pageErrors, `${route} threw uncaught JS errors: ${pageErrors.join(" | ")}`).toHaveLength(0);
-    const realConsoleErrors = consoleErrors.filter((e) => !/favicon|ERR_INTERNET_DISCONNECTED/i.test(e));
+    // NotFound.tsx intentionally logs a 404 analytics error — expected, not a bug.
+    const realConsoleErrors = consoleErrors.filter((e) => !/favicon|ERR_INTERNET_DISCONNECTED|User attempted to access non-existent route/i.test(e));
     expect(realConsoleErrors, `${route} logged console errors: ${realConsoleErrors.join(" | ")}`).toHaveLength(0);
   });
 }
