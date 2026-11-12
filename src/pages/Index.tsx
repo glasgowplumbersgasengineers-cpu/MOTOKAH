@@ -11,11 +11,13 @@ import FuelPriceSection from "@/components/FuelPriceSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
 import { Link } from "react-router-dom";
-import { IconArrowRight, IconMotorbike, IconAnchor, IconTruck, IconSteeringWheel } from "@tabler/icons-react";
+import { IconArrowRight, IconMotorbike, IconAnchor, IconTruck } from "@tabler/icons-react";
 
 const BIKE_TYPES = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
-const BIG_VEHICLE_TYPES = ["Truck", "Bus", "Pickup", "Minibus", "Tipper", "SUV"];
-const RICKSHAW_TYPES = ["Tuk-tuk"];
+// SUV deliberately excluded — it's already the single biggest category in the
+// main grid, so including it here just made this row look like "more cars"
+// instead of a distinct trucks/commercial row.
+const BIG_VEHICLE_TYPES = ["Truck", "Bus", "Pickup", "Minibus", "Tipper"];
 const BOAT_TYPES = ["Boat"];
 
 const Index = () => {
@@ -52,7 +54,8 @@ const Index = () => {
       <LatestListingsGrid />
       <CategorySection title="Big Vehicles & Trucks" icon={<IconTruck size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BIG_VEHICLE_TYPES} viewAllHref="/search?vehicleType=commercial" />
       <CategorySection title="Bikes & Scooters" icon={<IconMotorbike size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BIKE_TYPES} viewAllHref="/search?vehicleType=bike" />
-      <CategorySection title="Rickshaws & Tuk-tuks" icon={<IconSteeringWheel size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={RICKSHAW_TYPES} viewAllHref="/search?vehicleType=commercial" />
+      {/* Rickshaws/tuk-tuks row removed — no dealer has listed a real one yet, so it
+          was either empty (auto-hidden) or showed nothing worth calling a category. */}
       <CategorySection title="Boats" icon={<IconAnchor size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BOAT_TYPES} viewAllHref="/search?vehicleType=boat" />
       <PopularModelsSection />
       <FuelPriceSection />

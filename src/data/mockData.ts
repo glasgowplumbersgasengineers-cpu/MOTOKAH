@@ -400,7 +400,7 @@ function _normalizePriceForCurrency(price: number, currency: string): number {
 }
 
 // Known East African car brands for first-line extraction
-const _CAR_BRANDS = ["toyota","nissan","mitsubishi","subaru","honda","mazda","bmw","mercedes","benz","mercedes-benz","audi","volkswagen","vw","land rover","range rover","hyundai","kia","isuzu","suzuki","ford","jeep","lexus","peugeot","volvo","porsche","maserati","ferrari","lamborghini","bentley","rolls royce","cadillac","dodge","chrysler","buick","opel","renault","fiat","alfa romeo","jaguar","infiniti","acura","lincoln","buick","hummer","pontiac","saturn","mercury","oldsmobile","daewoo","ssangyong","mahindra","tata","bajaj","tvs","yamaha","honda","kawasaki","ktm","piaggio","vespa","triumph","harley","ducati","royal enfield"];
+const _CAR_BRANDS = ["toyota","nissan","mitsubishi","subaru","honda","mazda","bmw","mercedes","benz","mercedes-benz","audi","volkswagen","vw","land rover","range rover","hyundai","kia","isuzu","suzuki","ford","jeep","lexus","peugeot","volvo","porsche","maserati","ferrari","lamborghini","bentley","rolls royce","cadillac","dodge","chrysler","buick","opel","renault","fiat","alfa romeo","jaguar","infiniti","acura","lincoln","buick","hummer","pontiac","saturn","mercury","oldsmobile","daewoo","ssangyong","mahindra","tata","bajaj","boxer","tvs","yamaha","honda","kawasaki","ktm","piaggio","vespa","triumph","harley","ducati","royal enfield","sinoray","senke","haojue","lifan"];
 
 function _extractMakeModelFromLine(line: string): { make: string | null; model: string | null } {
   const clean = line.replace(/[*#✅☎️▶️🚘🏎️💰➡️]/gu, "").trim();
@@ -413,7 +413,7 @@ function _extractMakeModelFromLine(line: string): { make: string | null; model: 
       const modelRaw = rest.replace(/^\s*[-:]\s*/, "")
         .split(/[,\n|]/)[0]           // stop at comma, newline, or pipe (AL-HUSNAIN format)
         .replace(/\b(19|20)\d{2}\b/g, "") // strip duplicate years from model
-        .replace(/\b(?:asking\s+)?(?:price|bei)\b.*$/i, "")
+        .replace(/\b(?:asking\s+)?(?:price|bei|lipia)\b.*$/i, "")
         .replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "")
         .replace(/\b(?:contact|call|whatsapp|dm|inbox)\b.*$/i, "")
         .replace(/\b(?:model\s+)?(?:on sale|for sale|available|negotiable|buy\s*and\s*drive|buyanddrive)\b.*$/i, "")
@@ -430,7 +430,7 @@ function _extractMakeModelFromLine(line: string): { make: string | null; model: 
 function _cleanListingTitle(title: string): string {
   return title
     .replace(/[\uD800-\uDFFF]/g, "")
-    .replace(/\b(?:asking\s+)?(?:price|bei)\b.*$/i, "")
+    .replace(/\b(?:asking\s+)?(?:price|bei|lipia)\b.*$/i, "")
     .replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "")
     .replace(/\b(?:contact|call|whatsapp|dm|inbox)\b.*$/i, "")
     .replace(/\b(?:model\s+)?(?:on sale|for sale|available|negotiable|buy\s*and\s*drive|buyanddrive)\b.*$/i, "")
@@ -512,8 +512,8 @@ function _parseMgayaCaption(caption: string) {
   // "Price Starts From X TZS" must be checked FIRST — otherwise get("price") grabs "Starts From…" as garbage
   const rawPrice =
     (() => { for (const l of lines) { const m = l.match(/price\s+starts?\s+from\s+([\d,.]+)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+(?:only|price|for)?|ask(?:ing)?\s+price|price|bei)\s*[:/;-]?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*)?([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
-    (() => { for (const l of lines) { const m = l.match(/\bbei\s*(?:ni|ya)?\s*[:/]?\s*([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/(?:asking\s+(?:only|price|for)?|ask(?:ing)?\s+price|price|bei|lipia)\s*[:/;-]?\s*(?:(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*)?([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
+    (() => { for (const l of lines) { const m = l.match(/\b(?:bei|lipia)\s*(?:ni|ya)?\s*[:/]?\s*([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
     (() => { for (const l of lines) { const m = l.match(/^([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:\/[-=]|TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
     (() => { for (const l of lines) { const m = l.match(/(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)\s*([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)/i); if (m) return m[1]; } return null; })() ||
     (() => { for (const l of lines) { const m = l.match(/([\d,.]+(?:\s\d{3})*\s*(?:M|m|MLN|mln|Mil(?:ion|lion)|million|milion)?)\s*(?:TZS|TSh|KES|KSh|KSH|UGX|USh|RWF|RF|ETB|USD)/i); if (m) return m[1]; } return null; })() ||
@@ -559,7 +559,7 @@ function _parseMgayaCaption(caption: string) {
     ? `${year ? year + " " : ""}${model}`.trim()
     : titleFallbackLine.replace(emojiRe, "").replace(/[*#]/g, "").trim().slice(0, 80) || "Vehicle";
   title = title.split("|")[0].trim(); // strip "| description" suffix (AL-HUSNAIN format)
-  title = title.replace(/\b(?:asking\s+)?price\s*[:/]?.*$/i, "").trim();
+  title = title.replace(/\b(?:asking\s+)?(?:price|lipia)\s*[:/]?.*$/i, "").trim();
   title = title.replace(/\b(?:TZS|TSh|KES|KSh|KSH|UGX|RWF|RF|ETB|USD)\s*[\d,.]+.*$/i, "").trim();
   title = _cleanListingTitle(title);
   title = title.replace(/\b\w/g, (c) => c.toUpperCase());
@@ -741,7 +741,10 @@ function _isLaunchQualityListing(listing: Listing): boolean {
   if (/\b(on sale|for sale|negotiable|buyanddrive|buy\s*and\s*drive|combines|is the|the perfect|where power|finished in|in excellent condition|magari|kuagiza|agiza|carsforsale|carmarket|dreamcars|getitfromtoyota|i_beipoa|unregistered|alloy rims?|rims?|tyres?|tires?|spare parts?)\b/i.test(title)) return false;
   if (/\bmodel\b$/i.test(title)) return false;
   if (/^(price|bei|engine|mileage|transmission|fuel|color|colour|location)\b/i.test(title)) return false;
-  if (listing.id.startsWith("ig-") && images.length < 2 && !contactPending) return false;
+  // Bikes/scooters/tuk-tuks are commonly posted with a single photo per unit — the
+  // 2-photo minimum below exists to filter low-quality single-shot car scrapes, not bikes.
+  const singlePhotoOk = listing.bodyType === "Motorcycle" || listing.bodyType === "Scooter" || listing.bodyType === "Tuk-tuk";
+  if (listing.id.startsWith("ig-") && images.length < 2 && !contactPending && !singlePhotoOk) return false;
   if (images.length < 1) return false;
   if ((listing.description || "").length < 40 && listing.id.startsWith("ig-")) return false;
   return true;
@@ -1468,7 +1471,7 @@ export function getShowroomListings(username: string): Listing[] {
       price: info.price || 0,
       currency: _dealerCurrency(username),
       condition: "Foreign Used" as const,
-      year: info.year || 0,
+      year: info.year || (post.date ? new Date(post.date).getFullYear() : 0),
       mileage: info.mileage,
       transmission: info.transmission || "Automatic",
       location: DEALER_CITY[username] || "Dar es Salaam, TZ",
