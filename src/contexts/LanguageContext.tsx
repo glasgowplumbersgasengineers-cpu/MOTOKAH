@@ -62,6 +62,15 @@ const translations: Record<LangCode, Record<string, string>> = {
     "common.call": "Call Seller",
     "common.message": "Send Message",
     "common.askingPrice": "Asking Price",
+    // How It Works — animated walkthrough
+    "howItWorks.play": "Play",
+    "howItWorks.pause": "Pause",
+    "howItWorks.replay": "Replay",
+    "howItWorks.chapters": "Chapters",
+    "howItWorks.chapter.discover.title": "Discover Motokah",
+    "howItWorks.chapter.discover.desc": "Browse by category — Saloon, 4x4/SUV, Double Cab, Small Car — and see real listings appear instantly.",
+    "howItWorks.chapter.postAd.title": "Post an Advertisement",
+    "howItWorks.chapter.postAd.desc": "Pick your make, add model and year, set a price, attach photos, and publish — reviewed within 24 hours.",
   },
   sw: {
     // Nav
@@ -108,6 +117,15 @@ const translations: Record<LangCode, Record<string, string>> = {
     "common.call": "Piga Simu",
     "common.message": "Tuma Ujumbe",
     "common.askingPrice": "Bei Inayoulizwa",
+    // How It Works — animated walkthrough
+    "howItWorks.play": "Cheza",
+    "howItWorks.pause": "Simamisha",
+    "howItWorks.replay": "Cheza Tena",
+    "howItWorks.chapters": "Sura",
+    "howItWorks.chapter.discover.title": "Gundua Motokah",
+    "howItWorks.chapter.discover.desc": "Vinjari kwa aina — Saloon, 4x4/SUV, Double Cab, Gari Dogo — na uone matangazo halisi yakitokea papo hapo.",
+    "howItWorks.chapter.postAd.title": "Weka Tangazo",
+    "howItWorks.chapter.postAd.desc": "Chagua chapa, ongeza modeli na mwaka, weka bei, ambatanisha picha, kisha chapisha — hukaguliwa ndani ya saa 24.",
   },
   fr: {
     // Nav

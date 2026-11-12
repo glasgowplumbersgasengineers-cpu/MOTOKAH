@@ -1,7 +1,12 @@
+import { lazy, Suspense } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconSearch, IconMessageCircle, IconHandGrab, IconCar, IconCamera, IconChecklist, IconCurrencyDollar, IconRocket } from "@tabler/icons-react";
+
+// Remotion + the animated composition are heavy — lazy-loaded so they never
+// ship in the main bundle for pages that aren't this one.
+const HowItWorksPlayer = lazy(() => import("@/components/HowItWorksPlayer"));
 
 const buyerSteps = [
   { icon: IconSearch, title: "Search & Browse", desc: "Use filters to find the perfect car by make, model, price, location, and more." },
@@ -25,7 +30,14 @@ export default function HowItWorks() {
       <Header />
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <h1 className="text-3xl font-bold text-foreground mb-2 text-center">How It Works</h1>
-        <p className="text-muted-foreground text-center mb-12">Whether you're buying or selling, Motokah makes it simple.</p>
+        <p className="text-muted-foreground text-center mb-8">Whether you're buying or selling, Motokah makes it simple.</p>
+
+        {/* Animated walkthrough */}
+        <div className="mb-16">
+          <Suspense fallback={<div className="aspect-video w-full rounded-2xl bg-muted animate-pulse" />}>
+            <HowItWorksPlayer />
+          </Suspense>
+        </div>
 
         {/* Buyers */}
         <div className="mb-16">
