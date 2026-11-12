@@ -91,7 +91,7 @@
 
   </url>
 
-  <!-- Curated search landing pages -->
+  <!-- Curated search landing pages (>= 3 real listings) -->
   <url>
     <loc>https://www.motokah.com/search?country=Tanzania</loc>
 
@@ -101,15 +101,7 @@
 
   </url>
   <url>
-    <loc>https://www.motokah.com/search?country=Tanzania&amp;condition=New</loc>
-
-  </url>
-  <url>
     <loc>https://www.motokah.com/search?country=Tanzania&amp;vehicleType=commercial</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?country=Tanzania&amp;vehicleType=bike</loc>
 
   </url>
   <url>
@@ -117,23 +109,7 @@
 
   </url>
   <url>
-    <loc>https://www.motokah.com/search?country=Kenya&amp;condition=New</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?country=Kenya&amp;vehicleType=commercial</loc>
-
-  </url>
-  <url>
     <loc>https://www.motokah.com/search?make=Toyota</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru</loc>
 
   </url>
   <url>
@@ -141,87 +117,7 @@
 
   </url>
   <url>
-    <loc>https://www.motokah.com/search?make=Honda</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Harrier&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Land%20Cruiser&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Hilux&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Prado&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Fortuner&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Vitz&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;model=Demio&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;model=CX-5&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;model=Patrol&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;model=Navara&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;model=Forester&amp;country=Tanzania</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;model=Forester&amp;country=Kenya</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Probox&amp;country=Kenya</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;model=Vezel&amp;country=Kenya</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;model=Demio&amp;country=Kenya</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;model=Harrier&amp;country=Kenya</loc>
-
-  </url>
-  <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Dar%20es%20Salaam</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Dar%20es%20Salaam</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Dar%20es%20Salaam</loc>
 
   </url>
   <url>
@@ -229,207 +125,7 @@
 
   </url>
   <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Dar%20es%20Salaam</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Dar%20es%20Salaam</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Arusha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Arusha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Arusha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Arusha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Arusha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Arusha</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Mwanza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Mwanza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Mwanza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Mwanza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Mwanza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Mwanza</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Dodoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Dodoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Dodoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Dodoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Dodoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Dodoma</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Nairobi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Nairobi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Nairobi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Nairobi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Nairobi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Nairobi</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Mombasa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Mombasa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Mombasa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Mombasa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Mombasa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Mombasa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Kampala</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Kampala</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Kampala</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Kampala</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Kampala</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Kampala</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Toyota&amp;city=Kigali</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Kigali</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Kigali</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Kigali</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Kigali</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Kigali</loc>
-
-  </url>
-  <url>
     <loc>https://www.motokah.com/search?make=Toyota&amp;city=Addis%20Ababa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Nissan&amp;city=Addis%20Ababa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Subaru&amp;city=Addis%20Ababa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mazda&amp;city=Addis%20Ababa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Honda&amp;city=Addis%20Ababa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?make=Mitsubishi&amp;city=Addis%20Ababa</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?condition=New</loc>
 
   </url>
   <url>
@@ -437,23 +133,7 @@
 
   </url>
   <url>
-    <loc>https://www.motokah.com/search?vehicleType=bike</loc>
-
-  </url>
-  <url>
     <loc>https://www.motokah.com/search?vehicleType=boat</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?country=Kenya&amp;vehicleType=bike</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?country=Kenya&amp;bodyType=SUV</loc>
-
-  </url>
-  <url>
-    <loc>https://www.motokah.com/search?country=Tanzania&amp;bodyType=Sedan</loc>
 
   </url>
   <url>

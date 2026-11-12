@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
 import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
+import { robotsContentForCount } from "@/lib/pageListingCounts";
 
 export default function SearchResults() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -181,6 +182,12 @@ export default function SearchResults() {
 
   const { listings: filtered, loading } = useSearchListings(searchFilters, sort);
 
+  // Plain /search with no filters is the main search entry point and always stays indexable.
+  // A filtered combination (make/city/vehicleType/etc) with too few real results is a thin
+  // doorway page — same >= MIN_LISTINGS_FOR_INDEX rule the city/country/model landing pages use.
+  const hasAnyFilter = Boolean(seoMake || seoCity || seoCountry || seoVehicleType || seoCondition || urlBodyTypes.length);
+  const robotsContent = !hasAnyFilter || loading ? "index, follow" : robotsContentForCount(filtered.length);
+
   // Active filter chips
   const activeChips = useMemo(() => {
     const chips: { key: string; label: string }[] = [];
@@ -276,6 +283,7 @@ export default function SearchResults() {
         <meta property="og:title" content={seoTitle} />
         <meta property="og:description" content={seoDesc} />
         <link rel="canonical" href={seoCanonical} />
+        <meta name="robots" content={robotsContent} />
         {jsonLdScript(breadcrumbJsonLd([
           { name: "Home", url: "https://www.motokah.com/" },
           { name: "Cars for Sale", url: seoCanonical },

@@ -266,6 +266,24 @@ function cityNameFromSlug(slug) {
 // Mirrors ModelLandingPage.tsx's local `slugToTitle` — same transform, used for make/model slugs.
 const titleFromSlug = cityNameFromSlug;
 
+// Turns a hardcoded "/search?make=Toyota&city=Nairobi" sitemap path into the same
+// ListingCountFilter shape SearchResults.tsx itself would build from those query params,
+// so these curated search pages get the identical >= MIN_LISTINGS_FOR_SITEMAP gate every
+// other programmatic page type already has (see pageListingCounts.ts header comment —
+// this was the one page type the 2026-11 doorway-page fix never reached).
+function filterFromSearchPath(searchPath) {
+  const query = new URLSearchParams(searchPath.split("?")[1] || "");
+  const filter = {};
+  if (query.get("make")) filter.make = query.get("make");
+  if (query.get("model")) filter.model = query.get("model");
+  if (query.get("city")) filter.city = query.get("city");
+  if (query.get("country")) filter.country = query.get("country");
+  if (query.get("condition")) filter.condition = query.get("condition");
+  if (query.get("vehicleType")) filter.vehicleType = query.get("vehicleType");
+  if (query.get("bodyType")) filter.bodyType = [query.get("bodyType")];
+  return filter;
+}
+
 async function loadQualityCheckedListings() {
   const { createServer } = await import("vite");
   const server = await createServer({
@@ -461,6 +479,13 @@ async function main() {
   console.log(`City x make pages added: ${cityMakeLandingPages.length}`);
   console.log(`Country x make pages added: ${countryMakeLandingPages.length}`);
 
+  // Curated search pages (/search?make=...&city=...): same gate as every other
+  // programmatic page type. These were hardcoded with zero quality checking before.
+  const allSearchPages = [...countrySearchPages, ...makePages, ...modelCountryPages, ...cityMakePages, ...categorySearchPages];
+  const keptSearchPages = allSearchPages.filter((p) => countFor(filterFromSearchPath(p.path)) >= MIN_LISTINGS_FOR_SITEMAP);
+  const droppedSearchPages = allSearchPages.filter((p) => !keptSearchPages.includes(p));
+  console.log(`Curated search pages: ${keptSearchPages.length} kept / ${droppedSearchPages.length} dropped (thin): ${droppedSearchPages.map((p) => p.path).join(", ")}`);
+
   const lines = [
     `<?xml version="1.0" encoding="UTF-8"?>`,
     `<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>`,
@@ -478,12 +503,8 @@ async function main() {
     "  <!-- Country x make landing pages (>= 3 real listings) -->",
     ...countryMakeLandingPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
     "",
-    "  <!-- Curated search landing pages -->",
-    ...countrySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-    ...makePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-    ...modelCountryPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-    ...cityMakePages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
-    ...categorySearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
+    "  <!-- Curated search landing pages (>= 3 real listings) -->",
+    ...keptSearchPages.map(p => url(`${BASE}${p.path}`, p.freq, p.pri)),
     "",
     "  <!-- City landing pages (>= 3 real listings, or an anchor city with stock) -->",
     ...keptCities.map(c => url(`${BASE}/city/${c.slug}`, "daily", c.pri)),

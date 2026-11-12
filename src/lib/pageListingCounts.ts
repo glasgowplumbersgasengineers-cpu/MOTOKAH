@@ -38,6 +38,8 @@ export interface CountableListing {
   location?: string | null;
   /** ISO-ish country code some listings carry directly (e.g. "TZ"), independent of `location`. */
   country?: string | null;
+  condition?: string | null;
+  bodyType?: string | null;
 }
 
 export interface ListingCountFilter {
@@ -46,6 +48,25 @@ export interface ListingCountFilter {
   model?: string;
   /** Full country name, e.g. "Tanzania" — matches src/hooks/useSearchListings.ts's `countryCitiesMap` keys. */
   country?: string;
+  condition?: string;
+  bodyType?: string[];
+  vehicleType?: "car" | "bike" | "commercial" | "boat" | "spare";
+}
+
+// Mirrors src/hooks/useSearchListings.ts's BIKE_TYPES/BOAT_TYPES consts and mockData.ts's
+// `commercialTypes` export — duplicated here for the same reason COUNTRY_CITIES is: this
+// file has to stay import()-able from a plain Node/CJS build script with no React/Vite runtime.
+const VEHICLE_TYPE_BIKE = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
+const VEHICLE_TYPE_BOAT = ["Boat", "Yacht", "Powerboat", "Sailboat", "Catamaran"];
+const VEHICLE_TYPE_COMMERCIAL = ["Truck", "Van", "Bus", "Pickup", "Minibus", "Tipper", "Tuk-tuk"];
+
+function matchesVehicleType(bodyType: string, vehicleType?: ListingCountFilter["vehicleType"]): boolean {
+  if (!vehicleType || vehicleType === "spare") return true;
+  if (vehicleType === "bike") return VEHICLE_TYPE_BIKE.includes(bodyType);
+  if (vehicleType === "commercial") return VEHICLE_TYPE_COMMERCIAL.includes(bodyType);
+  if (vehicleType === "boat") return VEHICLE_TYPE_BOAT.includes(bodyType);
+  if (vehicleType === "car") return !VEHICLE_TYPE_BIKE.includes(bodyType) && !VEHICLE_TYPE_COMMERCIAL.includes(bodyType) && !VEHICLE_TYPE_BOAT.includes(bodyType);
+  return true;
 }
 
 // Mirrors src/hooks/useSearchListings.ts's `countryCitiesMap`. Keep both in sync if either changes —
@@ -88,6 +109,9 @@ export function matchesListingFilter(listing: CountableListing, filter: ListingC
     const matchesIso = Boolean(iso && listing.country === iso);
     if (!matchesCity && !matchesIso) return false;
   }
+  if (filter.condition && (listing.condition || "") !== filter.condition) return false;
+  if (filter.bodyType?.length && !filter.bodyType.includes(listing.bodyType || "")) return false;
+  if (filter.vehicleType && !matchesVehicleType(listing.bodyType || "", filter.vehicleType)) return false;
   return true;
 }
 
