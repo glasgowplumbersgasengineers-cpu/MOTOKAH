@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /profile/
-Disallow: /auth/
-Disallow: /messages/
-Disallow: /wishlist/
-
-Sitemap: https://www.motokah.com/sitemap.xml

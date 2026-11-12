@@ -81,3 +81,7 @@ public/instagram-cars/expert_motors_tz/
 public/instagram-cars/mgayamotors/DY*.jpg
 .vercel
 .env*
+
+# Private WhatsApp audit workspace (not for commit)
+.audit/
+.claude/worktrees/
