@@ -2,7 +2,7 @@ name: Update Fuel Prices
 
 "on":
   schedule:
-    - cron: '0 3 1 * *'
+    - cron: '0 3 * * *'
   workflow_dispatch:
 
 permissions:
