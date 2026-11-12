@@ -1,0 +1,135 @@
+{
+  "Tanzania": {
+    "currency": "TZS",
+    "source": "EWURA Monthly Energy Regulatory Cap",
+    "updated": "Nov 2026",
+    "fuels": [
+      {
+        "name": "Super Petrol",
+        "price": 4057,
+        "trend": "stable",
+        "change": "+0.0%"
+      },
+      {
+        "name": "Automotive Diesel",
+        "price": 4086,
+        "trend": "stable",
+        "change": "+0.0%"
+      },
+      {
+        "name": "Kerosene",
+        "price": 4067,
+        "trend": "stable",
+        "change": "+0.0%"
+      }
+    ]
+  },
+  "Kenya": {
+    "currency": "KES",
+    "source": "EPRA Petroleum Pricing Pump Guidelines",
+    "updated": "Nov 2026",
+    "fuels": [
+      {
+        "name": "Super Petrol",
+        "price": 225.5,
+        "trend": "up",
+        "change": "+6.1%"
+      },
+      {
+        "name": "Diesel",
+        "price": 226.43,
+        "trend": "up",
+        "change": "+4.6%"
+      },
+      {
+        "name": "Kerosene",
+        "price": 218.55,
+        "trend": "up",
+        "change": "+15.0%"
+      }
+    ]
+  },
+  "Uganda": {
+    "currency": "UGX",
+    "source": "Ministry of Energy & Mineral Development",
+    "updated": "Nov 2026",
+    "fuels": [
+      {
+        "name": "Petrol (PMS)",
+        "price": 6774
+      },
+      {
+        "name": "Diesel (AGO)",
+        "price": 7017
+      }
+    ]
+  },
+  "Rwanda": {
+    "currency": "RWF",
+    "source": "RURA Energy Regulatory Board",
+    "updated": "Nov 2026",
+    "fuels": [
+      {
+        "name": "Premium Petrol",
+        "price": 2938,
+        "trend": "stable",
+        "change": "+0.0%"
+      },
+      {
+        "name": "Gas Oil (Diesel)",
+        "price": 2927,
+        "trend": "stable",
+        "change": "+0.0%"
+      }
+    ]
+  },
+  "Ethiopia": {
+    "currency": "ETB",
+    "source": "Ministry of Trade and Regional Integration",
+    "updated": "Nov 2026",
+    "fuels": [
+      {
+        "name": "Benzene / Petrol",
+        "price": 167.5
+      },
+      {
+        "name": "Automotive Diesel",
+        "price": 180.46
+      }
+    ]
+  },
+  "Burundi": {
+    "currency": "BIF",
+    "source": "Ministry of Hydraulics, Energy & Mines",
+    "updated": "Nov 2026",
+    "fuels": [
+      {
+        "name": "Super Essence",
+        "price": 4000
+      },
+      {
+        "name": "Gasoil Diesel",
+        "price": 3925
+      }
+    ]
+  },
+  "Nigeria": {
+    "currency": "NGN",
+    "source": "NMDPRA Downstream Petroleum Authority",
+    "updated": "Nov 2026",
+    "fuels": [
+      {
+        "name": "Premium Motor Spirit (PMS)",
+        "price": 1255.5,
+        "trend": "down",
+        "change": "-3.7%"
+      },
+      {
+        "name": "Automotive Gas Oil (AGO)",
+        "price": 1730,
+        "trend": "up",
+        "change": "+0.8%"
+      }
+    ]
+  }
+}
