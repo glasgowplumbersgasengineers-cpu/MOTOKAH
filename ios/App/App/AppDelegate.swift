@@ -56,3 +56,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 }
+
+// The app's single screen. Turns on the standard iOS edge swipe to go back (and forward) through
+// the pages the user has visited, which the stock Capacitor view controller leaves off.
+class MainViewController: CAPBridgeViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        webView?.allowsBackForwardNavigationGestures = true
+    }
+}
