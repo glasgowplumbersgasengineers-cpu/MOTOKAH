@@ -1,6 +1,6 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../../design";
-import { PhoneFrame } from "../../components/PhoneFrame";
+import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
+import { FullBleedScreen } from "../../components/FullBleedScreen";
 import { Cursor } from "../../components/Cursor";
 
 // Real supported options — matches LanguageContext.tsx (en/sw) and the
@@ -16,8 +16,8 @@ export function Chapter8LanguageCurrency() {
   const isKES = frame >= F.priceUpdate;
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <PhoneFrame width={280} height={560}>
+    <AbsoluteFill style={{ background: COLOR.bg }}>
+      <FullBleedScreen scale={SCREEN_SCALE}>
         <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: fadeIn, position: "relative" }}>
           <div style={{ background: COLOR.bg, padding: "16px 14px 10px", borderBottom: `1px solid ${COLOR.border}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: COLOR.brand, fontFamily: "Inter, sans-serif" }}>Motokah</div>
@@ -39,7 +39,7 @@ export function Chapter8LanguageCurrency() {
               {isSwahili ? "Kote Afrika Mashariki" : "Across East Africa"}
             </div>
             <div style={{ background: COLOR.bg, border: `1px solid ${COLOR.border}`, borderRadius: RADIUS.lg, padding: 12 }}>
-              <div style={{ height: 60, background: "linear-gradient(135deg,#dce8f5,#c3d9ee)", borderRadius: RADIUS.sm, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🚙</div>
+              <img src={staticFile("cars/fortuner-white-2019-2.jpg")} alt="" style={{ height: 60, width: "100%", objectFit: "cover", borderRadius: RADIUS.sm, marginBottom: 8, display: "block" }} />
               <div style={{ fontSize: 10, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif" }}>Toyota Land Cruiser</div>
               <div style={{ fontSize: 13, fontWeight: 800, color: COLOR.brandInk, fontFamily: "Inter, sans-serif" }}>
                 {isKES ? "KES 5,160,000" : "TZS 145,000,000"}
@@ -69,22 +69,22 @@ export function Chapter8LanguageCurrency() {
             </div>
           )}
         </div>
-      </PhoneFrame>
 
-      <Cursor
-        path={[
-          { frame: F.langTap - 10, x: 500, y: 300 },
-          { frame: F.langTap, x: 500, y: 300 },
-          { frame: F.swTap - 10, x: 500, y: 345 },
-          { frame: F.swTap, x: 500, y: 345 },
-          { frame: F.currTap - 10, x: 555, y: 300 },
-          { frame: F.currTap, x: 555, y: 300 },
-          { frame: F.kesTap - 10, x: 555, y: 345 },
-          { frame: F.kesTap, x: 555, y: 345 },
-        ]}
-        clickFrame={F.swTap}
-        hideFrame={F.priceUpdate + 10}
-      />
+        <Cursor
+          path={[
+            { frame: F.langTap - 10, x: 0, y: 220 },
+            { frame: F.langTap, x: 0, y: 220 },
+            { frame: F.swTap - 10, x: 0, y: 265 },
+            { frame: F.swTap, x: 0, y: 265 },
+            { frame: F.currTap - 10, x: 55, y: 220 },
+            { frame: F.currTap, x: 55, y: 220 },
+            { frame: F.kesTap - 10, x: 55, y: 265 },
+            { frame: F.kesTap, x: 55, y: 265 },
+          ]}
+          clickFrame={F.swTap}
+          hideFrame={F.priceUpdate + 10}
+        />
+      </FullBleedScreen>
     </AbsoluteFill>
   );
 }

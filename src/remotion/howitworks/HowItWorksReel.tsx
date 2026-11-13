@@ -1,4 +1,5 @@
 import { AbsoluteFill, Sequence } from "remotion";
+import { SCREEN_INNER_WIDTH } from "../design";
 import { Chapter1Discover, CHAPTER1_DURATION } from "./chapters/Chapter1Discover";
 import { Chapter2Search, CHAPTER2_DURATION } from "./chapters/Chapter2Search";
 import { Chapter3PostAd, CHAPTER3_DURATION } from "./chapters/Chapter3PostAd";
@@ -30,8 +31,17 @@ export const CHAPTERS: ChapterMark[] = KEYS.map((key, i) => ({
 
 export const TOTAL_DURATION = CHAPTERS.reduce((sum, c) => sum + c.durationInFrames, 0);
 export const FPS = 30;
-export const COMPOSITION_WIDTH = 1280;
-export const COMPOSITION_HEIGHT = 720;
+// Portrait, full-bleed — no device-frame chrome, each chapter's content
+// fills the whole canvas. 1080x2160 keeps the exact 1:2 ratio the chapter
+// content was already designed at (280x560), so scaling up to fill this
+// canvas is distortion-free: see FullBleedScreen + SCREEN_SCALE.
+export const COMPOSITION_WIDTH = 1080;
+export const COMPOSITION_HEIGHT = 2160;
+// Sanity check: must stay an exact 1:2 multiple of SCREEN_INNER_WIDTH/HEIGHT
+// (design.ts) or the per-chapter scale-up becomes distorted/cropped.
+if (COMPOSITION_WIDTH / SCREEN_INNER_WIDTH !== COMPOSITION_HEIGHT / 560) {
+  throw new Error("COMPOSITION dimensions drifted out of 1:2 ratio with SCREEN_INNER dimensions");
+}
 
 const COMPONENTS = [
   Chapter1Discover, Chapter2Search, Chapter3PostAd, Chapter4AddPhotos,

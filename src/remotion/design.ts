@@ -112,3 +112,12 @@ export const colorGrade = {
   warmOverlay: "none",
   vignette: "none",
 };
+
+// How It Works reel: every chapter's screen content was authored at this
+// "phone" coordinate space, then scaled up uniformly by FullBleedScreen to
+// fill the real (portrait, full-bleed, no device-chrome) composition canvas
+// — see HowItWorksReel.tsx's COMPOSITION_WIDTH/HEIGHT, which are an exact
+// 1:2 multiple of these so the scale-up is distortion-free.
+export const SCREEN_INNER_WIDTH = 280;
+export const SCREEN_INNER_HEIGHT = 560;
+export const SCREEN_SCALE = 1080 / SCREEN_INNER_WIDTH;

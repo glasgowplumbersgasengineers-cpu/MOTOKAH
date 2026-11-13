@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { IconBell } from "@tabler/icons-react";
@@ -14,6 +15,7 @@ interface Notification {
 
 export default function NotificationBell() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState(false);
   const unread = notifications.filter((n) => !n.read).length;
@@ -44,11 +46,17 @@ export default function NotificationBell() {
     setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
   };
 
+  const handleClick = (n: Notification) => {
+    markRead(n.id);
+    setOpen(false);
+    if (n.type === "new_message") navigate("/messages");
+  };
+
   if (!user) return null;
 
   return (
     <div className="relative">
-      <button onClick={() => setOpen(!open)} className="relative flex items-center justify-center w-8 h-8 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
+      <button onClick={() => setOpen(!open)} className="relative z-50 flex items-center justify-center w-8 h-8 rounded-md hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground">
         <IconBell size={18} stroke={2.5} />
         {unread > 0 && (
           <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-destructive text-destructive-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
@@ -68,7 +76,7 @@ export default function NotificationBell() {
               <p className="p-4 text-sm text-muted-foreground text-center">No notifications yet</p>
             ) : (
               notifications.map((n) => (
-                <button key={n.id} onClick={() => markRead(n.id)} className={`w-full text-left px-4 py-3 border-b border-border hover:bg-secondary transition-colors ${!n.read ? "bg-primary/5" : ""}`}>
+                <button key={n.id} onClick={() => handleClick(n)} className={`w-full text-left px-4 py-3 border-b border-border hover:bg-secondary transition-colors ${!n.read ? "bg-primary/5" : ""} ${n.type === "new_message" ? "cursor-pointer" : "cursor-default"}`}>
                   <p className="text-sm font-semibold text-foreground">{n.title}</p>
                   {n.body && <p className="text-xs text-muted-foreground mt-0.5">{n.body}</p>}
                   <p className="text-[10px] text-muted-foreground mt-1">{new Date(n.created_at).toLocaleDateString()}</p>

@@ -6,7 +6,7 @@ import {
   IconUpload, IconCar, IconCheck, IconArrowRight,
   IconUser, IconShieldLock, IconQrcode, IconLayoutDashboard,
   IconBookmark, IconHelpCircle, IconX, IconChevronDown, IconChevronUp,
-  IconFlame, IconSparkles, IconEye, IconMapPin, IconGauge, IconCalendar,
+  IconFlame, IconEye, IconMapPin, IconGauge, IconCalendar,
   IconManualGearbox, IconBuildingStore, IconStarFilled, IconSun, IconMoon,
   IconMenu2, IconHome, IconSpeakerphone, IconPlus, IconMail, IconLock,
   IconSend, IconRefresh, IconTrash, IconCamera, IconAlertTriangle,

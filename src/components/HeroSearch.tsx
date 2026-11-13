@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useLocation } from "@/contexts/LocationContext";
 import { getSearchSuggestions } from "@/lib/searchSuggestions";
 
-const selectCls = "h-10 rounded-md border border-input bg-surface-3 px-3 text-sm text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors w-full";
+const selectCls = "h-10 rounded-md border border-input bg-surface-3 px-3 text-base md:text-sm text-foreground focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-colors w-full";
 const years = Array.from({ length: 27 }, (_, i) => String(2000 + i));
 
 type Tab = "cars" | "commercial" | "bikes";
@@ -78,7 +78,7 @@ export default function HeroSearch() {
       <div className="container mx-auto relative z-10">
         <div className="text-center mb-6">
           <h1 className="text-3xl md:text-4xl font-extrabold mb-2 leading-tight">
-            Find Used Cars in <span className="text-primary">{heroLocation}</span>
+            Find {tab === "cars" ? "Used Cars" : tab === "bikes" ? "Bikes" : "Commercial Vehicles"} in <span className="text-primary">{heroLocation}</span>
           </h1>
         </div>
 
@@ -121,7 +121,7 @@ export default function HeroSearch() {
                       handleSearch();
                     }
                   }}
-                  className="w-full h-11 pl-10 pr-4 rounded-lg border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full h-11 pl-10 pr-4 rounded-lg border border-input bg-background text-base md:text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
                 {showSuggestions && suggestions.length > 0 && (
                   <div className="absolute left-0 right-0 top-full mt-1.5 bg-card border border-border rounded-xl shadow-xl z-50 overflow-hidden divide-y divide-border/50 max-h-64 overflow-y-auto">

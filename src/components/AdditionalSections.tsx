@@ -1,4 +1,4 @@
-import { IconSparkles, IconTrophy, IconDiamond } from "@tabler/icons-react";
+import { IconClockPlus, IconTrophy, IconDiamond } from "@tabler/icons-react";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ export function NewlyAdded() {
     return (
       <section className="container mx-auto py-10">
         <h2 className="text-2xl font-bold flex items-center gap-2 mb-6">
-          <IconSparkles size={24} stroke={2.5} className="text-success" /> Newly Added
+          <IconClockPlus size={24} stroke={2.5} className="text-success" /> Newly Added
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
@@ -31,7 +31,7 @@ export function NewlyAdded() {
     <section className="container mx-auto py-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold flex items-center gap-2">
-          <IconSparkles size={24} stroke={2.5} className="text-success" /> Newly Added
+          <IconClockPlus size={24} stroke={2.5} className="text-success" /> Newly Added
         </h2>
         <a href="/search" className="text-sm text-primary hover:underline">View All →</a>
       </div>

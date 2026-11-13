@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IconSend, IconMessageCircle, IconArrowLeft, IconSearch } from "@tabler/icons-react";
+import { IconSend, IconMessageCircle, IconArrowLeft, IconSearch, IconCheck, IconChecks } from "@tabler/icons-react";
 import { createNotification } from "@/lib/notifications";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Capacitor } from "@capacitor/core";
@@ -46,6 +46,16 @@ export default function Messages() {
   const [text, setText] = useState("");
   const [search, setSearch] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesScrollRef = useRef<HTMLDivElement>(null);
+
+  // Was the user already near the newest message before this scroll-triggering
+  // event (keyboard open, new message)? Used to avoid yanking someone reading
+  // older messages down to the bottom.
+  const isNearBottom = () => {
+    const el = messagesScrollRef.current;
+    if (!el) return true;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < 120;
+  };
 
   // On mobile, show the list or the chat — not both
   const showList = isMobile ? active === null : true;
@@ -130,8 +140,9 @@ export default function Messages() {
       .channel(`messages-${active}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${active}` }, (payload) => {
         const newMsg = payload.new as Message;
+        const wasNearBottom = isNearBottom();
         setMessages(prev => prev.some(m => m.id === newMsg.id) ? prev : [...prev, newMsg]);
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+        if (wasNearBottom) setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
 
         // Mark as read if it's from the other user
         if (newMsg.sender_id !== user?.id) {
@@ -148,12 +159,16 @@ export default function Messages() {
     return () => { supabase.removeChannel(channel); };
   }, [active, user]);
 
-  // Native keyboard: scroll the active message into view once the keyboard
-  // finishes animating open, so the input/last message isn't left hidden
-  // behind it (body-resize alone doesn't guarantee scroll position).
+  // Native keyboard: once the keyboard finishes animating open, re-scroll the
+  // message list to the bottom — but only if the user was already there.
+  // capacitor.config.ts's Keyboard.resize:"body" already shrinks the body
+  // (and therefore the dvh-based chat layout below) on its own; this just
+  // keeps the newest message visible inside that now-shorter list, it does
+  // not translate/resize anything itself.
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     const showSub = Keyboard.addListener("keyboardDidShow", () => {
+      if (!isNearBottom()) return;
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
     });
     return () => { showSub.then(s => s.remove()); };
@@ -197,6 +212,142 @@ export default function Messages() {
   );
 
   const activeConvo = conversations.find(c => c.id === active);
+  const isFullScreenChat = isMobile && showChat && !convoLoading && conversations.length > 0;
+
+  // Toggle a body attribute (not a prop) so BottomNav — a sibling rendered
+  // outside this component's own subtree — can hide itself via plain CSS
+  // with no cross-component state plumbing, and no coupling to the
+  // keyboard's own open/close timing (it just tracks "a conversation is
+  // open full-screen on mobile", never overlapping the composer).
+  useEffect(() => {
+    document.body.dataset.chatOpen = isFullScreenChat ? "true" : "false";
+    return () => { delete document.body.dataset.chatOpen; };
+  }, [isFullScreenChat]);
+
+  // Mobile, inside an open conversation: a dedicated full-height flex layout
+  // instead of the normal scrolling page. Header sizes itself normally and
+  // the chat panel takes the rest via flex-1/min-h-0, so it (not the whole
+  // page) is what shrinks when the keyboard opens — the body itself already
+  // resizes via capacitor.config.ts's Keyboard.resize:"body", and h-dvh here
+  // tracks that resize live instead of a stale/static 100vh.
+  if (isFullScreenChat) {
+    const grouped: { date: string; msgs: Message[] }[] = [];
+    for (const m of messages) {
+      const d = new Date(m.created_at).toLocaleDateString([], { year: "numeric", month: "long", day: "numeric" });
+      const last = grouped[grouped.length - 1];
+      if (last && last.date === d) last.msgs.push(m);
+      else grouped.push({ date: d, msgs: [m] });
+    }
+    const today = new Date().toLocaleDateString([], { year: "numeric", month: "long", day: "numeric" });
+    const yesterday = new Date(Date.now() - 86400000).toLocaleDateString([], { year: "numeric", month: "long", day: "numeric" });
+
+    return (
+      <div className="flex h-dvh flex-col bg-background">
+        {/* Chat header with safe-area-inset-top for Dynamic Island */}
+        <div className="shrink-0 bg-card border-b border-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+          <div className="flex items-center gap-3 px-4 py-2.5">
+            <button onClick={() => setActive(null)} className="flex items-center justify-center w-9 h-9 -ml-1 rounded-full active:bg-muted transition-colors">
+              <IconArrowLeft size={22} className="text-primary" />
+            </button>
+            <div className="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm flex-shrink-0">
+              {activeConvo?.other_name?.[0] ?? "?"}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-[15px] text-foreground leading-tight">{activeConvo?.other_name}</p>
+              {activeConvo?.listing_title && (
+                <p className="text-[11px] text-primary truncate leading-tight">Re: {activeConvo.listing_title}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Messages area with chat wallpaper */}
+        <div
+          ref={messagesScrollRef}
+          className="min-h-0 flex-1 overflow-y-auto px-3 py-2"
+          style={{
+            backgroundImage: "radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(var(--primary) / 0.02) 0%, transparent 40%)",
+            backgroundColor: "hsl(var(--background))",
+          }}
+        >
+          {messagesLoading ? (
+            [1,2,3].map(i => (
+              <div key={i} className={`flex mb-2 ${i % 2 === 0 ? "justify-end" : "justify-start"}`}>
+                <div className="h-9 rounded-2xl bg-muted animate-pulse" style={{ width: `${40 + i * 15}%` }} />
+              </div>
+            ))
+          ) : messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+              <div className="bg-card/80 backdrop-blur rounded-2xl px-6 py-5 text-center shadow-sm">
+                <IconMessageCircle size={36} className="mx-auto mb-2 opacity-30" />
+                <p className="text-sm">No messages yet</p>
+                <p className="text-xs opacity-60 mt-1">Say hello to start the conversation</p>
+              </div>
+            </div>
+          ) : (
+            grouped.map(g => (
+              <div key={g.date}>
+                {/* Day separator chip */}
+                <div className="flex justify-center my-3">
+                  <span className="bg-card/90 backdrop-blur text-muted-foreground text-[11px] font-medium px-3 py-1 rounded-full shadow-sm">
+                    {g.date === today ? "Today" : g.date === yesterday ? "Yesterday" : g.date}
+                  </span>
+                </div>
+                {g.msgs.map((m, i) => {
+                  const mine = m.sender_id === user?.id;
+                  const nextSame = i < g.msgs.length - 1 && g.msgs[i + 1].sender_id === m.sender_id;
+                  return (
+                    <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"} ${nextSame ? "mb-0.5" : "mb-2"}`}>
+                      <div className={`max-w-[78%] px-3 py-1.5 text-[15px] leading-relaxed shadow-sm ${
+                        mine
+                          ? `bg-primary text-primary-foreground ${nextSame ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-br-sm"}`
+                          : `bg-card text-foreground border border-border/50 ${nextSame ? "rounded-2xl rounded-bl-md" : "rounded-2xl rounded-bl-sm"}`
+                      }`}>
+                        <span>{m.content}</span>
+                        <span className={`inline-flex items-center gap-0.5 float-right ml-2 mt-1 text-[10px] leading-none ${mine ? "opacity-70" : "text-muted-foreground"}`}>
+                          {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          {mine && (m.read
+                            ? <IconChecks size={13} className="text-sky-300" />
+                            : <IconCheck size={13} />
+                          )}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))
+          )}
+          <div ref={bottomRef} />
+        </div>
+
+        {/* Composer */}
+        <div className="shrink-0 bg-card/95 backdrop-blur px-2 py-2" style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}>
+          <div className="flex items-end gap-2">
+            <div className="flex-1 relative">
+              <input
+                value={text}
+                onChange={e => setText(e.target.value.slice(0, MAX_CHARS))}
+                placeholder="Message"
+                onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
+                className="w-full rounded-full bg-background border border-border px-4 py-2.5 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+            <button
+              onClick={send}
+              disabled={!text.trim() || sending}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground disabled:opacity-40 transition-opacity active:scale-95"
+            >
+              <IconSend size={18} />
+            </button>
+          </div>
+          {text.length > MAX_CHARS * 0.8 && (
+            <p className="text-[10px] text-muted-foreground text-right mt-1 mr-12">{text.length}/{MAX_CHARS}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">

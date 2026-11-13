@@ -1,6 +1,7 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../../design";
-import { PhoneFrame } from "../../components/PhoneFrame";
+import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { IconSearch } from "@tabler/icons-react";
+import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
+import { FullBleedScreen } from "../../components/FullBleedScreen";
 import { Cursor } from "../../components/Cursor";
 import { TypingText } from "../../components/TypingText";
 import { VehicleCard } from "../../components/VehicleCard";
@@ -18,8 +19,8 @@ export function Chapter2Search() {
   const detailOp = interpolate(frame, [F.openListing, F.openListing + 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <PhoneFrame width={280} height={560}>
+    <AbsoluteFill style={{ background: COLOR.bg }}>
+      <FullBleedScreen scale={SCREEN_SCALE}>
         <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: fadeIn }}>
           <div style={{ background: COLOR.bg, padding: "16px 14px 10px", borderBottom: `1px solid ${COLOR.border}`, flexShrink: 0 }}>
             <div style={{
@@ -27,7 +28,7 @@ export function Chapter2Search() {
               borderRadius: RADIUS.md, padding: "9px 12px", fontSize: 11, color: COLOR.ink, fontFamily: "Inter, sans-serif",
               display: "flex", alignItems: "center", gap: 6,
             }}>
-              <span style={{ opacity: 0.5 }}>🔍</span>
+              <IconSearch size={14} style={{ opacity: 0.5, flexShrink: 0 }} />
               {frame >= F.typeStart && frame < F.filtersOpen ? (
                 <TypingText text="Toyota Hilux" startFrame={F.typeStart} charsPerFrame={0.6} />
               ) : frame >= F.filtersOpen ? "Toyota Hilux" : <span style={{ color: COLOR.inkMute }}>Search used cars...</span>}
@@ -36,8 +37,8 @@ export function Chapter2Search() {
 
           {detailVisible ? (
             <div style={{ flex: 1, padding: 14, opacity: detailOp }}>
-              <div style={{ height: 110, background: "linear-gradient(135deg,#dce8f5,#c3d9ee)", borderRadius: RADIUS.md, marginBottom: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32 }}>🚙</div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif", marginBottom: 4 }}>Toyota Hilux D-Cab 2021</div>
+              <img src={staticFile("cars/hilux-white-2019-1.jpg")} alt="" style={{ width: "100%", height: 110, objectFit: "cover", borderRadius: RADIUS.md, marginBottom: 10, display: "block" }} />
+              <div style={{ fontSize: 14, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif", marginBottom: 4 }}>Toyota Hilux D-Cab</div>
               <div style={{ fontSize: 17, fontWeight: 800, color: COLOR.brandInk, fontFamily: "Inter, sans-serif", marginBottom: 8 }}>TZS 78,500,000</div>
               <div style={{ fontSize: 10, color: COLOR.inkSoft, fontFamily: "Inter, sans-serif" }}>45,000 km · Automatic · Dar es Salaam</div>
             </div>
@@ -61,8 +62,8 @@ export function Chapter2Search() {
 
               {resultsVisible ? (
                 <div style={{ opacity: resultsOp }}>
-                  <VehicleCard title="Toyota Hilux D-Cab 2021" price="TZS 78,500,000" location="Dar es Salaam" km="45,000 km" year="2021" style={{ marginBottom: 8 }} />
-                  <VehicleCard title="Toyota Hilux Vigo 2015" price="TZS 42,000,000" location="Arusha" km="98,000 km" year="2015" />
+                  <VehicleCard title="Toyota Hilux D-Cab" price="TZS 78,500,000" location="Dar es Salaam" km="45,000 km" year="2019" photo="cars/hilux-white-2019-1.jpg" style={{ marginBottom: 8 }} />
+                  <VehicleCard title="Toyota Hilux Vigo" price="TZS 42,000,000" location="Arusha" km="98,000 km" year="2019" photo="cars/hilux-gray-2019-1.jpg" />
                 </div>
               ) : (
                 <div style={{ fontSize: 10, color: COLOR.inkMute, fontFamily: "Inter, sans-serif", textAlign: "center", marginTop: 40 }}>
@@ -72,21 +73,21 @@ export function Chapter2Search() {
             </div>
           )}
         </div>
-      </PhoneFrame>
 
-      <Cursor
-        path={[
-          { frame: F.filtersOpen - 10, x: 500, y: 330 },
-          { frame: F.makeTap - 12, x: 460, y: 390 },
-          { frame: F.makeTap, x: 460, y: 390 },
-          { frame: F.applyTap - 10, x: 460, y: 390 },
-          { frame: F.applyTap, x: 500, y: 620 },
-          { frame: F.openListing - 15, x: 500, y: 450 },
-          { frame: F.openListing, x: 500, y: 450 },
-        ]}
-        clickFrame={F.makeTap}
-        hideFrame={F.openListing + 5}
-      />
+        <Cursor
+          path={[
+            { frame: F.filtersOpen - 10, x: 0, y: 250 },
+            { frame: F.makeTap - 12, x: -40, y: 310 },
+            { frame: F.makeTap, x: -40, y: 310 },
+            { frame: F.applyTap - 10, x: -40, y: 310 },
+            { frame: F.applyTap, x: 0, y: 540 },
+            { frame: F.openListing - 15, x: 0, y: 370 },
+            { frame: F.openListing, x: 0, y: 370 },
+          ]}
+          clickFrame={F.makeTap}
+          hideFrame={F.openListing + 5}
+        />
+      </FullBleedScreen>
     </AbsoluteFill>
   );
 }

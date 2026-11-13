@@ -1,12 +1,18 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../../design";
-import { PhoneFrame } from "../../components/PhoneFrame";
+import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
+import { FullBleedScreen } from "../../components/FullBleedScreen";
 import { Cursor } from "../../components/Cursor";
 import { VehicleCard } from "../../components/VehicleCard";
 
-// Real category labels — matches src/components/BrowseSection.tsx exactly,
-// not invented placeholder categories.
-const CATEGORIES = ["Saloon", "4x4 / SUV", "Double Cab", "Small Car"];
+// Real category labels + real icon files — matches
+// src/components/BrowseSection.tsx's CATEGORIES array exactly, down to the
+// exact icon filenames (not invented placeholder categories or emoji).
+const CATEGORIES = [
+  { name: "Saloon", icon: "icons/sedan.png" },
+  { name: "4x4 / SUV", icon: "icons/suv.png" },
+  { name: "Double Cab", icon: "icons/pickup.png" },
+  { name: "Small Car", icon: "icons/hatchback.png" },
+];
 
 export function Chapter1Discover() {
   const frame = useCurrentFrame();
@@ -18,8 +24,8 @@ export function Chapter1Discover() {
   const resultsY = interpolate(frame, [tapCategoryFrame + 10, tapCategoryFrame + 28], [16, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: EASE.outExpo });
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <PhoneFrame width={280} height={560}>
+    <AbsoluteFill style={{ background: COLOR.bg }}>
+      <FullBleedScreen scale={SCREEN_SCALE}>
         <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: homeOpacity }}>
           <div style={{
             background: COLOR.bg, padding: "16px 14px 10px", borderBottom: `1px solid ${COLOR.border}`,
@@ -38,7 +44,7 @@ export function Chapter1Discover() {
               {CATEGORIES.map((cat, i) => {
                 const isTapped = i === 1 && categorySelected;
                 return (
-                  <div key={cat} style={{
+                  <div key={cat.name} style={{
                     background: isTapped ? COLOR.brandSoft : COLOR.bg,
                     border: `1px solid ${isTapped ? COLOR.brand : COLOR.border}`,
                     borderRadius: RADIUS.md,
@@ -46,9 +52,9 @@ export function Chapter1Discover() {
                     textAlign: "center",
                     transition: "none",
                   }}>
-                    <div style={{ fontSize: 20, marginBottom: 4 }}>{["🚗", "🚙", "🛻", "🚘"][i]}</div>
+                    <img src={staticFile(cat.icon)} alt="" style={{ width: 24, height: 24, marginBottom: 4, objectFit: "contain" }} />
                     <div style={{ fontSize: 10, fontWeight: 600, color: isTapped ? COLOR.brandInk : COLOR.ink, fontFamily: "Inter, sans-serif" }}>
-                      {cat}
+                      {cat.name}
                     </div>
                   </div>
                 );
@@ -60,23 +66,23 @@ export function Chapter1Discover() {
                 <div style={{ fontSize: 10, fontWeight: 700, color: COLOR.inkSoft, fontFamily: "Inter, sans-serif", marginBottom: 8, letterSpacing: "0.04em", textTransform: "uppercase" }}>
                   4x4 / SUV — 128 results
                 </div>
-                <VehicleCard title="Toyota Land Cruiser Prado" price="TZS 145,000,000" location="Dar es Salaam" km="62,000 km" year="2019" style={{ marginBottom: 8 }} />
-                <VehicleCard title="Nissan X-Trail 2.0" price="KES 3,450,000" location="Nairobi" km="38,000 km" year="2021" />
+                <VehicleCard title="Toyota Fortuner" price="TZS 145,000,000" location="Dar es Salaam" km="62,000 km" year="2019" photo="cars/fortuner-white-2019-1.jpg" style={{ marginBottom: 8 }} />
+                <VehicleCard title="Land Rover Discovery" price="KES 3,450,000" location="Nairobi" km="38,000 km" year="2020" photo="cars/landrover-disco-2020-1.jpg" />
               </div>
             )}
           </div>
         </div>
-      </PhoneFrame>
 
-      <Cursor
-        path={[
-          { frame: 20, x: 500, y: 400 },
-          { frame: 45, x: 460, y: 330 },
-          { frame: tapCategoryFrame, x: 460, y: 330 },
-        ]}
-        clickFrame={tapCategoryFrame}
-        hideFrame={tapCategoryFrame + 15}
-      />
+        <Cursor
+          path={[
+            { frame: 20, x: 0, y: 320 },
+            { frame: 45, x: -40, y: 250 },
+            { frame: tapCategoryFrame, x: -40, y: 250 },
+          ]}
+          clickFrame={tapCategoryFrame}
+          hideFrame={tapCategoryFrame + 15}
+        />
+      </FullBleedScreen>
     </AbsoluteFill>
   );
 }

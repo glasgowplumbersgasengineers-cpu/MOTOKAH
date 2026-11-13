@@ -670,7 +670,7 @@ export default function Profile() {
                         <img
                           src={l.image || "/placeholder.svg"}
                           alt={l.title}
-                          className="w-14 h-14 rounded-lg object-cover bg-muted border border-border/60"
+                          className="w-14 h-14 rounded-lg object-contain bg-muted border border-border/60"
                           onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                         />
                       </Link>
@@ -745,7 +745,7 @@ export default function Profile() {
                         <img
                           src={l.image || "/placeholder.svg"}
                           alt={l.title}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform"
+                          className="w-full h-full object-contain hover:scale-105 transition-transform"
                           onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}
                         />
                       </Link>
@@ -846,7 +846,7 @@ export default function Profile() {
                 {wishlistListings.map((l) => (
                   <div key={l.id} className="bg-card border border-border rounded-xl p-3 flex gap-3 hover:shadow-md transition-shadow relative group">
                     <Link to={`/listing/${l.id}`} className="shrink-0">
-                      <img src={l.image} alt={l.title} className="w-24 h-24 rounded-lg object-cover bg-muted" />
+                      <img src={l.image} alt={l.title} className="w-24 h-24 rounded-lg object-contain bg-muted" />
                     </Link>
                     <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
                       <div>

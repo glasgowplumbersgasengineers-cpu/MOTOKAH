@@ -1,6 +1,6 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../../design";
-import { PhoneFrame } from "../../components/PhoneFrame";
+import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
+import { FullBleedScreen } from "../../components/FullBleedScreen";
 import { Cursor } from "../../components/Cursor";
 import { TypingText } from "../../components/TypingText";
 
@@ -16,8 +16,8 @@ export function Chapter7ManageListings() {
   const isSold = frame >= F.soldTap;
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <PhoneFrame width={280} height={560}>
+    <AbsoluteFill style={{ background: COLOR.bg }}>
+      <FullBleedScreen scale={SCREEN_SCALE}>
         <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: fadeIn }}>
           <div style={{ background: COLOR.bg, padding: "16px 14px 10px", borderBottom: `1px solid ${COLOR.border}`, flexShrink: 0 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif" }}>
@@ -41,8 +41,8 @@ export function Chapter7ManageListings() {
               </>
             ) : (
               <div style={{ background: COLOR.bg, border: `1px solid ${COLOR.border}`, borderRadius: RADIUS.lg, padding: 10 }}>
-                <div style={{ height: 70, background: "linear-gradient(135deg,#dce8f5,#c3d9ee)", borderRadius: RADIUS.sm, marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, position: "relative" }}>
-                  🚗
+                <div style={{ height: 70, borderRadius: RADIUS.sm, marginBottom: 8, position: "relative", overflow: "hidden" }}>
+                  <img src={staticFile("cars/fortuner-white-2019-1.jpg")} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   <div style={{
                     position: "absolute", top: 5, left: 5, fontSize: 7, fontWeight: 800, color: "#fff",
                     background: isSold ? "#5A6572" : "#E6A23C", padding: "2px 6px", borderRadius: 4, textTransform: "uppercase",
@@ -64,21 +64,21 @@ export function Chapter7ManageListings() {
             )}
           </div>
         </div>
-      </PhoneFrame>
 
-      <Cursor
-        path={[
-          { frame: F.editTap - 10, x: 450, y: 480 },
-          { frame: F.editTap, x: 450, y: 480 },
-          { frame: F.priceEdit - 10, x: 500, y: 330 },
-          { frame: F.saveTap - 10, x: 500, y: 480 },
-          { frame: F.saveTap, x: 500, y: 480 },
-          { frame: F.soldTap - 10, x: 540, y: 480 },
-          { frame: F.soldTap, x: 540, y: 480 },
-        ]}
-        clickFrame={F.editTap}
-        hideFrame={F.soldTap + 10}
-      />
+        <Cursor
+          path={[
+            { frame: F.editTap - 10, x: -50, y: 400 },
+            { frame: F.editTap, x: -50, y: 400 },
+            { frame: F.priceEdit - 10, x: 0, y: 250 },
+            { frame: F.saveTap - 10, x: 0, y: 400 },
+            { frame: F.saveTap, x: 0, y: 400 },
+            { frame: F.soldTap - 10, x: 40, y: 400 },
+            { frame: F.soldTap, x: 40, y: 400 },
+          ]}
+          clickFrame={F.editTap}
+          hideFrame={F.soldTap + 10}
+        />
+      </FullBleedScreen>
     </AbsoluteFill>
   );
 }

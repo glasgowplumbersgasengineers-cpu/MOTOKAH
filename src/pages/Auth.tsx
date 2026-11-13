@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconMail, IconLock, IconUser, IconArrowLeft, IconSparkles, IconBuildingStore } from "@tabler/icons-react";
+import { IconMail, IconLock, IconUser, IconArrowLeft, IconLink, IconBuildingStore } from "@tabler/icons-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { getAppUrl } from "@/lib/app-url";
@@ -233,7 +233,7 @@ export default function Auth() {
                   </button>
                   {!isNative && (
                     <button onClick={() => setTab("otp")} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary">
-                      <IconSparkles size={14} /> Sign in with Magic Link
+                      <IconLink size={14} /> Sign in with Magic Link
                     </button>
                   )}
                 </div>

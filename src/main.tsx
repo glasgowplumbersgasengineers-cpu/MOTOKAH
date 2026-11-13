@@ -32,6 +32,23 @@ if (typeof Node === "function" && Node.prototype) {
   };
 }
 
+// iOS Capacitor: after the keyboard dismisses, the WKWebView sometimes keeps
+// the body at the shrunk height, hiding the bottom tab bar and clipping content.
+// Force a layout recalc on every visualViewport resize (covers both show and hide).
+if (window.visualViewport) {
+  let pendingResize: number | null = null;
+  window.visualViewport.addEventListener("resize", () => {
+    if (pendingResize) cancelAnimationFrame(pendingResize);
+    pendingResize = requestAnimationFrame(() => {
+      pendingResize = null;
+      document.documentElement.style.height = window.visualViewport!.height + "px";
+      requestAnimationFrame(() => {
+        document.documentElement.style.height = "";
+      });
+    });
+  });
+}
+
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>
     <App />

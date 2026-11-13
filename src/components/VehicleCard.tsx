@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconSparkles, IconScale, IconBuildingStore, IconCar, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconCertificate, IconScale, IconBuildingStore, IconCar, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
@@ -100,7 +100,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
   const badgeConfig: Record<string, { icon: any; label: string; className: string }> = {
     hot: { icon: IconFlame, label: "Hot Deal", className: "bg-destructive text-destructive-foreground" },
     featured: { icon: IconStarFilled, label: "Featured", className: "bg-accent text-accent-foreground" },
-    new: { icon: IconSparkles, label: "New", className: "bg-success text-success-foreground" },
+    new: { icon: IconCertificate, label: "New", className: "bg-success text-success-foreground" },
   };
 
   const conditionColors: Record<string, string> = {
@@ -134,7 +134,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
           <img
             src={displayImage}
             alt={listing.title}
-            className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             fetchpriority={priority ? "high" : "auto"}

@@ -1,6 +1,7 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../../design";
-import { PhoneFrame } from "../../components/PhoneFrame";
+import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { IconMessageCircle, IconSend } from "@tabler/icons-react";
+import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
+import { FullBleedScreen } from "../../components/FullBleedScreen";
 import { Cursor } from "../../components/Cursor";
 import { TypingText } from "../../components/TypingText";
 
@@ -13,26 +14,26 @@ export function Chapter5ContactSeller() {
   const frame = useCurrentFrame();
   const fadeIn = interpolate(frame, [0, 12], [0, 1], { extrapolateRight: "clamp", easing: EASE.outExpo });
   const inChat = frame >= F.chatOpens;
-  const keyboardVisible = frame >= F.keyboardUp && frame < F.sendTap + 6;
   const messageSent = frame >= F.sendTap;
   const replyVisible = frame >= F.sellerReply;
   const replyOp = interpolate(frame, [F.sellerReply, F.sellerReply + 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <PhoneFrame width={280} height={560}>
+    <AbsoluteFill style={{ background: COLOR.bg }}>
+      <FullBleedScreen scale={SCREEN_SCALE}>
         <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: fadeIn }}>
           {!inChat ? (
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              <div style={{ height: 120, background: "linear-gradient(135deg,#dce8f5,#c3d9ee)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, flexShrink: 0 }}>🚙</div>
+              <img src={staticFile("cars/hilux-white-2019-1.jpg")} alt="" style={{ height: 120, width: "100%", objectFit: "cover", flexShrink: 0, display: "block" }} />
               <div style={{ padding: 14, flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif", marginBottom: 4 }}>Toyota Hilux D-Cab 2021</div>
                 <div style={{ fontSize: 16, fontWeight: 800, color: COLOR.brandInk, fontFamily: "Inter, sans-serif", marginBottom: 14 }}>TZS 78,500,000</div>
                 <div style={{
                   background: COLOR.brand, color: "#fff", borderRadius: RADIUS.md, padding: "11px", textAlign: "center",
                   fontSize: 11, fontWeight: 700, fontFamily: "Inter, sans-serif", boxShadow: SHADOW.card,
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                 }}>
-                  💬 Message on Motokah
+                  <IconMessageCircle size={14} /> Message on Motokah
                 </div>
               </div>
             </div>
@@ -60,30 +61,26 @@ export function Chapter5ContactSeller() {
                 <div style={{ flex: 1, background: COLOR.bg, border: `1px solid ${COLOR.border}`, borderRadius: RADIUS.md, padding: "8px 10px", fontSize: 10, color: COLOR.ink, fontFamily: "Inter, sans-serif" }}>
                   {!messageSent && frame >= F.typeStart ? <TypingText text={MSG} startFrame={F.typeStart} charsPerFrame={0.7} /> : !messageSent ? <span style={{ color: COLOR.inkMute }}>Type a message...</span> : null}
                 </div>
-                <div style={{ width: 28, height: 28, borderRadius: "50%", background: COLOR.brand, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12 }}>➤</div>
-              </div>
-
-              {keyboardVisible && (
-                <div style={{ height: 90, background: COLOR.border, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: COLOR.inkMute, fontFamily: "Inter, sans-serif" }}>
-                  ⌨️ keyboard
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: COLOR.brand, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+                  <IconSend size={13} />
                 </div>
-              )}
+              </div>
             </>
           )}
         </div>
-      </PhoneFrame>
 
-      <Cursor
-        path={[
-          { frame: F.tapMessage - 10, x: 500, y: 420 },
-          { frame: F.tapMessage, x: 500, y: 420 },
-          { frame: F.typeStart - 10, x: 480, y: 600 },
-          { frame: F.sendTap - 5, x: 540, y: 600 },
-          { frame: F.sendTap, x: 540, y: 600 },
-        ]}
-        clickFrame={F.tapMessage}
-        hideFrame={F.sendTap + 10}
-      />
+        <Cursor
+          path={[
+            { frame: F.tapMessage - 10, x: 0, y: 340 },
+            { frame: F.tapMessage, x: 0, y: 340 },
+            { frame: F.typeStart - 10, x: -20, y: 520 },
+            { frame: F.sendTap - 5, x: 40, y: 520 },
+            { frame: F.sendTap, x: 40, y: 520 },
+          ]}
+          clickFrame={F.tapMessage}
+          hideFrame={F.sendTap + 10}
+        />
+      </FullBleedScreen>
     </AbsoluteFill>
   );
 }

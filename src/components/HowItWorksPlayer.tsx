@@ -35,7 +35,7 @@ export default function HowItWorksPlayer() {
   return (
     <div className="grid lg:grid-cols-[1fr_280px] gap-5 items-start">
       <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm">
-        <div className="aspect-video w-full bg-muted/30">
+        <div className="aspect-[1/2] w-full max-w-sm mx-auto bg-muted/30">
           <Player
             ref={playerRef}
             component={HowItWorksReel}

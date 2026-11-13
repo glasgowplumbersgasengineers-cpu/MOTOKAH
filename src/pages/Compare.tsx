@@ -157,7 +157,7 @@ export default function Compare() {
                         >
                           <IconX size={12} />
                         </button>
-                        <img src={car.image} alt={car.title} className="w-full h-32 object-cover rounded-lg mb-2" />
+                        <img src={car.image} alt={car.title} className="w-full h-32 object-contain rounded-lg mb-2" />
                         <Link to={`/listing/${car.id}`} className="text-sm font-semibold text-foreground hover:text-primary line-clamp-2">
                           {car.title}
                         </Link>

@@ -578,7 +578,8 @@ export default function Welcome() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="pt-4"
+                    className="sticky bottom-0 pt-4 pb-2 bg-gradient-to-t from-background via-background to-transparent"
+                    style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}
                   >
                     <Button
                       onClick={handleComplete}

@@ -64,7 +64,7 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
           key={activeImage}
           image={activeImage}
           alt={`${title} - Image ${activeIndex + 1}`}
-          className={`w-full h-full object-cover transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
+          className={`w-full h-full object-contain transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
           priority
           onClick={() => setZoomed(!zoomed)}
         />

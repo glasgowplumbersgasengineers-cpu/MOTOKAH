@@ -206,6 +206,12 @@
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  /* Messages.tsx's full-screen mobile chat view owns the whole bottom edge
+     (composer + safe-area padding) — the tab bar must never compete with it. */
+  body[data-chat-open="true"] .bottom-nav {
+    display: none;
+  }
 }
 
 /* Google Translate output often runs longer than English (many African

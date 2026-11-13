@@ -17,7 +17,7 @@ import {
   IconPhone,
   IconVideo,
   IconCar,
-  IconSparkles,
+  IconListCheck,
   IconMapPin,
   IconCoin,
   IconShieldCheck,
@@ -513,7 +513,7 @@ export default function SellCar() {
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5">
                   {existingImages.map((img) => (
                     <div key={img.id} className="relative aspect-square rounded-xl overflow-hidden border border-border bg-black/10">
-                      <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                      <img src={img.image_url} alt="" className="w-full h-full object-contain" />
                     </div>
                   ))}
                 </div>
@@ -541,7 +541,7 @@ export default function SellCar() {
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 mb-3">
                     {previews.map((p, i) => (
                       <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-border bg-black/10 group">
-                        <img src={p} alt="" className="w-full h-full object-cover" />
+                        <img src={p} alt="" className="w-full h-full object-contain" />
                         <button
                           type="button"
                           onClick={() => removeImage(i)}
@@ -893,7 +893,7 @@ export default function SellCar() {
                   5
                 </span>
                 <h2 className="text-base font-bold text-foreground flex items-center gap-1.5">
-                  Vehicle Features & Extras <IconSparkles size={16} className="text-amber-500" />
+                  Vehicle Features & Extras <IconListCheck size={16} className="text-amber-500" />
                 </h2>
               </div>
               <span className="text-xs font-semibold text-primary">{selectedFeatures.length} selected</span>
@@ -916,7 +916,7 @@ export default function SellCar() {
                         : "bg-background border-border text-foreground hover:bg-muted/40"
                     }`}
                   >
-                    <span className="truncate pr-1">{feat}</span>
+                    <span className="leading-tight pr-1">{feat}</span>
                     <span
                       className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 border ${
                         isSelected ? "bg-primary border-primary text-primary-foreground" : "border-border text-transparent"

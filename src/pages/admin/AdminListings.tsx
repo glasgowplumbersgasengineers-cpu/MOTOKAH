@@ -20,7 +20,7 @@ import {
   IconBrandWhatsapp,
   IconLayoutGrid,
   IconList,
-  IconSparkles,
+  IconTestPipe,
   IconClock,
   IconVideo,
   IconMapPin,
@@ -49,7 +49,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { createNotification } from "@/lib/notifications";
 import { sendEmail, listingApprovedEmail, listingRejectedEmail } from "@/lib/sendEmail";
-import { mockListings } from "@/data/mockData";
 
 export interface AdminListingItem {
   id: string;
@@ -118,9 +117,10 @@ export default function AdminListings() {
         .order("created_at", { ascending: false })
         .limit(300);
 
+      if (error) throw error;
       let items: AdminListingItem[] = [];
 
-      if (!error && data && data.length > 0) {
+      if (data && data.length > 0) {
         // Fetch listing images
         const listingIds = data.map((x) => x.id);
         const { data: imgRows } = await supabase
@@ -155,47 +155,6 @@ export default function AdminListings() {
         }));
       }
 
-      // If database has very few or no listings (demo mode), supplement with mock listings
-      if (items.length < 5) {
-        const seededMocks: AdminListingItem[] = mockListings.slice(0, 15).map((m, idx) => {
-          // distribute status for testing moderation
-          const mockStatus: "pending" | "approved" | "rejected" | "sold" =
-            idx < 4 ? "pending" : idx < 11 ? "approved" : idx < 13 ? "rejected" : "sold";
-          return {
-            id: m.id,
-            title: m.title,
-            make: m.make,
-            model: m.model,
-            year: m.year,
-            price: m.price,
-            currency: m.currency,
-            status: mockStatus,
-            city: m.location ? m.location.split(",")[0].trim() : "Dar es Salaam",
-            created_at: new Date(Date.now() - idx * 3600000 * 8).toISOString(),
-            views: m.views || 45,
-            seller_id: `seller-${idx}`,
-            mileage: m.mileage,
-            transmission: m.transmission,
-            fuel_type: m.fuel,
-            condition: "Used",
-            description: m.description,
-            image: m.image,
-            images: m.images || [m.image],
-            seller: {
-              display_name: m.dealer || `Verified Seller ${idx + 1}`,
-              phone: m.phone || "+255 712 345 678",
-              seller_type: m.dealer ? "dealer" : "private",
-              city: m.location || "Dar es Salaam, TZ",
-            },
-          };
-        });
-
-        // Combine DB items with seeded mocks (avoid duplicate IDs)
-        const dbIds = new Set(items.map((x) => x.id));
-        const filteredMocks = seededMocks.filter((x) => !dbIds.has(x.id));
-        items = [...items, ...filteredMocks];
-      }
-
       return items;
     },
   });
@@ -216,7 +175,8 @@ export default function AdminListings() {
       customReason?: string;
     }) => {
       // If DB has the listing, update it
-      await supabase.from("listings").update({ status }).eq("id", id);
+      const { error } = await supabase.from("listings").update({ status }).eq("id", id);
+      if (error) throw error;
 
       const approved = status === "approved";
       if (status === "approved" || status === "rejected") {
@@ -258,7 +218,8 @@ export default function AdminListings() {
     if (selectedIds.size === 0) return;
     const targetIds = Array.from(selectedIds);
     try {
-      await supabase.from("listings").update({ status: newStatus }).in("id", targetIds);
+      const { error } = await supabase.from("listings").update({ status: newStatus }).in("id", targetIds);
+      if (error) throw error;
       toast.success(`${targetIds.length} listings marked as ${newStatus}!`);
       setSelectedIds(new Set());
       refetch();
@@ -270,7 +231,8 @@ export default function AdminListings() {
   // Delete listing
   const handleDelete = async (id: string) => {
     try {
-      await supabase.from("listings").delete().eq("id", id);
+      const { error } = await supabase.from("listings").delete().eq("id", id);
+      if (error) throw error;
       toast.success("Listing deleted permanently");
       setDeletingId(null);
       refetch();
@@ -420,7 +382,7 @@ export default function AdminListings() {
             }}
             className="gap-1.5 font-bold text-xs bg-primary text-primary-foreground shadow-xs"
           >
-            <IconSparkles size={14} /> Add Test Ad for Review
+            <IconTestPipe size={14} /> Add Test Ad for Review
           </Button>
         </div>
       </div>

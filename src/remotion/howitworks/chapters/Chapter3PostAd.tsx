@@ -1,6 +1,7 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from "remotion";
-import { COLOR, EASE, RADIUS, SHADOW } from "../../design";
-import { PhoneFrame } from "../../components/PhoneFrame";
+import { AbsoluteFill, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { IconCircleCheck, IconCamera } from "@tabler/icons-react";
+import { COLOR, EASE, RADIUS, SHADOW, SCREEN_SCALE } from "../../design";
+import { FullBleedScreen } from "../../components/FullBleedScreen";
 import { Cursor } from "../../components/Cursor";
 import { TypingText } from "../../components/TypingText";
 
@@ -47,8 +48,8 @@ export function Chapter3PostAd() {
   const successOpacity = interpolate(frame, [F.success, F.success + 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: EASE.outExpo });
 
   return (
-    <AbsoluteFill style={{ background: COLOR.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <PhoneFrame width={280} height={560}>
+    <AbsoluteFill style={{ background: COLOR.bg }}>
+      <FullBleedScreen scale={SCREEN_SCALE}>
         <div style={{ height: "100%", background: COLOR.surface, display: "flex", flexDirection: "column", opacity: formOpacity }}>
           <div style={{
             background: COLOR.bg, padding: "16px 14px 10px", borderBottom: `1px solid ${COLOR.border}`,
@@ -61,7 +62,7 @@ export function Chapter3PostAd() {
 
           {showSuccess ? (
             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: successOpacity, padding: 20, textAlign: "center" }}>
-              <div style={{ fontSize: 40, marginBottom: 10 }}>🎉</div>
+              <IconCircleCheck size={40} stroke={1.8} style={{ color: COLOR.brand, marginBottom: 10 }} />
               <div style={{ fontSize: 14, fontWeight: 700, color: COLOR.ink, fontFamily: "Inter, sans-serif", marginBottom: 4 }}>
                 Listing submitted!
               </div>
@@ -88,17 +89,20 @@ export function Chapter3PostAd() {
                 Photos
               </div>
               <div style={{ display: "flex", gap: 6 }}>
-                {frame >= F.photosIn && [0, 1, 2].map((i) => {
+                {frame >= F.photosIn && [1, 3, 5].map((photoNum, i) => {
                   const op = interpolate(frame, [F.photosIn + i * 6, F.photosIn + i * 6 + 10], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
                   return (
-                    <div key={i} style={{ width: 44, height: 44, borderRadius: RADIUS.sm, background: "linear-gradient(135deg,#dce8f5,#c3d9ee)", opacity: op, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
-                      🚗
-                    </div>
+                    <img
+                      key={i}
+                      src={staticFile(`cars/hilux-white-2019-${photoNum}.jpg`)}
+                      alt=""
+                      style={{ width: 44, height: 44, borderRadius: RADIUS.sm, opacity: op, objectFit: "cover", display: "block" }}
+                    />
                   );
                 })}
                 {frame < F.photosIn && (
-                  <div style={{ width: 44, height: 44, borderRadius: RADIUS.sm, border: `1.5px dashed ${COLOR.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: COLOR.inkMute }}>
-                    📷
+                  <div style={{ width: 44, height: 44, borderRadius: RADIUS.sm, border: `1.5px dashed ${COLOR.border}`, display: "flex", alignItems: "center", justifyContent: "center", color: COLOR.inkMute }}>
+                    <IconCamera size={18} stroke={1.8} />
                   </div>
                 )}
               </div>
@@ -113,41 +117,41 @@ export function Chapter3PostAd() {
             </div>
           )}
         </div>
-      </PhoneFrame>
 
-      {sheetOpen && (
-        <div style={{
-          position: "absolute", left: "50%", bottom: 90, transform: "translateX(-50%)",
-          width: 240, background: COLOR.surface, borderRadius: RADIUS.lg, boxShadow: SHADOW.lift,
-          padding: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6,
-        }}>
-          {MAKES.map((m) => (
-            <div key={m} style={{
-              fontSize: 10, fontFamily: "Inter, sans-serif", padding: "7px 8px", borderRadius: RADIUS.sm,
-              background: m === "Toyota" && frame >= F.makeTap ? COLOR.brandSoft : "transparent",
-              color: m === "Toyota" && frame >= F.makeTap ? COLOR.brandInk : COLOR.ink,
-              fontWeight: m === "Toyota" && frame >= F.makeTap ? 700 : 500,
-            }}>
-              {m}
-            </div>
-          ))}
-        </div>
-      )}
+        {sheetOpen && (
+          <div style={{
+            position: "absolute", left: "50%", bottom: 10, transform: "translateX(-50%)",
+            width: 240, background: COLOR.surface, borderRadius: RADIUS.lg, boxShadow: SHADOW.lift,
+            padding: 10, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6,
+          }}>
+            {MAKES.map((m) => (
+              <div key={m} style={{
+                fontSize: 10, fontFamily: "Inter, sans-serif", padding: "7px 8px", borderRadius: RADIUS.sm,
+                background: m === "Toyota" && frame >= F.makeTap ? COLOR.brandSoft : "transparent",
+                color: m === "Toyota" && frame >= F.makeTap ? COLOR.brandInk : COLOR.ink,
+                fontWeight: m === "Toyota" && frame >= F.makeTap ? 700 : 500,
+              }}>
+                {m}
+              </div>
+            ))}
+          </div>
+        )}
 
-      <Cursor
-        path={[
-          { frame: F.makeOpen - 15, x: 500, y: 400 },
-          { frame: F.makeOpen, x: 460, y: 300 },
-          { frame: F.makeTap - 10, x: 440, y: 480 },
-          { frame: F.makeTap, x: 440, y: 480 },
-          { frame: F.photoTap - 15, x: 440, y: 480 },
-          { frame: F.photoTap, x: 420, y: 560 },
-          { frame: F.publishTap - 10, x: 420, y: 560 },
-          { frame: F.publishTap, x: 460, y: 640 },
-        ]}
-        clickFrame={F.makeTap}
-        hideFrame={F.success}
-      />
+        <Cursor
+          path={[
+            { frame: F.makeOpen - 15, x: 0, y: 320 },
+            { frame: F.makeOpen, x: -40, y: 220 },
+            { frame: F.makeTap - 10, x: -60, y: 400 },
+            { frame: F.makeTap, x: -60, y: 400 },
+            { frame: F.photoTap - 15, x: -60, y: 400 },
+            { frame: F.photoTap, x: -80, y: 480 },
+            { frame: F.publishTap - 10, x: -80, y: 480 },
+            { frame: F.publishTap, x: -40, y: 560 },
+          ]}
+          clickFrame={F.makeTap}
+          hideFrame={F.success}
+        />
+      </FullBleedScreen>
     </AbsoluteFill>
   );
 }
