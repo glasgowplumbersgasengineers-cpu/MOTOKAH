@@ -28,6 +28,7 @@ import { WishlistProvider } from "@/hooks/useWishlist";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BottomNav from "@/components/BottomNav";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
 
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LocationProvider } from "@/contexts/LocationContext";
@@ -97,6 +98,7 @@ function RouteLoader() {
 function AnimatedRoutes() {
   const location = useLocation();
   usePageTracking();
+  usePushNotifications();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
