@@ -36,7 +36,10 @@ export default function ComparisonSection() {
             return (
               <button key={l.id} onClick={() => toggle(l.id)}
                 className={`text-left bg-card border rounded-xl overflow-hidden transition-all ${isSelected ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary/30"}`}>
-                <img src={l.image} alt={l.title} className="w-full aspect-[4/3] object-cover" loading="lazy" />
+                <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted">
+                  <img src={l.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70" loading="lazy" />
+                  <img src={l.image} alt={l.title} className="relative w-full h-full object-contain" loading="lazy" />
+                </div>
                 <div className="p-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>

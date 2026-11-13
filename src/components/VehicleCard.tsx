@@ -131,10 +131,12 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
           </div>
         )}
         {primaryImage && !imgError ? (
+          <>
+          {imgLoaded && <img src={displayImage} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70" />}
           <img
             src={displayImage}
             alt={listing.title}
-            className={`w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`relative w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             loading={priority ? "eager" : "lazy"}
             decoding="async"
             fetchpriority={priority ? "high" : "auto"}
@@ -144,6 +146,7 @@ export default function VehicleCard({ listing, priority }: { listing: Listing; p
             }}
             onError={handleImageFailure}
           />
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             <IconCar size={48} className="text-muted-foreground/40" stroke={1.5} />

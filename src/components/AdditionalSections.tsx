@@ -117,8 +117,9 @@ export function SpecialDeals() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {deals.map(l => (
           <a key={l.id} href={`/listing/${l.id}`} className="flex flex-col sm:flex-row bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all group">
-            <div className="sm:w-2/5 aspect-[4/3] sm:aspect-auto overflow-hidden">
-              <img src={l.image} alt={l.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+            <div className="relative sm:w-2/5 aspect-[4/3] sm:aspect-auto overflow-hidden bg-muted">
+              <img src={l.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70" loading="lazy" />
+              <img src={l.image} alt={l.title} className="relative w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />
             </div>
             <div className="p-4 flex flex-col justify-center flex-1">
               <h3 className="font-bold text-lg mb-2">{l.title}</h3>

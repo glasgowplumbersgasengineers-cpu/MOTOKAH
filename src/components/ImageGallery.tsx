@@ -61,10 +61,16 @@ export default function ImageGallery({ images, title }: ImageGalleryProps) {
       {/* Main Image */}
       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted group select-none">
         <GalleryImage
+          key={`bg-${activeImage}`}
+          image={activeImage}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-70 pointer-events-none"
+        />
+        <GalleryImage
           key={activeImage}
           image={activeImage}
           alt={`${title} - Image ${activeIndex + 1}`}
-          className={`w-full h-full object-contain transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
+          className={`relative w-full h-full object-contain transition-transform duration-300 ${zoomed ? "scale-125 md:scale-150 cursor-zoom-out" : "cursor-zoom-in"}`}
           priority
           onClick={() => setZoomed(!zoomed)}
         />
