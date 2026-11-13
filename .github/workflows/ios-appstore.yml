@@ -5,7 +5,8 @@ on:
 
 jobs:
   deploy:
-    runs-on: macos-latest
+    # macos-latest (arm64) repeatedly failed to acquire a runner (capacity) on 2026-11-13.
+    runs-on: macos-15-intel
     timeout-minutes: 60
 
     steps:
