@@ -1,5 +1,6 @@
 import mgayaJson from "./showrooms/mgayamotors.json";
-import { cdnImagePath, normalizeImageUrl } from "@/lib/imageUrls";
+import { cdnImagePath, normalizeImageUrl, IMAGE_CDN_BASE } from "@/lib/imageUrls";
+import showroomStorageImages from "./showroomStorageImages.json";
 
 // Load all other showroom JSONs
 const _showroomMods = import.meta.glob("./showrooms/*.json", { eager: true }) as Record<string, { default: { username: string; full_name: string; phone: string; posts: Array<{ shortcode: string; date: string; caption: string; likes: number; images: string[]; url: string; price?: number; currency?: string }> } }>;
@@ -216,18 +217,33 @@ function _postImagePrefix(username: string, shortcode: string): string {
 }
 
 
+// Most scraped dealer photos no longer resolve on the R2 CDN. Posts listed in
+// showroomStorageImages.json ("dealer/shortcode" -> photo count) have working copies in Supabase
+// Storage, so serve those and drop any photo of the post that has no copy.
+const _STORAGE_IMAGE_BASE = "https://dimywnbmmliluounwqfb.supabase.co/storage/v1/object/public/showroom-images";
+function _preferStorageCopies(urls: string[]): string[] {
+  const out: string[] = [];
+  for (const url of urls) {
+    const match = url.startsWith(`${IMAGE_CDN_BASE}/`) ? /^(.+)_([0-9]+)[.]jpg$/.exec(url.slice(IMAGE_CDN_BASE.length + 1)) : null;
+    const count = match ? (showroomStorageImages as Record<string, number>)[match[1]] : undefined;
+    if (!match || count === undefined) out.push(url);
+    else if (Number(match[2]) <= count) out.push(`${_STORAGE_IMAGE_BASE}/${match[1]}_${match[2]}.jpg`);
+  }
+  return out;
+}
+
 function _postImages(username: string, post: { shortcode?: string; images?: string[] }, index = 0): string[] {
   const sourceImages = Array.isArray(post.images) ? post.images.filter(Boolean) : [];
   const shortcode = post.shortcode || `post_${index + 1}`;
   const prefix = _postImagePrefix(username, shortcode);
 
   if (sourceImages.length > 0) {
-    return sourceImages.map((image, imageIndex) => {
+    return _preferStorageCopies(sourceImages.map((image, imageIndex) => {
       if (image.includes("supabase.co/storage")) return normalizeImageUrl(image);
       if (/^https?:\/\//i.test(image)) return image;
       if (LOCAL_SHOWROOM_IMAGE_USERS.has(username) && image.startsWith("/")) return image;
       return _supabaseImage(username, `${prefix}_${imageIndex + 1}.jpg`);
-    });
+    }));
   }
 
   return [];

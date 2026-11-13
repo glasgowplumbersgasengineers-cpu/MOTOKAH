@@ -14,8 +14,10 @@ import showroomImageHealth from "@/data/showroomImageHealth.json";
  * affected — this only guards against the specific R2-hotlink-rot problem found in the Instagram
  * scrape data.
  */
-export function hasVerifiedRecoverableImage(listing: Pick<Listing, "id">): boolean {
+export function hasVerifiedRecoverableImage(listing: Pick<Listing, "id"> & { image?: string }): boolean {
   if (!listing.id?.startsWith("ig-")) return true;
+  // Photos re-hosted in Supabase Storage after the audit are known to work.
+  if (listing.image?.includes("/showroom-images/")) return true;
   const verified = (showroomImageHealth as Record<string, boolean>)[listing.id];
   // Unknown ids (not covered by the audit, e.g. added after the manifest was generated) are not
   // penalized — absence of data isn't evidence of a broken image.
