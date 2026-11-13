@@ -5,57 +5,53 @@ import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 
+const ROUTES: Record<string, string> = {
+  new_message: "/messages",
+  listing_approved: "/profile",
+  listing_rejected: "/profile",
+  dealer_approved: "/dealer-dashboard",
+  dealer_rejected: "/dealer-dashboard",
+  new_listing: "/admin/listings",
+};
+
 export function usePushNotifications() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const registered = useRef(false);
+  // useNavigate's identity changes on every route change; keep it out of the effect deps
+  // so listeners aren't torn down on navigation.
+  const navigateRef = useRef(navigate);
+  navigateRef.current = navigate;
+  const userId = user?.id;
 
   useEffect(() => {
-    if (!user || !Capacitor.isNativePlatform() || registered.current) return;
+    if (!userId || userId.startsWith("demo-") || !Capacitor.isNativePlatform()) return;
 
-    async function setup() {
-      const perm = await PushNotifications.checkPermissions();
+    const handles = [
+      PushNotifications.addListener("registration", async (token) => {
+        await supabase.from("device_tokens").upsert(
+          { user_id: userId, token: token.value, platform: Capacitor.getPlatform(), updated_at: new Date().toISOString() },
+          { onConflict: "user_id,token" },
+        );
+      }),
+      PushNotifications.addListener("registrationError", (err) => {
+        console.warn("Push registration failed:", err.error);
+      }),
+      PushNotifications.addListener("pushNotificationActionPerformed", (action) => {
+        const route = ROUTES[action.notification.data?.type];
+        if (route) navigateRef.current(route);
+      }),
+    ];
+
+    (async () => {
+      let perm = await PushNotifications.checkPermissions();
       if (perm.receive === "prompt" || perm.receive === "prompt-with-rationale") {
-        const result = await PushNotifications.requestPermissions();
-        if (result.receive !== "granted") return;
-      } else if (perm.receive !== "granted") {
-        return;
+        perm = await PushNotifications.requestPermissions();
       }
-
-      await PushNotifications.register();
-      registered.current = true;
-    }
-
-    PushNotifications.addListener("registration", async (token) => {
-      const platform = Capacitor.getPlatform() as "ios" | "android";
-      await supabase.from("device_tokens").upsert(
-        { user_id: user.id, token: token.value, platform, updated_at: new Date().toISOString() },
-        { onConflict: "user_id,token" }
-      );
-    });
-
-    PushNotifications.addListener("registrationError", (err) => {
-      console.warn("Push registration failed:", err.error);
-    });
-
-    PushNotifications.addListener("pushNotificationReceived", (_notification) => {
-      // Foreground: the in-app NotificationBell already shows via realtime.
-      // No need to show a duplicate OS banner.
-    });
-
-    PushNotifications.addListener("pushNotificationActionPerformed", (action) => {
-      const data = action.notification.data;
-      if (data?.type === "new_message") {
-        navigate("/messages");
-      } else if (data?.type === "listing_approved") {
-        navigate("/profile");
-      }
-    });
-
-    setup();
+      if (perm.receive === "granted") await PushNotifications.register();
+    })().catch((e) => console.warn("Push setup failed:", e));
 
     return () => {
-      PushNotifications.removeAllListeners();
+      handles.forEach((h) => h.then((l) => l.remove()));
     };
-  }, [user, navigate]);
+  }, [userId]);
 }

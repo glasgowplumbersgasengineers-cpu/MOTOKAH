@@ -42,12 +42,14 @@ async function getApnsJwt(): Promise<string> {
   return apnsJwt;
 }
 
+type SendResult = "sent" | "stale" | "failed";
+
 async function sendApns(
   token: string,
   title: string,
   body: string,
   data: Record<string, string>,
-): Promise<boolean> {
+): Promise<SendResult> {
   const jwt = await getApnsJwt();
   const bundleId = "com.motokah.app";
   const host = "api.push.apple.com"; // production
@@ -56,7 +58,6 @@ async function sendApns(
     aps: {
       alert: { title, body },
       sound: "default",
-      badge: 1,
     },
     ...data,
   };
@@ -73,15 +74,13 @@ async function sendApns(
     body: JSON.stringify(payload),
   });
 
-  if (!res.ok) {
-    const err = await res.text();
-    console.error(`APNs ${res.status} for token ${token.slice(0, 8)}...: ${err}`);
-    if (res.status === 410 || res.status === 400) {
-      // Token is invalid or unregistered — caller should delete it.
-      return false;
-    }
-  }
-  return res.ok;
+  if (res.ok) return "sent";
+  const err = await res.text();
+  console.error(`APNs ${res.status} for token ${token.slice(0, 8)}...: ${err}`);
+  // Only these mean the token itself is dead. Auth/config errors (403 etc.) must
+  // not delete tokens, or one bad secret would wipe every registered device.
+  if (res.status === 410 || err.includes("BadDeviceToken")) return "stale";
+  return "failed";
 }
 
 // TODO: Add FCM support when Android push is needed.
@@ -124,9 +123,9 @@ serve(async (req) => {
 
     for (const t of tokens) {
       if (t.platform === "ios") {
-        const ok = await sendApns(t.token, title, body ?? "", data ?? {});
-        if (ok) sent++;
-        else staleIds.push(t.id);
+        const result = await sendApns(t.token, title, body ?? "", data ?? {});
+        if (result === "sent") sent++;
+        else if (result === "stale") staleIds.push(t.id);
       }
       // else if (t.platform === "android") { await sendFcm(...); }
     }
