@@ -27,6 +27,23 @@ export interface SearchFilters {
 const BIKE_TYPES = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
 const BOAT_TYPES = ["Boat", "Yacht", "Powerboat", "Sailboat", "Catamaran"];
 
+const norm = (v?: string | null) => (v || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+const MAKE_ALIASES: Record<string, string> = { mercedes: "mercedesbenz", benz: "mercedesbenz", merc: "mercedesbenz", rangerover: "landrover", vw: "volkswagen" };
+const canonMake = (v?: string | null) => MAKE_ALIASES[norm(v)] || norm(v);
+type Matchable = { make?: string; model?: string; title?: string; condition?: string; bodyType?: string };
+export const matchesMake = (l: Matchable, make: string) => canonMake(l.make) === canonMake(make);
+// Dealer captions write models loosely ("LANDCRUISER PRADO", "Rav 4"), so match inside model or title.
+export const matchesModel = (l: Matchable, model: string) => norm(l.model).includes(norm(model)) || norm(l.title).includes(norm(model));
+export const matchesCondition = (l: Matchable, condition: string) => {
+  const c = (l.condition || "").toLowerCase();
+  if (condition === "Used") return c.includes("used");
+  if (condition === "New") return c.includes("new") && !c.includes("used");
+  return c === condition.toLowerCase();
+};
+// Wagon and MPV are one category in the UI ("Wagon / MPV").
+export const expandBodyTypes = (types: string[]) => [...new Set(types.flatMap(t => (t === "Wagon" || t === "MPV" ? ["Wagon", "MPV"] : [t])))];
+export const matchesBodyType = (l: Matchable, types: string[]) => !!l.bodyType && expandBodyTypes(types).includes(l.bodyType);
+
 function matchesVehicleType(listing: Listing, vehicleType?: SearchFilters["vehicleType"]) {
   if (!vehicleType || vehicleType === "spare") return true;
   const bodyType = listing.bodyType || "";
@@ -84,9 +101,10 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
         trackEvent("search_performed", { query: kw, city: filters.city, make: filters.make });
       }
 
-      if (filters.make) query = query.eq("make", filters.make);
-      if (filters.model) query = query.eq("model", filters.model);
-      if (filters.condition) query = query.eq("condition", filters.condition);
+      if (filters.make) query = query.ilike("make", filters.make);
+      if (filters.model) query = query.ilike("model", `%${filters.model}%`);
+      if (filters.condition === "Used") query = query.ilike("condition", "%used%");
+      else if (filters.condition) query = query.eq("condition", filters.condition);
       if (filters.transmission) query = query.eq("transmission", filters.transmission);
       if (filters.city) query = query.ilike("city", `%${filters.city}%`);
       if (filters.country && filters.country !== "All") {
@@ -95,7 +113,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           query = query.in("currency", currencies);
         }
       }
-      if (filters.bodyType?.length) query = query.in("body_type", filters.bodyType);
+      if (filters.bodyType?.length) query = query.in("body_type", expandBodyTypes(filters.bodyType));
       if (filters.fuelType?.length) query = query.in("fuel_type", filters.fuelType);
       if (filters.minPrice) query = query.gte("price", Number(filters.minPrice));
       if (filters.maxPrice) query = query.lte("price", Number(filters.maxPrice));
@@ -160,12 +178,12 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
               m.model?.toLowerCase().includes(kw)
             );
           }
-          if (filters.make) arr = arr.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
-          if (filters.model) arr = arr.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
-          if (filters.condition) arr = arr.filter(m => m.condition === filters.condition);
+          if (filters.make) arr = arr.filter(m => matchesMake(m, filters.make!));
+          if (filters.model) arr = arr.filter(m => matchesModel(m, filters.model!));
+          if (filters.condition) arr = arr.filter(m => matchesCondition(m, filters.condition!));
           if (filters.transmission) arr = arr.filter(m => !m.transmission || m.transmission === filters.transmission);
           if (filters.city) arr = arr.filter(m => m.location?.toLowerCase().includes(filters.city!.toLowerCase()));
-          if (filters.bodyType?.length) arr = arr.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+          if (filters.bodyType?.length) arr = arr.filter(m => matchesBodyType(m, filters.bodyType!));
           if (filters.minPrice) arr = arr.filter(m => m.price >= Number(filters.minPrice));
           if (filters.maxPrice) arr = arr.filter(m => m.price <= Number(filters.maxPrice));
           if (filters.yearFrom) arr = arr.filter(m => m.year >= Number(filters.yearFrom));
@@ -251,15 +269,15 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           m.model?.toLowerCase().includes(kw)
         );
       }
-      if (filters.make) jijiFiltered = jijiFiltered.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
-      if (filters.model) jijiFiltered = jijiFiltered.filter(m => m.model?.toLowerCase().includes(filters.model!.toLowerCase()));
-      if (filters.condition) jijiFiltered = jijiFiltered.filter(m => m.condition === filters.condition);
+      if (filters.make) jijiFiltered = jijiFiltered.filter(m => matchesMake(m, filters.make!));
+      if (filters.model) jijiFiltered = jijiFiltered.filter(m => matchesModel(m, filters.model!));
+      if (filters.condition) jijiFiltered = jijiFiltered.filter(m => matchesCondition(m, filters.condition!));
       if (filters.city) jijiFiltered = jijiFiltered.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
       if (filters.minPrice) jijiFiltered = jijiFiltered.filter(m => m.price >= Number(filters.minPrice));
       if (filters.maxPrice) jijiFiltered = jijiFiltered.filter(m => m.price <= Number(filters.maxPrice));
       if (filters.yearFrom) jijiFiltered = jijiFiltered.filter(m => m.year >= Number(filters.yearFrom));
       if (filters.yearTo) jijiFiltered = jijiFiltered.filter(m => m.year <= Number(filters.yearTo));
-      if (filters.bodyType?.length) jijiFiltered = jijiFiltered.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+      if (filters.bodyType?.length) jijiFiltered = jijiFiltered.filter(m => matchesBodyType(m, filters.bodyType!));
       if (filters.fuelType?.length) jijiFiltered = jijiFiltered.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
       if (filters.vehicleType) jijiFiltered = jijiFiltered.filter(m => matchesVehicleType(m, filters.vehicleType));
       if (filters.country && filters.country !== "All") {
@@ -280,9 +298,9 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
           m.model?.toLowerCase().includes(kw)
         );
       }
-      if (filters.make) mocks = mocks.filter(m => m.make?.toLowerCase() === filters.make!.toLowerCase());
-      if (filters.model) mocks = mocks.filter(m => m.model?.toLowerCase() === filters.model!.toLowerCase());
-      if (filters.condition) mocks = mocks.filter(m => m.condition === filters.condition);
+      if (filters.make) mocks = mocks.filter(m => matchesMake(m, filters.make!));
+      if (filters.model) mocks = mocks.filter(m => matchesModel(m, filters.model!));
+      if (filters.condition) mocks = mocks.filter(m => matchesCondition(m, filters.condition!));
       if (filters.transmission) mocks = mocks.filter(m => m.transmission === filters.transmission);
       if (filters.city) mocks = mocks.filter(m => m.location?.toLowerCase().includes(filters.city.toLowerCase()));
       if (filters.country && filters.country !== "All") {
@@ -296,7 +314,7 @@ export function useSearchListings(filters: SearchFilters, sort: SortOption) {
       if (filters.yearFrom) mocks = mocks.filter(m => m.year >= Number(filters.yearFrom));
       if (filters.yearTo) mocks = mocks.filter(m => m.year <= Number(filters.yearTo));
       if (filters.maxMileage) mocks = mocks.filter(m => m.mileage <= Number(filters.maxMileage));
-      if (filters.bodyType?.length) mocks = mocks.filter(m => m.bodyType && filters.bodyType!.includes(m.bodyType));
+      if (filters.bodyType?.length) mocks = mocks.filter(m => matchesBodyType(m, filters.bodyType!));
       if (filters.fuelType?.length) mocks = mocks.filter(m => m.fuelType && filters.fuelType!.includes(m.fuelType));
       if (filters.vehicleType) mocks = mocks.filter(m => matchesVehicleType(m, filters.vehicleType));
       

@@ -53,6 +53,9 @@ export default function HeroSearch() {
       if (bikeF.type) p.set("bodyType", bikeF.type);
       if (bikeF.cc) p.set("cc", bikeF.cc);
       if (bikeF.condition) p.set("condition", bikeF.condition);
+      if (bikeF.yearFrom) p.set("yearFrom", bikeF.yearFrom);
+      if (bikeF.yearTo) p.set("yearTo", bikeF.yearTo);
+      if (bikeF.maxPrice) p.set("maxPrice", bikeF.maxPrice);
       if (bikeF.city) { p.set("city", bikeF.city); const cc = cityToCountry[bikeF.city]; if (cc) p.set("country", cc); }
       if (!bikeF.city) applyDefaultLocation();
     } else {
@@ -60,6 +63,9 @@ export default function HeroSearch() {
       if (comF.vehicleType) p.set("bodyType", comF.vehicleType);
       if (comF.make) p.set("make", comF.make);
       if (comF.condition) p.set("condition", comF.condition);
+      if (comF.yearFrom) p.set("yearFrom", comF.yearFrom);
+      if (comF.yearTo) p.set("yearTo", comF.yearTo);
+      if (comF.maxPrice) p.set("maxPrice", comF.maxPrice);
       if (comF.city) { p.set("city", comF.city); const cc = cityToCountry[comF.city]; if (cc) p.set("country", cc); }
       if (!comF.city) applyDefaultLocation();
     }

@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { cityToCountry } from "@/data/mockData";
+import { cityToCountry, mockListings } from "@/data/mockData";
+import { isLaunchQualityListing } from "@/lib/listingQuality";
+import { matchesBodyType, matchesModel } from "@/hooks/useSearchListings";
 
 const allCategories = [
   { name: "Saloon",           icon: "/icons/sedan.png",        param: "bodyType=Sedan" },
   { name: "4x4 / SUV",        icon: "/icons/suv.png",          param: "bodyType=SUV" },
   { name: "Double Cab",       icon: "/icons/pickup.png",       param: "bodyType=Pickup" },
   { name: "Small Car",        icon: "/icons/hatchback.png",    param: "bodyType=Hatchback" },
-  { name: "Wagon / MPV",      icon: "/icons/mpv.png",          param: "bodyType=Wagon" },
+  { name: "Wagon / MPV",      icon: "/icons/mpv.png",          param: "bodyType=Wagon&bodyType=MPV" },
   { name: "Van",              icon: "/icons/van.png",          param: "bodyType=Van" },
   { name: "Daladala",         icon: "/icons/minibus.png",      param: "bodyType=Minibus" },
   { name: "Bus",              icon: "/icons/minibus.png",      param: "bodyType=Bus" },
@@ -28,7 +30,7 @@ const budgetItems = [
   { label: "Under 50M TZS",  value: "50000000" },
   { label: "Under 75M TZS",  value: "75000000" },
   { label: "Under 100M TZS", value: "100000000" },
-  { label: "100M+ TZS",      value: "" },
+  { label: "100M+ TZS",      value: "", min: "100000000" },
 ];
 
 const modelItems = ["Corolla","Civic","Hilux","Fortuner","Alto","Vitz","Prado","CR-V","RAV4","Harrier","Premio","Aqua"];
@@ -44,6 +46,16 @@ const locationItems = [
   { name: "Nigeria", param: "country=Nigeria" },
   { name: "All Africa", param: "" },
 ];
+
+// Only offer shortcuts that lead to at least one showable listing, so no button is a dead end.
+const liveStock = mockListings.filter(isLaunchQualityListing);
+const categories = allCategories.filter((c) => {
+  const q = new URLSearchParams(c.param);
+  return q.get("vehicleType") === "boat"
+    ? liveStock.some((l) => l.bodyType === "Boat")
+    : liveStock.some((l) => matchesBodyType(l, q.getAll("bodyType")));
+});
+const models = modelItems.filter((m) => liveStock.some((l) => matchesModel(l, m)));
 
 const tabs = ["Category","Budget","Model","Cities","Location"] as const;
 type Tab = typeof tabs[number];
@@ -81,7 +93,7 @@ export default function BrowseSection() {
           style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
         >
           <div className="flex gap-2 w-max">
-            {allCategories.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat.name}
                 onClick={() => navigate(`/search?${cat.param}`)}
@@ -105,7 +117,7 @@ export default function BrowseSection() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
           {budgetItems.map((item) => (
             <button key={item.label}
-              onClick={() => item.value && navigate(`/search?maxPrice=${item.value}`)}
+              onClick={() => navigate(item.value ? `/search?maxPrice=${item.value}` : `/search?minPrice=${item.min}`)}
               className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97]">
               {item.label}
             </button>
@@ -116,7 +128,7 @@ export default function BrowseSection() {
       {/* Model Tab */}
       {activeTab === "Model" && (
         <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 mt-3">
-          {modelItems.map((item) => (
+          {models.map((item) => (
             <button key={item}
               onClick={() => navigate(`/search?model=${encodeURIComponent(item)}`)}
               className="p-3 min-h-[52px] rounded-lg border border-border bg-card text-foreground text-xs font-medium text-center transition-all duration-200 hover:border-primary hover:bg-accent/10 active:scale-[0.97]">

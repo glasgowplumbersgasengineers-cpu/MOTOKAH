@@ -402,6 +402,17 @@ function _normalizePriceForCurrency(price: number, currency: string): number {
 // Known East African car brands for first-line extraction
 const _CAR_BRANDS = ["toyota","nissan","mitsubishi","subaru","honda","mazda","bmw","mercedes","benz","mercedes-benz","audi","volkswagen","vw","land rover","range rover","hyundai","kia","isuzu","suzuki","ford","jeep","lexus","peugeot","volvo","porsche","maserati","ferrari","lamborghini","bentley","rolls royce","cadillac","dodge","chrysler","buick","opel","renault","fiat","alfa romeo","jaguar","infiniti","acura","lincoln","buick","hummer","pontiac","saturn","mercury","oldsmobile","daewoo","ssangyong","mahindra","tata","bajaj","boxer","tvs","yamaha","honda","kawasaki","ktm","piaggio","vespa","triumph","harley","ducati","royal enfield","sinoray","senke","haojue","lifan"];
 
+// One spelling per brand so brand filters and brand pages find every listing.
+const _MAKE_CANON: Record<string, string> = {
+  mercedes: "Mercedes-Benz", benz: "Mercedes-Benz", "mercedes benz": "Mercedes-Benz", "mercedes-benz": "Mercedes-Benz",
+  "range rover": "Land Rover", bmw: "BMW", vw: "Volkswagen", tvs: "TVS", byd: "BYD",
+};
+function _canonMake(make: string): string {
+  const key = make.trim().toLowerCase();
+  if (_MAKE_CANON[key]) return _MAKE_CANON[key];
+  return make.length > 3 && make === make.toUpperCase() ? make[0] + make.slice(1).toLowerCase() : make;
+}
+
 function _extractMakeModelFromLine(line: string): { make: string | null; model: string | null } {
   const clean = line.replace(/[*#✅☎️▶️🚘🏎️💰➡️]/gu, "").trim();
   const lower = clean.toLowerCase();
@@ -599,7 +610,23 @@ function _parseMgayaCaption(caption: string) {
     bodyType = "Sedan";
   }
 
-  return { title, make, model, year, price, fuel, mileage, color, transmission, cc, bodyType };
+  // Second pass on make+model only (not the caption) for models the keyword rules above miss,
+  // including dealers' common misspellings. Short names are matched as whole words.
+  if (!bodyType) {
+    const mm = `${make || ""} ${model || ""}`.toLowerCase();
+    const words = mm.split(/[^a-z0-9]+/);
+    const has = (...w: string[]) => w.some((x) => words.includes(x));
+    if (/hil+ux/.test(mm)) bodyType = "Pickup";
+    else if (/boxer|haojue|manji|hd ?125|x125/.test(mm)) bodyType = "Motorcycle";
+    else if (/vel+i?f(ire|ier)|sienta|spacio/.test(mm)) bodyType = "MPV";
+    else if (/townace|bongo|succe+d/.test(mm)) bodyType = "Van";
+    else if (/vogue|range rover|juke|jimny|f-pace|dualis|vezel|pajero|patriot|defender|discovery|t-cross|tou?a?reg|h[au]rrier|lx ?[0-9]/.test(mm) || has("q3", "q5", "q7", "x3", "x4", "x5", "x6", "x3m", "nx", "gle", "xv")) bodyType = "SUV";
+    else if (/veris+a|r[ou]mi?o?u?n|passo|runx|ractis|beetle/.test(mm) || has("ist", "blade", "polo", "raum")) bodyType = "Hatchback";
+    else if (/caldina/.test(mm)) bodyType = "Wagon";
+    else if (/c ?-? ?class|atenza|maybach|legacy b4/.test(mm) || has("e300")) bodyType = "Sedan";
+  }
+
+  return { title, make: make ? _canonMake(make) : make, model, year, price, fuel, mileage, color, transmission, cc, bodyType };
 }
 
 function _isMgayaCarPost(caption: string, isVideo = false): boolean {

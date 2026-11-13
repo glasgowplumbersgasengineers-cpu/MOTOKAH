@@ -40,6 +40,7 @@ export default function SearchResults() {
 
   // Dynamic SEO title/desc/canonical from URL params
   const seoMake = searchParams.get("make") || "";
+  const urlModel = searchParams.get("model") || "";
   const seoCondition = searchParams.get("condition") || "";
   const seoCity = urlCity;
   const seoCountry = urlCountry;
@@ -138,6 +139,7 @@ export default function SearchResults() {
     const params = new URLSearchParams();
     if (keyword.trim()) params.set("q", keyword.trim());
     if (normalizedFilters.make) params.set("make", normalizedFilters.make);
+    if (urlModel) params.set("model", urlModel);
     if (normalizedFilters.condition) params.set("condition", normalizedFilters.condition);
     if (normalizedFilters.city) params.set("city", normalizedFilters.city);
     if (normalizedFilters.country) params.set("country", normalizedFilters.country);
@@ -166,6 +168,7 @@ export default function SearchResults() {
   const searchFilters: SearchFilters = useMemo(() => ({
     q: keyword.trim() || undefined,
     make: filters.make || undefined,
+    model: urlModel || undefined,
     condition: filters.condition || undefined,
     transmission: filters.transmission || undefined,
     city: filters.city || undefined,
@@ -178,7 +181,7 @@ export default function SearchResults() {
     yearTo: filters.yearTo || undefined,
     maxMileage: filters.maxMileage || undefined,
     vehicleType: filters.vehicleType || undefined,
-  }), [filters, keyword]);
+  }), [filters, keyword, urlModel]);
 
   const { listings: filtered, loading } = useSearchListings(searchFilters, sort);
 
