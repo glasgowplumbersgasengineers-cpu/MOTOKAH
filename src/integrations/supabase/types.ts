@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_name: string
+          id: string
+          metadata: Json
+          page: string | null
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          id?: string
+          metadata?: Json
+          page?: string | null
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          id?: string
+          metadata?: Json
+          page?: string | null
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      blocked_sellers: {
+        Row: {
+          created_at: string
+          id: string
+          seller_key: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          seller_key: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          seller_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author_id: string
@@ -80,6 +131,54 @@ export type Database = {
         }
         Relationships: []
       }
+      content_posts: {
+        Row: {
+          caption: string | null
+          caption_sw: string | null
+          created_at: string | null
+          id: string
+          language: string | null
+          media_urls: Json | null
+          pillar: string | null
+          platform: string
+          post_type: string
+          scheduled_date: string | null
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          caption?: string | null
+          caption_sw?: string | null
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          media_urls?: Json | null
+          pillar?: string | null
+          platform?: string
+          post_type?: string
+          scheduled_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          caption?: string | null
+          caption_sw?: string | null
+          created_at?: string | null
+          id?: string
+          language?: string | null
+          media_urls?: Json | null
+          pillar?: string | null
+          platform?: string
+          post_type?: string
+          scheduled_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           created_at: string
@@ -120,34 +219,49 @@ export type Database = {
           business_name: string
           city: string
           created_at: string
+          dealer_type: string | null
+          description: string | null
           id: string
+          instagram: string | null
           phone: string
           registration_number: string | null
           status: Database["public"]["Enums"]["dealer_application_status"]
           updated_at: string
           user_id: string
+          website: string | null
+          whatsapp: string | null
         }
         Insert: {
           business_name: string
           city: string
           created_at?: string
+          dealer_type?: string | null
+          description?: string | null
           id?: string
+          instagram?: string | null
           phone: string
           registration_number?: string | null
           status?: Database["public"]["Enums"]["dealer_application_status"]
           updated_at?: string
           user_id: string
+          website?: string | null
+          whatsapp?: string | null
         }
         Update: {
           business_name?: string
           city?: string
           created_at?: string
+          dealer_type?: string | null
+          description?: string | null
           id?: string
+          instagram?: string | null
           phone?: string
           registration_number?: string | null
           status?: Database["public"]["Enums"]["dealer_application_status"]
           updated_at?: string
           user_id?: string
+          website?: string | null
+          whatsapp?: string | null
         }
         Relationships: []
       }
@@ -192,6 +306,7 @@ export type Database = {
           created_at: string
           currency: string
           description: string | null
+          expires_at: string | null
           fuel_type: string | null
           id: string
           make: string
@@ -215,6 +330,7 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          expires_at?: string | null
           fuel_type?: string | null
           id?: string
           make: string
@@ -238,6 +354,7 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          expires_at?: string | null
           fuel_type?: string | null
           id?: string
           make?: string
@@ -349,6 +466,42 @@ export type Database = {
           },
         ]
       }
+      page_views: {
+        Row: {
+          country: string | null
+          created_at: string
+          device_type: string | null
+          id: string
+          page: string
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          page: string
+          referrer?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          id?: string
+          page?: string
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -395,6 +548,8 @@ export type Database = {
           listing_id: string
           reason: string
           reporter_id: string
+          resolved: boolean
+          resolved_at: string | null
         }
         Insert: {
           created_at?: string
@@ -402,6 +557,8 @@ export type Database = {
           listing_id: string
           reason: string
           reporter_id: string
+          resolved?: boolean
+          resolved_at?: string | null
         }
         Update: {
           created_at?: string
@@ -409,8 +566,18 @@ export type Database = {
           listing_id?: string
           reason?: string
           reporter_id?: string
+          resolved?: boolean
+          resolved_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "reports_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -449,6 +616,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      saved_searches: {
+        Row: {
+          created_at: string
+          filters: Json
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          filters?: Json
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          filters?: Json
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -541,12 +732,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -570,11 +761,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -595,11 +786,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -620,11 +811,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -637,11 +828,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -660,3 +851,5 @@ export const Constants = {
     },
   },
 } as const
+A new version of Supabase CLI is available: v3.1.0 (currently installed v2.103.0)
+We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli

@@ -11,6 +11,13 @@ export const ADMIN_EMAILS = [
   "weeedi420@gmail.com",
   "info@motokah.com",
   "support@motokah.com",
+  // Real, currently-used Owner login — found live 2026-11-13 that this
+  // hardcoded list had never included an actual registered account, and
+  // user_roles (the server-side RLS source for has_role()) was completely
+  // empty, so the Owner had no real admin access to any RLS-gated admin data
+  // despite ADMIN_EMAILS theoretically covering the UI shell. Also granted a
+  // real user_roles row for this account — see migration/commit for details.
+  "1pointsolutionsltd@gmail.com",
 ];
 
 export function checkUserIsAdmin(user: User | null, roleRows?: any[]): boolean {

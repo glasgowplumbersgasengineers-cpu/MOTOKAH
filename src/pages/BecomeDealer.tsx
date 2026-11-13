@@ -45,13 +45,21 @@ export default function BecomeDealer() {
       return;
     }
     setSubmitting(true);
+    // All 9 form fields now have a real column to land in (whatsapp,
+    // instagram, website, description, dealer_type added 2026-11-13 — were
+    // previously silently discarded, confirmed real data loss, fixed).
     const { error } = await supabase.from("dealer_applications").insert({
       user_id: user.id,
       business_name: form.business_name,
       registration_number: form.registration_number || null,
       city: form.city,
       phone: form.phone,
-    } as any);
+      whatsapp: form.whatsapp || null,
+      instagram: form.instagram || null,
+      website: form.website || null,
+      description: form.description || null,
+      dealer_type: form.dealer_type,
+    });
     setSubmitting(false);
     if (error) {
       toast.error("Failed to submit application. Please try again.");
