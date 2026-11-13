@@ -51,6 +51,8 @@
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Motokah uses your location to show vehicle listings in your country and city. You can also choose your location manually.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Motokah uses your location only while you use the app, to show vehicle listings in your country and city. It never tracks you in the background. You can also choose your location manually.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Motokah needs camera access to let you take photos of your vehicle when posting a listing.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
