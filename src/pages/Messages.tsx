@@ -203,7 +203,8 @@ export default function Messages() {
     const convo = conversations.find(c => c.id === active);
     if (convo) {
       const recipientId = convo.participant1_id === user.id ? convo.participant2_id : convo.participant1_id;
-      await createNotification(recipientId, "new_message", "New message", `You have a new message from ${convo.other_name}.`);
+      const senderName = user.user_metadata?.display_name || user.user_metadata?.full_name || "a buyer or seller";
+      await createNotification(recipientId, "new_message", "New message", `You have a new message from ${senderName}.`);
     }
   };
 
