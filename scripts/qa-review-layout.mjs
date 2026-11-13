@@ -34,7 +34,10 @@ try {
     for (const route of ["/", "/search", "/auth"]) {
       await page.goto(`${base}${route}`, { waitUntil: "commit", timeout: 45000 });
       await page.locator("body").waitFor({ state: "attached" });
-      await page.waitForTimeout(1200);
+      // CI Mac runners are slow; wait for the route to paint instead of a fixed delay.
+      await page.waitForFunction(() => document.body.innerText.trim().length >= 50, null, { timeout: 20000 }).catch(() => {});
+      if (route === "/search") await page.getByRole("textbox", { name: "Search vehicles" }).waitFor({ timeout: 20000 }).catch(() => {});
+      await page.waitForTimeout(500);
       const layout = await page.evaluate(() => ({
         width: document.documentElement.clientWidth,
         scrollWidth: document.documentElement.scrollWidth,
