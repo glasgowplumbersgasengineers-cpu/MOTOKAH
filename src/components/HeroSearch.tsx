@@ -155,7 +155,7 @@ export default function HeroSearch() {
                   </div>
                 )}
               </div>
-              <Button onClick={handleSearch} className="h-11 px-6 bg-primary text-primary-foreground font-bold">
+              <Button onClick={() => handleSearch()} className="h-11 px-6 bg-primary text-primary-foreground font-bold">
                 Search
               </Button>
             </div>
