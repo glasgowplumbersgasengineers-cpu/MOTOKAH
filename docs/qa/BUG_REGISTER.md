@@ -124,6 +124,13 @@ Distinguishing actual end-to-end evidence from code/backend inspection, per expl
   3. **Result: real `403`, `42501 — new row violates row-level security policy`.** Confirmed server-side enforcement is genuine, not just a client-side gate that a direct API call could bypass.
 - This is the first actual attack-style negative test run this session for admin authorization (previously only policy text was inspected). Real pass.
 
+## 21. Become Dealer form silently discards 5 of 9 fields — confirmed, needs a migration (not applied)
+
+- `src/pages/BecomeDealer.tsx` collects `whatsapp`, `instagram`, `website`, `description`, `dealer_type` in the form state, but the `dealer_applications` insert only sends `business_name`, `registration_number`, `city`, `phone` — the other five are silently dropped, with an `as any` cast on the insert that looks like it was papering over exactly this mismatch rather than fixing it.
+- **Confirmed against the live schema**: `dealer_applications` genuinely has no columns for any of the five — not a code bug alone, a half-finished feature (UI shipped ahead of the DB schema).
+- **Impact**: an applicant's WhatsApp number, Instagram handle, website, business description, and dealer-type selection are lost with zero indication — admins reviewing applications at `/admin/dealers` never see this real information the applicant provided.
+- **Not fixed this session**: fixing it properly needs a schema migration (adding the 5 columns) — prepared locally at `supabase/migrations/20261113000000_dealer_applications_missing_columns.sql`, **not applied**, per the standing restriction on production database changes without approval. Did not touch the frontend insert call either — sending those fields against the current live schema (missing the columns) would make every dealer application submission fail outright, which is worse than the current silent-but-functional partial save. Apply the migration first, then update the insert call to include the fields, then verify live.
+
 ## Still open / blocked
 
 - Sunny's actual symptom when trying to reply was never fully confirmed (what exactly happens — error shown? box clears with nothing? box stuck?). The `send()` fix above addresses the most likely cause found by code inspection, but isn't confirmed as *the* cause without his exact symptom or a repro.
