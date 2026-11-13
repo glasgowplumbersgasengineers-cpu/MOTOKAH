@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
+import { getDevicePosition, nearestCity } from "@/lib/geo";
 
 export type Country = "Tanzania" | "Kenya" | "Uganda" | "Rwanda" | "Burundi" | "Ethiopia" | "Nigeria" | "All";
 
@@ -17,18 +18,6 @@ const countryCitiesMap: Record<string, string[]> = {
   Burundi: ["Bujumbura"],
   Ethiopia: ["Addis Ababa", "Adama", "Bahir Dar", "Hawassa", "Dire Dawa"],
   Nigeria: ["Lagos", "Abuja", "Ibadan", "Kano", "Port Harcourt", "Benin City", "Kaduna"],
-};
-
-const countryFromCoords = (lat: number, lon: number): Country | null => {
-  // Rough bounding boxes for East African countries
-  if (lat >= -12 && lat <= -1 && lon >= 29 && lon <= 41) return "Tanzania";
-  if (lat >= -5 && lat <= 5 && lon >= 33 && lon <= 42) return "Kenya";
-  if (lat >= -2 && lat <= 4 && lon >= 29 && lon <= 35) return "Uganda";
-  if (lat >= -3 && lat <= -1 && lon >= 28 && lon <= 31) return "Rwanda";
-  if (lat >= -4.5 && lat <= -2.3 && lon >= 29 && lon <= 30.9) return "Burundi";
-  if (lat >= 3 && lat <= 15 && lon >= 33 && lon <= 48) return "Ethiopia";
-  if (lat >= 4 && lat <= 14 && lon >= 2 && lon <= 15) return "Nigeria";
-  return null;
 };
 
 const detectFromTimezone = (): Country => {
@@ -75,40 +64,21 @@ export function useLocationDetection() {
         }
       }
 
-      // Method 1: GPS/Geolocation API. Skipped in the native app: WKWebView's prompt
-      // names the page origin ("localhost"), not the app.
-      if ("geolocation" in navigator && !Capacitor.isNativePlatform()) {
-        try {
-          const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 0,
-            });
-          });
-
-          const { latitude, longitude } = position.coords;
-          const country = countryFromCoords(latitude, longitude);
-
-          if (country) {
-            const result: DetectedLocation = {
-              country,
-              city: countryCitiesMap[country]?.[0] || "",
-              method: "gps",
-            };
-            setLocation(result);
-            localStorage.setItem("motokah_location", JSON.stringify(result));
-            setLoading(false);
-            return;
-          }
-        } catch (err) {
-          console.log("GPS detection failed:", err);
-        }
+      // Method 1: device location (native plugin in the app, so the prompt names Motokah).
+      const pos = await getDevicePosition(true);
+      const near = pos && nearestCity(pos.lat, pos.lon);
+      if (near) {
+        const result: DetectedLocation = { ...near, method: "gps" };
+        setLocation(result);
+        localStorage.setItem("motokah_location", JSON.stringify(result));
+        setLoading(false);
+        return;
       }
 
       // Method 2: IP-based geolocation via our Vercel proxy.
       try {
-        const response = await fetch("/api/geo", {
+        const geoUrl = Capacitor.isNativePlatform() ? "https://www.motokah.com/api/geo" : "/api/geo";
+        const response = await fetch(geoUrl, {
           signal: AbortSignal.timeout(5000),
         });
         if (response.ok) {

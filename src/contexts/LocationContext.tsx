@@ -1,4 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { Capacitor } from "@capacitor/core";
+import { App } from "@capacitor/app";
+import { getDevicePosition, nearestCity } from "@/lib/geo";
 
 export type Country = "Tanzania" | "Kenya" | "Uganda" | "Rwanda" | "Burundi" | "Ethiopia" | "Nigeria" | "All";
 
@@ -53,6 +56,34 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("motokah-location-updated", handleStorage);
     };
   }, []);
+
+  // Follow the device's real city on every open/resume, unless the user explicitly chose one.
+  // Users from before this existed have no source recorded; their saved value came from the old
+  // (buggy) detection, so they are treated as auto.
+  useEffect(() => {
+    let running = false;
+    const refresh = async () => {
+      if (running) return;
+      if (!localStorage.getItem("motokah_welcome_completed")) return;
+      if (localStorage.getItem("motokah_location_source") === "manual") return;
+      running = true;
+      try {
+        const pos = await getDevicePosition(Capacitor.isNativePlatform());
+        const near = pos && nearestCity(pos.lat, pos.lon);
+        if (!near) return;
+        localStorage.setItem("motokah_location_source", "auto");
+        if (near.country !== localStorage.getItem(COUNTRY_KEY)) setCountry(near.country);
+        if (near.city !== localStorage.getItem(CITY_KEY)) setCity(near.city);
+      } finally {
+        running = false;
+      }
+    };
+    refresh();
+    if (Capacitor.isNativePlatform()) {
+      const sub = App.addListener("appStateChange", ({ isActive }) => { if (isActive) refresh(); });
+      return () => { sub.then((s) => s.remove()); };
+    }
+  }, [setCountry, setCity]);
 
   const value = useMemo(() => ({ country, city, setCountry, setCity }), [country, city, setCountry, setCity]);
 

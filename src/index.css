@@ -212,6 +212,12 @@
   body[data-chat-open="true"] .bottom-nav {
     display: none;
   }
+
+  html:has(body[data-chat-open="true"]),
+  body[data-chat-open="true"] {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
 }
 
 /* Google Translate output often runs longer than English (many African

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
@@ -39,14 +40,36 @@ export default function Messages() {
   const { user } = useAuth();
   const isMobile = useIsMobile();
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [active, setActive] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  // The open conversation lives in the URL so the system back gesture closes the chat
+  // (back to the list) instead of leaving Messages, like WhatsApp.
+  const active = searchParams.get("c");
+  const setActive = (id: string | null) => {
+    if (id) {
+      const push = window.innerWidth < 768;
+      setSearchParams({ c: id }, { replace: !push, state: push ? { chatPushed: true } : undefined });
+    } else if (window.history.state?.usr?.chatPushed) {
+      navigate(-1);
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  };
   const [messages, setMessages] = useState<Message[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
   const [convoLoading, setConvoLoading] = useState(true);
   const [text, setText] = useState("");
   const [search, setSearch] = useState("");
-  const bottomRef = useRef<HTMLDivElement>(null);
   const messagesScrollRef = useRef<HTMLDivElement>(null);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  // Scroll only the message list. scrollIntoView also scrolls ancestors (the page itself on iOS).
+  const scrollToBottom = (smooth = false) => {
+    requestAnimationFrame(() => {
+      const el = messagesScrollRef.current;
+      if (el) el.scrollTo({ top: el.scrollHeight, behavior: smooth ? "smooth" : "auto" });
+    });
+  };
 
   // Was the user already near the newest message before this scroll-triggering
   // event (keyboard open, new message)? Used to avoid yanking someone reading
@@ -100,7 +123,8 @@ export default function Messages() {
         }));
 
         setConversations(convos);
-        if (convos.length > 0 && !active) setActive(convos[0].id);
+        // Desktop shows list and chat side by side, so preselect one; phones open on the list.
+        if (convos.length > 0 && !active && window.innerWidth >= 768) setActive(convos[0].id);
         setConvoLoading(false);
       });
   }, [user]);
@@ -117,7 +141,7 @@ export default function Messages() {
       .then(({ data }) => {
         setMessages(data || []);
         setMessagesLoading(false);
-        setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+        scrollToBottom();
       });
 
     // Mark as read
@@ -142,7 +166,7 @@ export default function Messages() {
         const newMsg = payload.new as Message;
         const wasNearBottom = isNearBottom();
         setMessages(prev => prev.some(m => m.id === newMsg.id) ? prev : [...prev, newMsg]);
-        if (wasNearBottom) setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+        if (wasNearBottom) scrollToBottom(true);
 
         // Mark as read if it's from the other user
         if (newMsg.sender_id !== user?.id) {
@@ -154,25 +178,15 @@ export default function Messages() {
           prev.map(c => c.id === active ? { ...c, last_message: newMsg.content, last_message_at: newMsg.created_at } : c)
         );
       })
+      // Read receipts: the recipient marking a message read turns the sender's ticks blue live.
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages", filter: `conversation_id=eq.${active}` }, (payload) => {
+        const updated = payload.new as Message;
+        setMessages(prev => prev.map(m => m.id === updated.id ? { ...m, read: updated.read } : m));
+      })
       .subscribe();
 
     return () => { supabase.removeChannel(channel); };
   }, [active, user]);
-
-  // Native keyboard: once the keyboard finishes animating open, re-scroll the
-  // message list to the bottom — but only if the user was already there.
-  // capacitor.config.ts's Keyboard.resize:"body" already shrinks the body
-  // (and therefore the dvh-based chat layout below) on its own; this just
-  // keeps the newest message visible inside that now-shorter list, it does
-  // not translate/resize anything itself.
-  useEffect(() => {
-    if (!Capacitor.isNativePlatform()) return;
-    const showSub = Keyboard.addListener("keyboardDidShow", () => {
-      if (!isNearBottom()) return;
-      setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
-    });
-    return () => { showSub.then(s => s.remove()); };
-  }, []);
 
   const [sending, setSending] = useState(false);
 
@@ -196,7 +210,7 @@ export default function Messages() {
     // Optimistic append — don't rely solely on the realtime subscription to
     // show the sender their own message (dedupe by id if realtime also delivers it).
     setMessages(prev => prev.some(m => m.id === inserted.id) ? prev : [...prev, inserted as Message]);
-    setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
+    scrollToBottom(true);
 
     await supabase.from("conversations").update({ last_message_at: new Date().toISOString() }).eq("id", active);
 
@@ -225,6 +239,43 @@ export default function Messages() {
     return () => { delete document.body.dataset.chatOpen; };
   }, [isFullScreenChat]);
 
+  // Pin the chat between the top of the screen and the top of the keyboard.
+  // iOS: the keyboard overlays the WebView, so track its height from the plugin and stop the
+  // WebView's own scroll so iOS can't shove the page up when the input focuses.
+  // Android: the WebView itself resizes, so no offset is needed.
+  // Mobile web: derive the keyboard from visualViewport.
+  useEffect(() => {
+    if (!isFullScreenChat) return;
+    const platform = Capacitor.getPlatform();
+    const keepBottom = () => { if (isNearBottom()) scrollToBottom(); };
+
+    if (platform === "ios") {
+      Keyboard.setScroll({ isDisabled: true }).catch(() => {});
+      const subs = [
+        Keyboard.addListener("keyboardWillShow", (info) => { setKeyboardHeight(info.keyboardHeight); keepBottom(); }),
+        Keyboard.addListener("keyboardDidShow", keepBottom),
+        Keyboard.addListener("keyboardWillHide", () => setKeyboardHeight(0)),
+      ];
+      return () => {
+        subs.forEach(s => s.then(l => l.remove()));
+        Keyboard.setScroll({ isDisabled: false }).catch(() => {});
+        setKeyboardHeight(0);
+      };
+    }
+    if (platform === "android") {
+      const sub = Keyboard.addListener("keyboardDidShow", keepBottom);
+      return () => { sub.then(l => l.remove()); };
+    }
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const onResize = () => {
+      setKeyboardHeight(Math.max(0, window.innerHeight - vv.height - vv.offsetTop));
+      keepBottom();
+    };
+    vv.addEventListener("resize", onResize);
+    return () => { vv.removeEventListener("resize", onResize); setKeyboardHeight(0); };
+  }, [isFullScreenChat]);
+
   // Mobile, inside an open conversation: a dedicated full-height flex layout
   // instead of the normal scrolling page. Header sizes itself normally and
   // the chat panel takes the rest via flex-1/min-h-0, so it (not the whole
@@ -243,7 +294,7 @@ export default function Messages() {
     const yesterday = new Date(Date.now() - 86400000).toLocaleDateString([], { year: "numeric", month: "long", day: "numeric" });
 
     return (
-      <div className="flex h-dvh flex-col bg-background">
+      <div className="fixed inset-x-0 top-0 z-40 flex flex-col bg-background" style={{ bottom: keyboardHeight }}>
         {/* Chat header with safe-area-inset-top for Dynamic Island */}
         <div className="shrink-0 bg-card border-b border-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
           <div className="flex items-center gap-3 px-4 py-2.5">
@@ -265,7 +316,7 @@ export default function Messages() {
         {/* Messages area with chat wallpaper */}
         <div
           ref={messagesScrollRef}
-          className="min-h-0 flex-1 overflow-y-auto px-3 py-2"
+          className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-2"
           style={{
             backgroundImage: "radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, hsl(var(--primary) / 0.02) 0%, transparent 40%)",
             backgroundColor: "hsl(var(--background))",
@@ -319,23 +370,26 @@ export default function Messages() {
               </div>
             ))
           )}
-          <div ref={bottomRef} />
         </div>
 
-        {/* Composer */}
-        <div className="shrink-0 bg-card/95 backdrop-blur px-2 py-2" style={{ paddingBottom: "max(0.5rem, env(safe-area-inset-bottom))" }}>
+        {/* Composer: home-indicator padding only while the keyboard is down */}
+        <div className="shrink-0 bg-card/95 backdrop-blur px-2 py-2" style={{ paddingBottom: keyboardHeight > 0 ? "0.5rem" : "max(0.5rem, env(safe-area-inset-bottom))" }}>
           <div className="flex items-end gap-2">
             <div className="flex-1 relative">
               <input
                 value={text}
                 onChange={e => setText(e.target.value.slice(0, MAX_CHARS))}
                 placeholder="Message"
+                enterKeyHint="send"
                 onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
                 className="w-full rounded-full bg-background border border-border px-4 py-2.5 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
             <button
               onClick={send}
+              // Keep focus in the input so the keyboard stays up between messages.
+              onPointerDown={e => e.preventDefault()}
+              aria-label="Send message"
               disabled={!text.trim() || sending}
               className="flex items-center justify-center w-10 h-10 rounded-full bg-primary text-primary-foreground disabled:opacity-40 transition-opacity active:scale-95"
             >
@@ -451,7 +505,7 @@ export default function Messages() {
                 )}
 
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                <div ref={messagesScrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
                   {messagesLoading ? (
                     <>
                       {[1,2,3].map(i => (
@@ -480,7 +534,6 @@ export default function Messages() {
                       </div>
                     ))
                   )}
-                  <div ref={bottomRef} />
                 </div>
 
                 {/* Input */}

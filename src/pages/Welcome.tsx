@@ -231,6 +231,9 @@ export default function Welcome() {
   }, [selectedCountry, cities, selectedCity]);
 
   const handleComplete = () => {
+    const acceptedDetected =
+      !isChangingLocation && !!location && location.country === selectedCountry && location.city === selectedCity;
+    localStorage.setItem("motokah_location_source", acceptedDetected ? "auto" : "manual");
     setManualLocation(selectedCountry, selectedCity);
     localStorage.setItem("motokah_lang", selectedLang);
     localStorage.setItem("motokah_welcome_completed", "true");
@@ -396,7 +399,7 @@ export default function Welcome() {
                         onClick={() => {
                           setManualSelectionStarted(true);
                           setSelectedCountry(c.code);
-                          setSelectedCity("");
+                          setSelectedCity(location?.country === c.code ? location.city : "");
                           setStep("city");
                         }}
                         className={`relative flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
