@@ -23,7 +23,11 @@ jobs:
       - run: npx tsc --noEmit
       - name: Lint (non-blocking — 72 pre-existing errors not from this change, see docs/qa/BUG_REGISTER.md)
         run: npm run lint || true
-      - run: npm run build
+      - name: Build web app
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run build
       - run: npm test -- --run
 
   e2e:
@@ -39,7 +43,11 @@ jobs:
       # Uses channel: "chrome" in playwright.config.ts (GitHub's ubuntu runner
       # images ship Chrome stable preinstalled) instead of Playwright's own
       # managed chromium download, which doesn't support Ubuntu 26 yet.
-      - run: npm run build
+      - name: Build web app
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run build
       - run: npx playwright test
         env:
           CI: true
