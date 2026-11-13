@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings } from "@/data/mockData";
+import { isRealUuid } from "@/lib/uuid";
 import { IconX, IconScale } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
@@ -30,10 +31,20 @@ export default function Compare() {
 
     const fetchCars = async () => {
       const staticIds = resolvedIds.map(id => id.startsWith("mock-") ? id.replace(/^mock-/, "stock-") : id);
-      const mockIds = staticIds.filter(id => id.startsWith("stock-"));
-      const realIds = staticIds.filter(id => !id.startsWith("stock-"));
 
-      const fromMock: Listing[] = mockListings.filter(m => mockIds.includes(m.id));
+      // Previously: anything not prefixed "stock-" was assumed to be a real
+      // Supabase UUID and sent straight to a `.in("id", realIds)` query — but
+      // scraped (ig-/jiji-/ib- prefixed) listings never match "stock-" either,
+      // so they fell into "realIds" and broke the entire query with a real
+      // 400 (22P02 invalid uuid), silently showing "No vehicles selected"
+      // even when two were genuinely picked. Found live 2026-11-13, same bug
+      // family as SellerCard/reports/wishlist. Fix: check mockListings
+      // membership directly instead of guessing from a prefix.
+      const fromMock: Listing[] = staticIds
+        .map(id => mockListings.find(m => m.id === id))
+        .filter((m): m is Listing => Boolean(m));
+      const mockIds = new Set(fromMock.map(m => m.id));
+      const realIds = staticIds.filter(id => !mockIds.has(id) && isRealUuid(id));
 
       let fromDB: Listing[] = [];
       if (realIds.length > 0) {
