@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/alert-dialog";
 // date-fns kept for future use
 import { mockListings } from "@/data/mockData";
+import { isRealUuid } from "@/lib/uuid";
 
 type ProfileData = {
   display_name: string | null;
@@ -357,7 +358,13 @@ export default function Profile() {
       .filter((l) => ids.includes(l.id))
       .map((l) => ({ id: l.id, title: l.title, price: l.price, currency: l.currency, year: l.year, image: l.image, location: l.location }));
     const mockIds = new Set(fromMock.map((l) => l.id));
-    const remainingIds = ids.filter((id) => !mockIds.has(id));
+    // Also gate on isRealUuid: a non-mock, non-UUID id (e.g. a future jiji-
+    // sourced listing not yet in mockListings) would otherwise reach the
+    // Supabase .in() query below and break it with a real 400, same bug
+    // family fixed in Wishlist.tsx/Compare.tsx/SellerCard.tsx this session.
+    // Currently dormant (jijiListings.ts has no data yet) but fixed
+    // defensively before it has a chance to fire.
+    const remainingIds = ids.filter((id) => !mockIds.has(id) && isRealUuid(id));
 
     if (remainingIds.length === 0) { setWishlistListings(fromMock); return; }
 
