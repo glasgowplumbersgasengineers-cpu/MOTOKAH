@@ -298,7 +298,7 @@ export default function Messages() {
                   const nextSame = i < g.msgs.length - 1 && g.msgs[i + 1].sender_id === m.sender_id;
                   return (
                     <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"} ${nextSame ? "mb-0.5" : "mb-2"}`}>
-                      <div className={`max-w-[78%] px-3 py-1.5 text-[15px] leading-relaxed shadow-sm ${
+                      <div className={`max-w-[78%] px-3 py-1.5 text-[15px] leading-relaxed shadow-sm break-words [overflow-wrap:anywhere] ${
                         mine
                           ? `bg-primary text-primary-foreground ${nextSame ? "rounded-2xl rounded-br-md" : "rounded-2xl rounded-br-sm"}`
                           : `bg-card text-foreground border border-border/50 ${nextSame ? "rounded-2xl rounded-bl-md" : "rounded-2xl rounded-bl-sm"}`

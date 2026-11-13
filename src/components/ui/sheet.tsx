@@ -57,20 +57,23 @@ interface SheetContentProps
 }
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
-  ({ side = "right", className, children, hideClose, ...props }, ref) => (
+  ({ side = "right", className, children, hideClose, style, ...props }, ref) => {
+    // Only sheets that touch the top edge sit under the notch / Dynamic Island.
+    const touchesTop = side !== "bottom";
+    return (
     <SheetPortal>
       <SheetOverlay />
       <SheetPrimitive.Content
         ref={ref}
         className={cn(sheetVariants({ side }), className)}
-        style={{ paddingTop: "max(1.5rem, calc(env(safe-area-inset-top) + 0.5rem))" }}
+        style={touchesTop ? { paddingTop: "max(1.5rem, calc(env(safe-area-inset-top) + 0.5rem))", ...style } : style}
         {...props}
       >
         {children}
         {!hideClose && (
           <SheetPrimitive.Close
             aria-label="Close menu"
-            style={{ top: "max(1rem, calc(env(safe-area-inset-top) + 0.5rem))" }}
+            style={{ top: touchesTop ? "max(1rem, calc(env(safe-area-inset-top) + 0.5rem))" : "1rem" }}
             className="absolute right-2 z-10 flex h-11 w-11 items-center justify-center rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
           >
             <X className="h-4 w-4" />
@@ -79,7 +82,8 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
         )}
       </SheetPrimitive.Content>
     </SheetPortal>
-  ),
+    );
+  },
 );
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 

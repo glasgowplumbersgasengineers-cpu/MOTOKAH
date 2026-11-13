@@ -6,7 +6,6 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   server: {
     androidScheme: 'https',
-    hostname: 'motokah.app',
   },
   plugins: {
     SplashScreen: {

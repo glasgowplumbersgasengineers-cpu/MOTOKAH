@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { Capacitor } from "@capacitor/core";
 import App from "./App.tsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.tsx";
 import "./index.css";
@@ -35,7 +36,7 @@ if (typeof Node === "function" && Node.prototype) {
 // iOS Capacitor: after the keyboard dismisses, the WKWebView sometimes keeps
 // the body at the shrunk height, hiding the bottom tab bar and clipping content.
 // Force a layout recalc on every visualViewport resize (covers both show and hide).
-if (window.visualViewport) {
+if (window.visualViewport && Capacitor.isNativePlatform()) {
   let pendingResize: number | null = null;
   window.visualViewport.addEventListener("resize", () => {
     if (pendingResize) cancelAnimationFrame(pendingResize);

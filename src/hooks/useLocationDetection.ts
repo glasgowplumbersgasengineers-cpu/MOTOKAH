@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Capacitor } from "@capacitor/core";
 
 export type Country = "Tanzania" | "Kenya" | "Uganda" | "Rwanda" | "Burundi" | "Ethiopia" | "Nigeria" | "All";
 
@@ -74,8 +75,9 @@ export function useLocationDetection() {
         }
       }
 
-      // Method 1: GPS/Geolocation API
-      if ("geolocation" in navigator) {
+      // Method 1: GPS/Geolocation API. Skipped in the native app: WKWebView's prompt
+      // names the page origin ("localhost"), not the app.
+      if ("geolocation" in navigator && !Capacitor.isNativePlatform()) {
         try {
           const position = await new Promise<GeolocationPosition>((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, {
