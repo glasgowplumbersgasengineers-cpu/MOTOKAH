@@ -70,20 +70,7 @@ export function Chapter8LanguageCurrency() {
           )}
         </div>
 
-        <Cursor
-          path={[
-            { frame: F.langTap - 10, x: 0, y: 220 },
-            { frame: F.langTap, x: 0, y: 220 },
-            { frame: F.swTap - 10, x: 0, y: 265 },
-            { frame: F.swTap, x: 0, y: 265 },
-            { frame: F.currTap - 10, x: 55, y: 220 },
-            { frame: F.currTap, x: 55, y: 220 },
-            { frame: F.kesTap - 10, x: 55, y: 265 },
-            { frame: F.kesTap, x: 55, y: 265 },
-          ]}
-          clickFrame={F.swTap}
-          hideFrame={F.priceUpdate + 10}
-        />
+        <Cursor taps={[{ frame: F.langTap, x: 208, y: 27 }, { frame: F.swTap, x: 169, y: 94 }, { frame: F.currTap, x: 250, y: 27 }, { frame: F.kesTap, x: 225, y: 90 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );

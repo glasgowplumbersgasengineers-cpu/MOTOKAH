@@ -137,20 +137,7 @@ export function Chapter3PostAd() {
           </div>
         )}
 
-        <Cursor
-          path={[
-            { frame: F.makeOpen - 15, x: 0, y: 320 },
-            { frame: F.makeOpen, x: -40, y: 220 },
-            { frame: F.makeTap - 10, x: -60, y: 400 },
-            { frame: F.makeTap, x: -60, y: 400 },
-            { frame: F.photoTap - 15, x: -60, y: 400 },
-            { frame: F.photoTap, x: -80, y: 480 },
-            { frame: F.publishTap - 10, x: -80, y: 480 },
-            { frame: F.publishTap, x: -40, y: 560 },
-          ]}
-          clickFrame={F.makeTap}
-          hideFrame={F.success}
-        />
+        <Cursor taps={[{ frame: F.makeOpen, x: 61, y: 89 }, { frame: F.makeTap, x: 83, y: 421 }, { frame: F.photoTap, x: 36, y: 330 }, { frame: F.publishTap, x: 140, y: 388 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );

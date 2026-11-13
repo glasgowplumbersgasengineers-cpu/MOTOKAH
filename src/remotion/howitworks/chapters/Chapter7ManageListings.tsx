@@ -65,19 +65,7 @@ export function Chapter7ManageListings() {
           </div>
         </div>
 
-        <Cursor
-          path={[
-            { frame: F.editTap - 10, x: -50, y: 400 },
-            { frame: F.editTap, x: -50, y: 400 },
-            { frame: F.priceEdit - 10, x: 0, y: 250 },
-            { frame: F.saveTap - 10, x: 0, y: 400 },
-            { frame: F.saveTap, x: 0, y: 400 },
-            { frame: F.soldTap - 10, x: 40, y: 400 },
-            { frame: F.soldTap, x: 40, y: 400 },
-          ]}
-          clickFrame={F.editTap}
-          hideFrame={F.soldTap + 10}
-        />
+        <Cursor taps={[{ frame: F.editTap, x: 43, y: 207 }, { frame: F.saveTap, x: 140, y: 148 }, { frame: F.soldTap, x: 103, y: 207 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );

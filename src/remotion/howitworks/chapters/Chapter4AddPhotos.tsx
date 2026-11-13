@@ -108,21 +108,7 @@ export function Chapter4AddPhotos() {
           </div>
         </div>
 
-        <Cursor
-          path={[
-            { frame: F.galleryOpen - 10, x: 0, y: 340 },
-            { frame: F.pick1 - 5, x: -50, y: 290 },
-            { frame: F.pick1, x: -50, y: 290 },
-            { frame: F.pick2, x: 0, y: 290 },
-            { frame: F.pick3, x: 50, y: 290 },
-            { frame: F.confirm - 10, x: 0, y: 420 },
-            { frame: F.confirm, x: 0, y: 420 },
-            { frame: F.removeTap - 10, x: 0, y: 310 },
-            { frame: F.removeTap, x: 0, y: 310 },
-          ]}
-          clickFrame={F.removeTap}
-          hideFrame={F.removeTap + 20}
-        />
+        <Cursor taps={[{ frame: F.galleryOpen, x: 140, y: 167 }, { frame: F.pick1, x: 54, y: 123 }, { frame: F.pick2, x: 140, y: 123 }, { frame: F.pick3, x: 226, y: 123 }, { frame: F.removeTap, x: 170, y: 94 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );

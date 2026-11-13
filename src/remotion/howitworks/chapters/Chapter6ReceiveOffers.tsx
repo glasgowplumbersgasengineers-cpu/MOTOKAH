@@ -76,18 +76,7 @@ export function Chapter6ReceiveOffers() {
           )}
         </div>
 
-        <Cursor
-          path={[
-            { frame: F.bellTap - 10, x: 25, y: 220 },
-            { frame: F.bellTap, x: 25, y: 220 },
-            { frame: F.notifTap - 10, x: 0, y: 300 },
-            { frame: F.notifTap, x: 0, y: 300 },
-            { frame: F.replyTap - 10, x: 0, y: 520 },
-            { frame: F.replyTap, x: 0, y: 520 },
-          ]}
-          clickFrame={F.bellTap}
-          hideFrame={F.replyTap + 10}
-        />
+        <Cursor taps={[{ frame: F.bellTap, x: 254, y: 27 }, { frame: F.notifTap, x: 149, y: 110 }, { frame: F.replyTap, x: 140, y: 534 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );

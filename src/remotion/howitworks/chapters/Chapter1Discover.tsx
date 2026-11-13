@@ -73,15 +73,7 @@ export function Chapter1Discover() {
           </div>
         </div>
 
-        <Cursor
-          path={[
-            { frame: 20, x: 0, y: 320 },
-            { frame: 45, x: -40, y: 250 },
-            { frame: tapCategoryFrame, x: -40, y: 250 },
-          ]}
-          clickFrame={tapCategoryFrame}
-          hideFrame={tapCategoryFrame + 15}
-        />
+        <Cursor taps={[{ frame: tapCategoryFrame, x: 205, y: 139 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );

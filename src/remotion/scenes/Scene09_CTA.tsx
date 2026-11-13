@@ -1,5 +1,6 @@
 import { useCurrentFrame, spring } from "remotion";
 import { COLOR, SPRING, cursorGlow } from "../design";
+import { TapDot } from "../components/Cursor";
 
 const DOMAIN = "motokah.com";
 
@@ -228,34 +229,9 @@ export function Scene09_CTA() {
         />
       </div>
 
-      {/* Cursor */}
-      {frame >= cursorStart && (
-        <div
-          style={{
-            position: "absolute",
-            left: cursorX,
-            top: cursorY,
-            pointerEvents: "none",
-            zIndex: 100,
-            transition: "none",
-          }}
-        >
-          <svg
-            width={20}
-            height={26}
-            viewBox="0 0 20 26"
-            fill="none"
-            style={{ transform: "scale(1.2)" }}
-          >
-            <path
-              d="M0 0L0 20L5 15L9 24L12 23L8 14L15 14Z"
-              fill="white"
-              stroke={COLOR.ink}
-              strokeWidth={1.5}
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
+      {/* Tap */}
+      {frame >= clickFrame - 6 && frame <= clickFrame + 18 && (
+        <TapDot x={cursorX} y={cursorY} tf={frame - clickFrame} size={52} />
       )}
     </div>
   );

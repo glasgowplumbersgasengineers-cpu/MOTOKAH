@@ -74,19 +74,7 @@ export function Chapter2Search() {
           )}
         </div>
 
-        <Cursor
-          path={[
-            { frame: F.filtersOpen - 10, x: 0, y: 250 },
-            { frame: F.makeTap - 12, x: -40, y: 310 },
-            { frame: F.makeTap, x: -40, y: 310 },
-            { frame: F.applyTap - 10, x: -40, y: 310 },
-            { frame: F.applyTap, x: 0, y: 540 },
-            { frame: F.openListing - 15, x: 0, y: 370 },
-            { frame: F.openListing, x: 0, y: 370 },
-          ]}
-          clickFrame={F.makeTap}
-          hideFrame={F.openListing + 5}
-        />
+        <Cursor taps={[{ frame: F.filtersOpen, x: 140, y: 82 }, { frame: F.makeTap, x: 35, y: 109 }, { frame: F.openListing, x: 140, y: 255 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );

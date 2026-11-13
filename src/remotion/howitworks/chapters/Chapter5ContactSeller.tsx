@@ -69,17 +69,7 @@ export function Chapter5ContactSeller() {
           )}
         </div>
 
-        <Cursor
-          path={[
-            { frame: F.tapMessage - 10, x: 0, y: 340 },
-            { frame: F.tapMessage, x: 0, y: 340 },
-            { frame: F.typeStart - 10, x: -20, y: 520 },
-            { frame: F.sendTap - 5, x: 40, y: 520 },
-            { frame: F.sendTap, x: 40, y: 520 },
-          ]}
-          clickFrame={F.tapMessage}
-          hideFrame={F.sendTap + 10}
-        />
+        <Cursor taps={[{ frame: F.tapMessage, x: 140, y: 215 }, { frame: F.sendTap, x: 256, y: 534 }]} />
       </FullBleedScreen>
     </AbsoluteFill>
   );
