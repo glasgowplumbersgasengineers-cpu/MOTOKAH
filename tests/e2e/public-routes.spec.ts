@@ -68,9 +68,8 @@ test("search page: input accepts focus, keyboard typing, and text appears", asyn
   await page.addInitScript(() => localStorage.setItem("motokah_welcome_completed", "true"));
   await page.goto("/search");
   const searchInputs = page.getByRole("textbox");
-  const count = await searchInputs.count();
-  expect(count, "/search should have at least one text input").toBeGreaterThan(0);
   const input = searchInputs.first();
+  await input.waitFor({ state: "visible" });
   await input.click();
   await expect(input).toBeFocused();
   await page.keyboard.type("Toyota");
