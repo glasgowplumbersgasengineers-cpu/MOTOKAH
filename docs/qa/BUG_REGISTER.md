@@ -116,6 +116,14 @@ Distinguishing actual end-to-end evidence from code/backend inspection, per expl
 - **Could not fix directly**: `gh secret list --repo glasgowplumbersgasengineers-cpu/MOTOKAH` returned `403 — You must have repository read permissions or have the repository secrets fine-grained permission`. The token used for gpg-mirror push access doesn't have secrets-management scope. This needs Owner to add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` as repo secrets directly via the GitHub UI (Settings → Secrets and variables → Actions) on `glasgowplumbersgasengineers-cpu/MOTOKAH`, or provide a token with the right scope.
 - Separately confirmed: fuel-price cron (`update-fuel-prices.yml`, daily 3am UTC) genuinely has zero runs because **today's 3am UTC window hasn't occurred yet** (checked at 00:07 UTC on 2026-11-13) — not a failure, just too early. Re-check after 3am UTC.
 
+## 20. Admin authorization — real negative security test, not just policy inspection
+
+- Logged in as the ordinary (non-admin) QA account and attacked it directly:
+  1. Navigated straight to `/admin` — client-side route guard redirected away immediately.
+  2. Bypassed the UI entirely: extracted the real session's access token from `localStorage` and sent a raw `POST` to `/rest/v1/content_posts` (an admin-only table) with a fully valid payload (correct schema, passed all three content-validation triggers — pillar, post_type, marketplace-relevance keyword check — to make sure RLS itself was being tested, not a trigger rejecting it first for an unrelated reason).
+  3. **Result: real `403`, `42501 — new row violates row-level security policy`.** Confirmed server-side enforcement is genuine, not just a client-side gate that a direct API call could bypass.
+- This is the first actual attack-style negative test run this session for admin authorization (previously only policy text was inspected). Real pass.
+
 ## Still open / blocked
 
 - Sunny's actual symptom when trying to reply was never fully confirmed (what exactly happens — error shown? box clears with nothing? box stuck?). The `send()` fix above addresses the most likely cause found by code inspection, but isn't confirmed as *the* cause without his exact symptom or a repro.
