@@ -29,6 +29,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import BottomNav from "@/components/BottomNav";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import MarketingOptInPrompt from "@/components/MarketingOptInPrompt";
 
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LocationProvider } from "@/contexts/LocationContext";
@@ -70,6 +71,7 @@ const AdminReports = lazy(() => import("./pages/admin/AdminReports.tsx"));
 const AdminBlog = lazy(() => import("./pages/admin/AdminBlog.tsx"));
 const AdminContacts = lazy(() => import("./pages/admin/AdminContacts.tsx"));
 const AdminNewsletter = lazy(() => import("./pages/admin/AdminNewsletter.tsx"));
+const AdminPush = lazy(() => import("./pages/admin/AdminPush.tsx"));
 const AdminDealers = lazy(() => import("./pages/admin/AdminDealers.tsx"));
 const AdminContent = lazy(() => import("./pages/admin/AdminContent.tsx"));
 const DutyCalculator = lazy(() => import("./pages/DutyCalculator.tsx"));
@@ -155,6 +157,7 @@ function AnimatedRoutes() {
                 <Route path="blog" element={<AdminBlog />} />
                 <Route path="contacts" element={<AdminContacts />} />
                 <Route path="newsletter" element={<AdminNewsletter />} />
+                <Route path="push" element={<AdminPush />} />
                 <Route path="dealers" element={<AdminDealers />} />
                 <Route path="content" element={<AdminContent />} />
               </Route>
@@ -196,6 +199,7 @@ const App = () => (
                   <TooltipProvider>
                     <Toaster />
                     <Sonner />
+                    <MarketingOptInPrompt />
                     <BrowserRouter>
                       <BottomNav />
                       <AnimatedRoutes />

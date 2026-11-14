@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PushSettingsCard from "@/components/PushSettingsCard";
 import { useAuth } from "@/hooks/useAuth";
 import { useWishlist } from "@/hooks/useWishlist";
 import { supabase } from "@/integrations/supabase/client";
@@ -899,6 +900,7 @@ export default function Profile() {
         {/* TAB: SETTINGS & PASSWORD */}
         {tab === "settings" && (
           <div className="space-y-6">
+            <PushSettingsCard />
             <div className="bg-card border border-border rounded-2xl p-5 md:p-6 space-y-4 shadow-xs">
               <div className="flex items-center justify-between">
                 <div>

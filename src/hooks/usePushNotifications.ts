@@ -4,6 +4,7 @@ import { PushNotifications } from "@capacitor/push-notifications";
 import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { ASK_MARKETING_EVENT, deviceTokenPrefs, wasMarketingAsked } from "@/lib/pushPrefs";
 
 const ROUTES: Record<string, string> = {
   new_message: "/messages",
@@ -29,15 +30,20 @@ export function usePushNotifications() {
     const handles = [
       PushNotifications.addListener("registration", async (token) => {
         await supabase.from("device_tokens").upsert(
-          { user_id: userId, token: token.value, platform: Capacitor.getPlatform(), updated_at: new Date().toISOString() },
+          { user_id: userId, token: token.value, platform: Capacitor.getPlatform(), ...deviceTokenPrefs(), updated_at: new Date().toISOString() },
           { onConflict: "user_id,token" },
         );
+        // Promotional pushes need their own explicit opt-in (App Store guideline 4.5.4).
+        if (!wasMarketingAsked()) window.dispatchEvent(new Event(ASK_MARKETING_EVENT));
       }),
       PushNotifications.addListener("registrationError", (err) => {
         console.warn("Push registration failed:", err.error);
       }),
       PushNotifications.addListener("pushNotificationActionPerformed", (action) => {
-        const route = ROUTES[action.notification.data?.type];
+        const data = action.notification.data ?? {};
+        const route = data.type === "campaign" && typeof data.link === "string" && data.link.startsWith("/")
+          ? data.link
+          : ROUTES[data.type];
         if (route) navigateRef.current(route);
       }),
     ];

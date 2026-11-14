@@ -11,6 +11,7 @@ import {
   IconArrowLeft,
   IconCalendarEvent,
   IconChartBar,
+  IconBellRinging,
 } from "@tabler/icons-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
@@ -37,6 +38,7 @@ const navItems = [
   { title: "Blog", url: "/admin/blog", icon: IconArticle },
   { title: "Contact Messages", url: "/admin/contacts", icon: IconMail },
   { title: "Newsletter", url: "/admin/newsletter", icon: IconNews },
+  { title: "Push Notifications", url: "/admin/push", icon: IconBellRinging },
   { title: "Dealer Applications", url: "/admin/dealers", icon: IconBuildingStore, badgeKey: "dealerApps" },
   { title: "Content Calendar", url: "/admin/content", icon: IconCalendarEvent },
 ];

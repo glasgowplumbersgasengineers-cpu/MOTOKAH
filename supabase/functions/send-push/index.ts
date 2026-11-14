@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import * as jose from "https://deno.land/x/jose@v4.14.4/index.ts";
+import { sendApns } from "../_shared/apns.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -8,76 +8,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-// APNs JWT — valid for 1 hour, cached across invocations within the same
-// Deno isolate so we don't regenerate on every push.
-let apnsJwt: string | null = null;
-let apnsJwtExp = 0;
-
-async function getApnsJwt(): Promise<string> {
-  const now = Math.floor(Date.now() / 1000);
-  if (apnsJwt && now < apnsJwtExp - 60) return apnsJwt;
-
-  const keyId = Deno.env.get("APNS_KEY_ID");
-  const teamId = Deno.env.get("APNS_TEAM_ID");
-  const privateKeyPem = Deno.env.get("APNS_PRIVATE_KEY");
-  if (!keyId || !teamId || !privateKeyPem) {
-    throw new Error("APNS_KEY_ID, APNS_TEAM_ID, and APNS_PRIVATE_KEY must be set");
-  }
-
-  const privateKey = await jose.importPKCS8(privateKeyPem, "ES256");
-  apnsJwtExp = now + 3600;
-  apnsJwt = await new jose.SignJWT({})
-    .setProtectedHeader({ alg: "ES256", kid: keyId })
-    .setIssuer(teamId)
-    .setIssuedAt(now)
-    .sign(privateKey);
-
-  return apnsJwt;
-}
-
-type SendResult = "sent" | "stale" | "failed";
-
-async function sendApns(
-  token: string,
-  title: string,
-  body: string,
-  data: Record<string, string>,
-): Promise<SendResult> {
-  const jwt = await getApnsJwt();
-  const bundleId = "com.motokah.app";
-  const host = "api.push.apple.com"; // production
-
-  const payload = {
-    aps: {
-      alert: { title, body },
-      sound: "default",
-    },
-    ...data,
-  };
-
-  const res = await fetch(`https://${host}/3/device/${token}`, {
-    method: "POST",
-    headers: {
-      authorization: `bearer ${jwt}`,
-      "apns-topic": bundleId,
-      "apns-push-type": "alert",
-      "apns-priority": "10",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  if (res.ok) return "sent";
-  const err = await res.text();
-  console.error(`APNs ${res.status} for token ${token.slice(0, 8)}...: ${err}`);
-  // Only these mean the token itself is dead. Auth/config errors (403 etc.) must
-  // not delete tokens, or one bad secret would wipe every registered device.
-  if (res.status === 410 || err.includes("BadDeviceToken")) return "stale";
-  return "failed";
-}
-
-// TODO: Add FCM support when Android push is needed.
-// async function sendFcm(token, title, body, data) { ... }
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -94,7 +24,8 @@ serve(async (req) => {
     const input = await req.json();
     let user_id: string, title: string, body: string | null, data: Record<string, string>;
 
-    const callerIsService = req.headers.get("authorization") === `Bearer ${serviceKey}`;
+    const internalSecret = Deno.env.get("INTERNAL_PUSH_SECRET");
+    const callerIsService = !!internalSecret && req.headers.get("x-internal-secret") === internalSecret;
     if (callerIsService && input.user_id && input.title) {
       // Server-side senders (scheduled campaigns) may send free text.
       ({ user_id, title } = input);
