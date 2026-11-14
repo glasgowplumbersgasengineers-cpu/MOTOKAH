@@ -23,7 +23,8 @@ export const ADMIN_EMAILS = [
 export function checkUserIsAdmin(user: User | null, roleRows?: any[]): boolean {
   if (!user) return false;
   const email = (user.email || "").toLowerCase().trim();
-  if (ADMIN_EMAILS.includes(email) || email.endsWith("@motokah.com")) return true;
+  // Explicit list only: a blanket @motokah.com rule made the App Review test account an admin.
+  if (ADMIN_EMAILS.includes(email)) return true;
   if (user.user_metadata?.role === "admin" || user.app_metadata?.role === "admin") return true;
   if (Array.isArray(roleRows) && roleRows.length > 0) return true;
   if (typeof window !== "undefined" && localStorage.getItem("motokah_admin_override") === "true") return true;

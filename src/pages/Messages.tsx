@@ -12,6 +12,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
 import { toast } from "sonner";
+import ChatSafetyMenu from "@/components/ChatSafetyMenu";
+import { blockSeller, getBlockedSellerKeys } from "@/lib/blockedSellers";
 
 interface Conversation {
   id: string;
@@ -222,9 +224,29 @@ export default function Messages() {
     }
   };
 
+  const otherIdOf = (c: Conversation) => (c.participant1_id === user?.id ? c.participant2_id : c.participant1_id);
   const filteredConvos = conversations.filter(c =>
-    !search || c.other_name?.toLowerCase().includes(search.toLowerCase())
+    !getBlockedSellerKeys().has(otherIdOf(c).toLowerCase()) &&
+    (!search || c.other_name?.toLowerCase().includes(search.toLowerCase()))
   );
+
+  const reportChatUser = async (c: Conversation, reason: string) => {
+    if (!user) return;
+    const { error } = await supabase.from("reports").insert({
+      reporter_id: user.id, reason, reported_user_id: otherIdOf(c), listing_id: c.listing_id,
+      context: `Chat with ${c.other_name || "user"} (conversation ${c.id})`,
+    });
+    if (error) toast.error("Report could not be submitted. Please try again.");
+    else toast.success("Report submitted. Our team reviews reports within 24 hours.");
+  };
+
+  const blockChatUser = (c: Conversation) => {
+    if (!user) return;
+    blockSeller({ sellerId: otherIdOf(c), sellerName: c.other_name || "" }, user.id);
+    setConversations(prev => prev.filter(x => x.id !== c.id));
+    setActive(null);
+    toast.success(`${c.other_name || "User"} has been blocked.`);
+  };
 
   const activeConvo = conversations.find(c => c.id === active);
   const isFullScreenChat = isMobile && showChat && !convoLoading && conversations.length > 0;
@@ -310,6 +332,7 @@ export default function Messages() {
                 <p className="text-[11px] text-primary truncate leading-tight">Re: {activeConvo.listing_title}</p>
               )}
             </div>
+            {activeConvo && <ChatSafetyMenu name={activeConvo.other_name || "user"} onReport={(reason) => reportChatUser(activeConvo, reason)} onBlock={() => blockChatUser(activeConvo)} />}
           </div>
         </div>
 
@@ -501,6 +524,7 @@ export default function Messages() {
                         <p className="text-[10px] text-primary truncate">Re: {activeConvo.listing_title}</p>
                       )}
                     </div>
+                    <div className="ml-auto"><ChatSafetyMenu name={activeConvo.other_name || "user"} onReport={(reason) => reportChatUser(activeConvo, reason)} onBlock={() => blockChatUser(activeConvo)} /></div>
                   </div>
                 )}
 

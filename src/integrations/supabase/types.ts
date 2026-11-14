@@ -545,8 +545,11 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          listing_id: string
+          context: string | null
+          listing_id: string | null
+          listing_ref: string | null
           reason: string
+          reported_user_id: string | null
           reporter_id: string
           resolved: boolean
           resolved_at: string | null
@@ -554,8 +557,11 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          listing_id: string
+          context?: string | null
+          listing_id?: string | null
+          listing_ref?: string | null
           reason: string
+          reported_user_id?: string | null
           reporter_id: string
           resolved?: boolean
           resolved_at?: string | null
@@ -563,8 +569,11 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          listing_id?: string
+          context?: string | null
+          listing_id?: string | null
+          listing_ref?: string | null
           reason?: string
+          reported_user_id?: string | null
           reporter_id?: string
           resolved?: boolean
           resolved_at?: string | null

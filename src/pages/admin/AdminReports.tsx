@@ -13,7 +13,7 @@ export default function AdminReports() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("reports")
-        .select("id, listing_id, reason, created_at, reporter_id")
+        .select("id, listing_id, listing_ref, reported_user_id, context, reason, created_at, reporter_id")
         .order("created_at", { ascending: false })
         .limit(200);
       if (error) throw error;
@@ -77,21 +77,24 @@ export default function AdminReports() {
             <TableBody>
               {reports.map((r) => (
                 <TableRow key={r.id}>
-                  <TableCell className="font-mono text-xs">{r.listing_id.slice(0, 8)}…</TableCell>
+                  <TableCell className="text-xs">
+                    <span className="font-mono">{r.listing_id ? `${r.listing_id.slice(0, 8)}…` : r.listing_ref || (r.reported_user_id ? `user ${r.reported_user_id.slice(0, 8)}…` : "-")}</span>
+                    {r.context && <span className="block text-muted-foreground">{r.context}</span>}
+                  </TableCell>
                   <TableCell>{r.reason}</TableCell>
                   <TableCell>{format(new Date(r.created_at), "MMM d, yyyy")}</TableCell>
                   <TableCell className="space-x-1">
-                    <Button
+                    {r.listing_id && <Button
                       size="sm"
                       variant="destructive"
                       onClick={() => {
                         if (confirm("Remove this listing? This will reject it and clear all its reports.")) {
-                          removeListing.mutate({ reportId: r.id, listingId: r.listing_id });
+                          removeListing.mutate({ reportId: r.id, listingId: r.listing_id! });
                         }
                       }}
                     >
                       Remove Listing
-                    </Button>
+                    </Button>}
                     <Button
                       size="sm"
                       variant="outline"

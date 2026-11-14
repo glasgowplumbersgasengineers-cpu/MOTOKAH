@@ -341,15 +341,12 @@ export default function ListingDetail() {
                       ))}
                       <Button className="w-full" disabled={!reportReason} onClick={async () => {
                         if (!user) { navigate("/auth"); return; }
-                        // reports.listing_id is a uuid column; scraped (Instagram/Jiji)
-                        // listings have synthetic string ids and always fail this insert
-                        // with a real 400 (22P02). Was already showing an honest error
-                        // toast, just skip the doomed network call. Found live 2026-11-12.
-                        if (!isRealUuid(id)) {
-                          toast.error("This listing can't be reported yet — it's sourced from an external dealer page. Use Report on the dealer's own platform instead.");
-                          return;
-                        }
-                        const { error } = await supabase.from("reports").insert({ reporter_id: user.id, listing_id: id!, reason: reportReason });
+                        // Dealer-sourced listings have no row in public.listings, so they are reported by
+                        // reference instead of by foreign key.
+                        const target = isRealUuid(id)
+                          ? { listing_id: id! }
+                          : { listing_ref: id!, context: `${listing.title} - ${listing.sellerName || "unknown seller"}` };
+                        const { error } = await supabase.from("reports").insert({ reporter_id: user.id, reason: reportReason, ...target });
                         if (error) {
                           toast.error("Report could not be submitted. Please try again.");
                           return;
