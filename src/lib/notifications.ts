@@ -6,18 +6,19 @@ export async function createNotification(
   title: string,
   body?: string
 ) {
-  await supabase.from("notifications").insert({
+  // The id is generated here because the sender can't read back a row addressed to someone else.
+  const id = crypto.randomUUID();
+  const { error } = await supabase.from("notifications").insert({
+    id,
     user_id: userId,
     type,
     title,
     body: body ?? null,
     read: false,
   });
+  if (error) return;
 
-  // Fire-and-forget push notification to the user's registered devices.
-  // The edge function handles token lookup and APNs delivery; failures here
-  // are silent because the in-app bell is the primary notification channel.
-  supabase.functions.invoke("send-push", {
-    body: { user_id: userId, title, body: body ?? "", data: { type } },
-  }).catch(() => {});
+  // send-push only delivers an existing, just-created notification row, so the push can never
+  // say anything the database's insert rules didn't allow.
+  supabase.functions.invoke("send-push", { body: { notification_id: id } }).catch(() => {});
 }

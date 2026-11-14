@@ -8,13 +8,6 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface PushPayload {
-  user_id: string;
-  title: string;
-  body?: string;
-  data?: Record<string, string>;
-}
-
 // APNs JWT — valid for 1 hour, cached across invocations within the same
 // Deno isolate so we don't regenerate on every push.
 let apnsJwt: string | null = null;
@@ -92,19 +85,38 @@ serve(async (req) => {
   }
 
   try {
-    const payload: PushPayload = await req.json();
-    const { user_id, title, body, data } = payload;
-
-    if (!user_id || !title) {
-      return new Response(
-        JSON.stringify({ error: "user_id and title are required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const sb = createClient(supabaseUrl, serviceKey);
+    const json = (b: unknown, status = 200) =>
+      new Response(JSON.stringify(b), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+    const input = await req.json();
+    let user_id: string, title: string, body: string | null, data: Record<string, string>;
+
+    const callerIsService = req.headers.get("authorization") === `Bearer ${serviceKey}`;
+    if (callerIsService && input.user_id && input.title) {
+      // Server-side senders (scheduled campaigns) may send free text.
+      ({ user_id, title } = input);
+      body = input.body ?? "";
+      data = input.data ?? {};
+    } else {
+      // App users can only trigger delivery of a notification row the database already accepted,
+      // once, shortly after it was created.
+      if (!input.notification_id) return json({ error: "notification_id is required" }, 400);
+      const since = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      const { data: n } = await sb
+        .from("notifications")
+        .update({ pushed_at: new Date().toISOString() })
+        .eq("id", input.notification_id)
+        .is("pushed_at", null)
+        .gte("created_at", since)
+        .select("user_id, title, body, type")
+        .maybeSingle();
+      if (!n) return json({ sent: 0, reason: "not_found_or_already_pushed" });
+      ({ user_id, title, body } = n);
+      data = { type: n.type };
+    }
 
     const { data: tokens, error } = await sb
       .from("device_tokens")
@@ -123,7 +135,7 @@ serve(async (req) => {
 
     for (const t of tokens) {
       if (t.platform === "ios") {
-        const result = await sendApns(t.token, title, body ?? "", data ?? {});
+        const result = await sendApns(t.token, title, body ?? "", data);
         if (result === "sent") sent++;
         else if (result === "stale") staleIds.push(t.id);
       }
