@@ -27,39 +27,11 @@ export function checkUserIsAdmin(user: User | null, roleRows?: any[]): boolean {
   if (ADMIN_EMAILS.includes(email)) return true;
   if (user.user_metadata?.role === "admin" || user.app_metadata?.role === "admin") return true;
   if (Array.isArray(roleRows) && roleRows.length > 0) return true;
-  if (typeof window !== "undefined" && localStorage.getItem("motokah_admin_override") === "true") return true;
   return false;
 }
 
-// ─── Demo accounts (bypass Supabase — no env vars needed) ─────────────────────
-const DEMO_PASSWORD = "moto2026";
+// Former client-side demo login; cleared so old sessions don't linger on devices.
 const DEMO_SESSION_KEY = "motokah_demo_session";
-
-const DEMO_ACCOUNTS: Record<string, { role: "admin" | "dealer" | "private"; name: string; dealerName?: string }> = {
-  "admin@motokah.com":  { role: "admin",   name: "Motokah Admin" },
-  "dealer@motokah.com": { role: "dealer",  name: "Safari Motors", dealerName: "Safari Motors" },
-  "user@motokah.com":   { role: "private", name: "Demo User" },
-};
-
-function makeDemoUser(email: string, name: string): User {
-  return {
-    id: `demo-${email.split("@")[0]}`,
-    email,
-    email_confirmed_at: "2026-01-01T00:00:00Z",
-    confirmed_at: "2026-01-01T00:00:00Z",
-    created_at: "2026-01-01T00:00:00Z",
-    updated_at: "2026-01-01T00:00:00Z",
-    user_metadata: { display_name: name },
-    app_metadata: {},
-    aud: "authenticated",
-    role: "authenticated",
-    identities: [],
-    factors: [],
-    phone: "",
-    last_sign_in_at: "2026-01-01T00:00:00Z",
-  } as unknown as User;
-}
-// ──────────────────────────────────────────────────────────────────────────────
 
 interface UserProfile {
   seller_type: "private" | "dealer";
@@ -95,7 +67,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchProfile = async (userId: string) => {
-    if (userId.startsWith("demo-")) return;
     try {
       const [{ data: profileData }, { data: roleRows }] = await Promise.all([
         supabase
@@ -121,22 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Check for persisted demo session first (no network needed)
-    const stored = localStorage.getItem(DEMO_SESSION_KEY);
-    if (stored) {
-      try {
-        const { user: demoUser, profile: demoProfile, isAdmin: demoAdmin } = JSON.parse(stored);
-        setUser(demoUser);
-        setProfile(demoProfile);
-        setIsAdmin(demoAdmin);
-        setLoading(false);
-        return;
-      } catch {
-        localStorage.removeItem(DEMO_SESSION_KEY);
-      }
-    }
+    localStorage.removeItem(DEMO_SESSION_KEY);
+    localStorage.removeItem("motokah_admin_override");
 
-    // Normal Supabase auth
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -166,26 +124,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const demo = DEMO_ACCOUNTS[email.toLowerCase().trim()];
-    if (demo && password === DEMO_PASSWORD) {
-      const demoUser = makeDemoUser(email.toLowerCase().trim(), demo.name);
-      const demoProfile: UserProfile = {
-        seller_type: demo.role === "dealer" ? "dealer" : "private",
-        display_name: demo.dealerName ?? demo.name,
-        verified_at: "2026-01-01T00:00:00Z",
-        phone: "+255 700 000 000",
-        city: "Dar es Salaam",
-        avatar_url: null,
-      };
-      const demoAdmin = demo.role === "admin";
-      localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify({ user: demoUser, profile: demoProfile, isAdmin: demoAdmin }));
-      setUser(demoUser);
-      setProfile(demoProfile);
-      setIsAdmin(demoAdmin);
-      setLoading(false);
-      return { error: null };
-    }
-
     try {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return { error: new Error(error.message) };
@@ -224,7 +162,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
-    localStorage.removeItem(DEMO_SESSION_KEY);
     setUser(null);
     setProfile(null);
     setIsAdmin(false);
@@ -248,11 +185,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const deleteAccount = async () => {
     if (!user) return { error: new Error("You must be signed in to delete your account.") };
-
-    if (user.id.startsWith("demo-")) {
-      await signOut();
-      return { error: null };
-    }
 
     const accessToken = session?.access_token;
     if (!accessToken) return { error: new Error("Your session has expired. Please sign in again.") };

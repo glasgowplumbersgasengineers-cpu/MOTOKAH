@@ -28,6 +28,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import { africanCities, carMakes, cityToCountry, currencies } from "@/data/mockData";
 import { notifyAdminsOnNewListing } from "@/lib/sendEmail";
 import { trackEvent } from "@/lib/analytics";
+import { downscaleImage } from "@/lib/downscaleImage";
 
 const topEastAfricaMakes = [
   "Toyota",
@@ -270,24 +271,31 @@ export default function SellCar() {
     localStorage.setItem("sellCarFeatures", JSON.stringify(next));
   };
 
-  const handleImages = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const MAX_SIZE_MB = 5;
-    const selected = Array.from(e.target.files || []);
-    const valid = selected.filter((f) => f.size <= MAX_SIZE_MB * 1024 * 1024).slice(0, 10 - images.length);
-    if (valid.length < selected.length) {
+    const input = e.target;
+    const selected = Array.from(input.files || []).slice(0, 10 - images.length);
+    // Reset so taking/choosing the same photo again still fires onChange.
+    input.value = "";
+    if (selected.length === 0) return;
+    // Phone photos (often 4-8MB at 12-24MP) are resized before preview and upload: the old
+    // base64 preview of a full-size camera photo failed to render in the iOS WebView, and
+    // most of them exceeded the 5MB limit anyway.
+    const prepared = await Promise.all(selected.map(downscaleImage));
+    const valid = prepared.filter((f) => f.size <= MAX_SIZE_MB * 1024 * 1024);
+    if (valid.length < prepared.length) {
       toast({ title: "File too large", description: "Each image must be under 5MB.", variant: "destructive" });
     }
-    setImages((prev) => [...prev, ...valid]);
-    valid.forEach((f) => {
-      const reader = new FileReader();
-      reader.onload = (ev) => setPreviews((p) => [...p, ev.target?.result as string]);
-      reader.readAsDataURL(f);
-    });
+    setImages((prev) => [...prev, ...valid].slice(0, 10));
+    setPreviews((prev) => [...prev, ...valid.map((f) => URL.createObjectURL(f))].slice(0, 10));
   };
 
   const removeImage = (i: number) => {
     setImages((prev) => prev.filter((_, idx) => idx !== i));
-    setPreviews((prev) => prev.filter((_, idx) => idx !== i));
+    setPreviews((prev) => {
+      if (prev[i]) URL.revokeObjectURL(prev[i]);
+      return prev.filter((_, idx) => idx !== i);
+    });
   };
 
   const handleVideo = (event: React.ChangeEvent<HTMLInputElement>) => {
