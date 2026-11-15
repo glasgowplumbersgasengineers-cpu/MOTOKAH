@@ -11,7 +11,10 @@ import FuelPriceSection from "@/components/FuelPriceSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
 import { Link } from "react-router-dom";
-import { IconArrowRight, IconMotorbike, IconAnchor, IconTruck } from "@tabler/icons-react";
+import { IconArrowRight, IconMotorbike, IconAnchor, IconTruck, IconHelpCircle, IconChevronRight } from "@tabler/icons-react";
+import { useState } from "react";
+import HelpGuide from "@/components/HelpGuide";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const BIKE_TYPES = ["Motorcycle", "Scooter", "Dirt Bike", "Sport Bike"];
 // SUV deliberately excluded — it's already the single biggest category in the
@@ -21,6 +24,8 @@ const BIG_VEHICLE_TYPES = ["Truck", "Bus", "Pickup", "Minibus", "Tipper"];
 const BOAT_TYPES = ["Boat"];
 
 const Index = () => {
+  const [showHelp, setShowHelp] = useState(false);
+  const { lang } = useLanguage();
   return (
     <>
       <Helmet>
@@ -60,6 +65,23 @@ const Index = () => {
       <PopularModelsSection />
       <FuelPriceSection />
       <SellCTA />
+      <section className="container mx-auto px-4 py-6">
+        <button
+          type="button"
+          onClick={() => setShowHelp(true)}
+          className="w-full flex items-center gap-3 bg-card border-2 border-primary/30 hover:border-primary rounded-2xl p-4 text-left transition-colors"
+        >
+          <span className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+            <IconHelpCircle size={26} />
+          </span>
+          <span className="flex-1">
+            <span className="block text-base font-bold text-foreground">New here? How to use Motokah</span>
+            <span className="block text-xs text-muted-foreground">A quick tour of buying, selling and chatting</span>
+          </span>
+          <IconChevronRight size={20} className="text-primary shrink-0" />
+        </button>
+      </section>
+      <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={lang} />
       <Footer />
     </div>
     </>

@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["CQ5266BB8U.com.motokah.app"],
+        "components": [
+          { "/": "/admin*", "exclude": true },
+          { "/": "/api/*", "exclude": true },
+          { "/": "/brand-centre*", "exclude": true },
+          { "/": "/stationery*", "exclude": true },
+          { "/": "/*" }
+        ]
+      }
+    ]
+  }
+}

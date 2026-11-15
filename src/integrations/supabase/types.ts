@@ -265,6 +265,42 @@ export type Database = {
         }
         Relationships: []
       }
+      device_tokens: {
+        Row: {
+          country: string | null
+          created_at: string
+          id: string
+          language: string
+          marketing_opt_in: boolean
+          platform: string
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          marketing_opt_in?: boolean
+          platform: string
+          token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          marketing_opt_in?: boolean
+          platform?: string
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       listing_images: {
         Row: {
           created_at: string
@@ -431,6 +467,7 @@ export type Database = {
           created_at: string
           id: string
           listing_id: string | null
+          pushed_at: string | null
           read: boolean
           title: string
           type: string
@@ -441,6 +478,7 @@ export type Database = {
           created_at?: string
           id?: string
           listing_id?: string | null
+          pushed_at?: string | null
           read?: boolean
           title: string
           type: string
@@ -451,6 +489,7 @@ export type Database = {
           created_at?: string
           id?: string
           listing_id?: string | null
+          pushed_at?: string | null
           read?: boolean
           title?: string
           type?: string
@@ -541,11 +580,59 @@ export type Database = {
         }
         Relationships: []
       }
-      reports: {
+      push_campaigns: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
+          body: string
+          country: string | null
           created_at: string
           id: string
+          language: string
+          link: string
+          scheduled_at: string
+          sent_at: string | null
+          sent_count: number | null
+          status: string
+          title: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          body: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          language: string
+          link?: string
+          scheduled_at: string
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string
+          title: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          body?: string
+          country?: string | null
+          created_at?: string
+          id?: string
+          language?: string
+          link?: string
+          scheduled_at?: string
+          sent_at?: string | null
+          sent_count?: number | null
+          status?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      reports: {
+        Row: {
           context: string | null
+          created_at: string
+          id: string
           listing_id: string | null
           listing_ref: string | null
           reason: string
@@ -555,9 +642,9 @@ export type Database = {
           resolved_at: string | null
         }
         Insert: {
+          context?: string | null
           created_at?: string
           id?: string
-          context?: string | null
           listing_id?: string | null
           listing_ref?: string | null
           reason: string
@@ -567,9 +654,9 @@ export type Database = {
           resolved_at?: string | null
         }
         Update: {
+          context?: string | null
           created_at?: string
           id?: string
-          context?: string | null
           listing_id?: string | null
           listing_ref?: string | null
           reason?: string
@@ -860,5 +947,3 @@ export const Constants = {
     },
   },
 } as const
-A new version of Supabase CLI is available: v3.1.0 (currently installed v2.103.0)
-We recommend updating regularly for new features and bug fixes: https://supabase.com/docs/guides/cli/getting-started#updating-the-supabase-cli

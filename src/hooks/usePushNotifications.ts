@@ -4,7 +4,7 @@ import { PushNotifications } from "@capacitor/push-notifications";
 import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
-import { ASK_MARKETING_EVENT, deviceTokenPrefs, wasMarketingAsked } from "@/lib/pushPrefs";
+import { ASK_MARKETING_EVENT, PUSH_TOKEN_KEY, deviceTokenPrefs, wasMarketingAsked } from "@/lib/pushPrefs";
 
 const ROUTES: Record<string, string> = {
   new_message: "/messages",
@@ -29,6 +29,7 @@ export function usePushNotifications() {
 
     const handles = [
       PushNotifications.addListener("registration", async (token) => {
+        localStorage.setItem(PUSH_TOKEN_KEY, token.value);
         await supabase.from("device_tokens").upsert(
           { user_id: userId, token: token.value, platform: Capacitor.getPlatform(), ...deviceTokenPrefs(), updated_at: new Date().toISOString() },
           { onConflict: "user_id,token" },

@@ -1,6 +1,7 @@
 import { Component, lazy, Suspense, useEffect, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, useLocation, Navigate } from "react-router-dom";
+import { Capacitor } from "@capacitor/core";
 
 class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
   state = { error: null };
@@ -29,6 +30,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import BottomNav from "@/components/BottomNav";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useDeepLinks } from "@/hooks/useDeepLinks";
 import MarketingOptInPrompt from "@/components/MarketingOptInPrompt";
 
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -101,10 +103,16 @@ function AnimatedRoutes() {
   const location = useLocation();
   usePageTracking();
   usePushNotifications();
+  useDeepLinks();
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [location.pathname]);
+
+  // First app launch: pick location (then the tour) before Home. App only, the website
+  // keeps "/" crawlable for search engines.
+  const needsWelcome =
+    Capacitor.isNativePlatform() && location.pathname === "/" && localStorage.getItem("motokah_welcome_completed") !== "true";
 
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -120,7 +128,7 @@ function AnimatedRoutes() {
         <Suspense fallback={<RouteLoader />}>
         <Routes location={location}>
               <Route path="/welcome" element={<Welcome />} />
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={needsWelcome ? <Navigate to="/welcome" replace /> : <Index />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/search" element={<SearchResults />} />
               <Route path="/cars" element={<Navigate to="/search" replace />} />

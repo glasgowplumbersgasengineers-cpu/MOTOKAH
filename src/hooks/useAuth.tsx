@@ -4,6 +4,7 @@ import { getAppUrl } from "@/lib/app-url";
 import { notifyAdminsOnNewSignup } from "@/lib/sendEmail";
 import { syncBlockedSellersFromServer } from "@/lib/blockedSellers";
 import { trackEvent } from "@/lib/analytics";
+import { PUSH_TOKEN_KEY } from "@/lib/pushPrefs";
 import type { User, Session } from "@supabase/supabase-js";
 
 export const ADMIN_EMAILS = [
@@ -162,6 +163,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = async () => {
+    // Unlink this phone first so the signed-out account's notifications stop arriving here.
+    const pushToken = localStorage.getItem(PUSH_TOKEN_KEY);
+    if (user && pushToken) {
+      try {
+        await supabase.from("device_tokens").delete().eq("user_id", user.id).eq("token", pushToken);
+      } catch {
+        // ignore, sign out anyway
+      }
+    }
     setUser(null);
     setProfile(null);
     setIsAdmin(false);

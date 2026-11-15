@@ -29,6 +29,7 @@ import { africanCities, carMakes, cityToCountry, currencies } from "@/data/mockD
 import { notifyAdminsOnNewListing } from "@/lib/sendEmail";
 import { trackEvent } from "@/lib/analytics";
 import { downscaleImage } from "@/lib/downscaleImage";
+import { searchVehiclePresets, type VehiclePreset } from "@/data/vehiclePresets";
 
 const topEastAfricaMakes = [
   "Toyota",
@@ -191,7 +192,9 @@ export default function SellCar() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const sellerPhone = profile?.phone || (user?.user_metadata?.phone as string | undefined) || "";
+  // Phone sign-ups store the number as bare digits ("2557..."), so give it back its "+".
+  const authPhone = user?.phone ? (/^\d+$/.test(user.phone) ? `+${user.phone}` : user.phone) : "";
+  const sellerPhone = profile?.phone || (user?.user_metadata?.phone as string | undefined) || authPhone;
   const [phoneInput, setPhoneInput] = useState(sellerPhone);
 
   useEffect(() => {
@@ -261,6 +264,29 @@ export default function SellCar() {
     const next = { ...form, [key]: val };
     setForm(next);
     localStorage.setItem("sellCarDraft", JSON.stringify(next));
+  };
+
+  const [modelFocused, setModelFocused] = useState(false);
+  const [filledFrom, setFilledFrom] = useState<string | null>(null);
+  const modelSuggestions = useMemo(() => {
+    const typed = form.model.trim();
+    if (typed.length < 2) return [];
+    const found = searchVehiclePresets(typed, 12);
+    // A make already picked above goes first.
+    const sorted = [...found].sort((a, b) => Number(b.make === form.make) - Number(a.make === form.make));
+    const exact = sorted.length === 1 && sorted[0].model.toLowerCase() === typed.toLowerCase() && sorted[0].make === form.make;
+    return exact ? [] : sorted.slice(0, 6);
+  }, [form.model, form.make]);
+
+  const applyPreset = (p: VehiclePreset) => {
+    const next = { ...form, make: p.make, model: p.model, bodyType: p.bodyType, transmission: p.transmission, fuelType: p.fuelType };
+    setForm(next);
+    localStorage.setItem("sellCarDraft", JSON.stringify(next));
+    setSelectedFeatures(p.features);
+    localStorage.setItem("sellCarFeatures", JSON.stringify(p.features));
+    setFilledFrom(`${p.make} ${p.model}`);
+    setModelFocused(false);
+    (document.activeElement as HTMLElement | null)?.blur();
   };
 
   const toggleFeature = (feat: string) => {
@@ -663,13 +689,39 @@ export default function SellCar() {
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">
                   Model <span className="text-destructive">*</span>
                 </label>
-                <Input
-                  value={form.model}
-                  onChange={(e) => update("model", e.target.value)}
-                  placeholder="e.g. Harrier, Alphard, Prado"
-                  className="h-11 bg-background"
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    value={form.model}
+                    onChange={(e) => { update("model", e.target.value); setModelFocused(true); setFilledFrom(null); }}
+                    onFocus={() => setModelFocused(true)}
+                    onBlur={() => setTimeout(() => setModelFocused(false), 150)}
+                    placeholder="Type the car name, e.g. Harrier"
+                    autoComplete="off"
+                    autoCorrect="off"
+                    className="h-11 bg-background"
+                    required
+                  />
+                  {modelFocused && modelSuggestions.length > 0 && (
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-popover border border-border rounded-xl shadow-lg overflow-hidden">
+                      {modelSuggestions.map((p) => (
+                        <button
+                          key={`${p.make}-${p.model}`}
+                          type="button"
+                          onPointerDown={(e) => { e.preventDefault(); applyPreset(p); }}
+                          className="w-full px-3 py-2.5 text-left flex items-center justify-between gap-2 hover:bg-muted/60 border-b border-border last:border-b-0"
+                        >
+                          <span className="text-sm font-semibold text-foreground">{p.make} {p.model}</span>
+                          <span className="text-[11px] text-muted-foreground shrink-0">{p.bodyType} · {p.fuelType}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {filledFrom && (
+                  <p className="text-[11px] font-medium text-primary mt-1.5 flex items-start gap-1">
+                    <IconCheck size={13} className="shrink-0 mt-px" /> Filled in typical {filledFrom} specs and features below. Check them and change anything that's different on your car.
+                  </p>
+                )}
               </div>
               <div>
                 <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block mb-1">
@@ -980,6 +1032,15 @@ export default function SellCar() {
                     required
                   />
                 </div>
+                {sellerPhone && phoneInput.trim() !== sellerPhone && (
+                  <button
+                    type="button"
+                    onClick={() => setPhoneInput(sellerPhone)}
+                    className="mt-2 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-primary/40 bg-primary/5 text-xs font-semibold text-primary"
+                  >
+                    <IconPhone size={14} /> Use my number {sellerPhone}
+                  </button>
+                )}
                 <p className="text-[11px] text-muted-foreground mt-1">
                   Buyers will call or chat with you directly on this number.
                 </p>

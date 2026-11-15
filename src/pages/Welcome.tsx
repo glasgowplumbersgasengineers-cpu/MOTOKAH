@@ -197,6 +197,8 @@ export default function Welcome() {
   const [selectedLang, setSelectedLang] = useState<LangCode>("en");
   const [manualSelectionStarted, setManualSelectionStarted] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  // First launch: the tour opens straight after location, then Home.
+  const [touring, setTouring] = useState(false);
 
   const t = translations[selectedLang];
   const cities = countryCitiesMap[selectedCountry] || [];
@@ -241,6 +243,11 @@ export default function Welcome() {
     localStorage.setItem("motokah_country", selectedCountry);
     localStorage.setItem("motokah_city", selectedCity);
     window.dispatchEvent(new Event("motokah-location-updated"));
+    if (!isChangingLocation) {
+      setTouring(true);
+      setShowHelp(true);
+      return;
+    }
     navigate("/");
   };
 
@@ -268,9 +275,9 @@ export default function Welcome() {
               </div>
               <button
                 onClick={() => setShowHelp(true)}
-                className="flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors bg-primary/5 hover:bg-primary/10 px-2.5 py-1.5 rounded-full"
+                className="flex items-center gap-1.5 text-sm font-semibold text-primary hover:text-primary/80 transition-colors bg-primary/10 hover:bg-primary/15 px-4 py-2.5 rounded-full"
               >
-                <IconHelpCircle size={14} />
+                <IconHelpCircle size={18} />
                 {t.howToUse}
               </button>
             </div>
@@ -602,7 +609,7 @@ export default function Welcome() {
         </div>
 
         {/* How to Use Guide */}
-        <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={selectedLang} />
+        <HelpGuide isOpen={showHelp} onClose={() => { setShowHelp(false); if (touring) navigate("/"); }} lang={selectedLang} />
       </div>
     </div>
   );

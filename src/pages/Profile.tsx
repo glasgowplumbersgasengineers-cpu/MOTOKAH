@@ -603,6 +603,21 @@ export default function Profile() {
               <p className="text-sm text-muted-foreground">Here's a summary of your Motokah activity</p>
             </div>
 
+            <button
+              type="button"
+              onClick={() => setShowHelp(true)}
+              className="w-full flex items-center gap-3 bg-card border-2 border-primary/30 hover:border-primary rounded-2xl p-4 text-left transition-colors"
+            >
+              <span className="w-11 h-11 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0">
+                <IconHelpCircle size={24} />
+              </span>
+              <span className="flex-1">
+                <span className="block text-base font-bold text-foreground">How to use Motokah</span>
+                <span className="block text-xs text-muted-foreground">A quick tour of buying, selling and chatting</span>
+              </span>
+              <IconChevronRight size={18} className="text-primary shrink-0" />
+            </button>
+
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-3">
               <button
@@ -1017,6 +1032,7 @@ export default function Profile() {
           </div>
         )}
       </div>
+      <HelpGuide isOpen={showHelp} onClose={() => setShowHelp(false)} lang={lang} />
       <Footer />
     </div>
   );

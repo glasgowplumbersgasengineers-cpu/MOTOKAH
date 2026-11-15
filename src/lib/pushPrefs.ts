@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 const OPT_IN_KEY = "motokah_marketing_push";
 const ASKED_KEY = "motokah_marketing_asked";
 export const ASK_MARKETING_EVENT = "motokah-ask-marketing";
+// This phone's APNs token, so sign out can unlink it from the account.
+export const PUSH_TOKEN_KEY = "motokah_push_token";
 
 export const getMarketingOptIn = () => localStorage.getItem(OPT_IN_KEY) === "true";
 export const wasMarketingAsked = () => localStorage.getItem(ASKED_KEY) === "true";

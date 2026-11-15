@@ -35,19 +35,20 @@ if (typeof Node === "function" && Node.prototype) {
 
 // iOS Capacitor: after the keyboard dismisses, the WKWebView sometimes keeps
 // the body at the shrunk height, hiding the bottom tab bar and clipping content.
-// Force a layout recalc on every visualViewport resize (covers both show and hide).
-if (window.visualViewport && Capacitor.isNativePlatform()) {
-  let pendingResize: number | null = null;
-  window.visualViewport.addEventListener("resize", () => {
-    if (pendingResize) cancelAnimationFrame(pendingResize);
-    pendingResize = requestAnimationFrame(() => {
-      pendingResize = null;
-      document.documentElement.style.height = window.visualViewport!.height + "px";
+// Force a layout recalc once the keyboard has closed. This used to run on every
+// visualViewport resize, which iOS also fires while typing (the suggestion bar
+// shows and hides), and the shrunk height clamped the scroll so forms jumped to the top.
+if (Capacitor.isNativePlatform()) {
+  import("@capacitor/keyboard").then(({ Keyboard }) => {
+    Keyboard.addListener("keyboardDidHide", () => {
+      const y = window.scrollY;
+      document.documentElement.style.height = window.innerHeight + "px";
       requestAnimationFrame(() => {
         document.documentElement.style.height = "";
+        window.scrollTo(0, y);
       });
     });
-  });
+  }).catch(() => {});
 }
 
 createRoot(document.getElementById("root")!).render(
