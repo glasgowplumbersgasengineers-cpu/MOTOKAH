@@ -1,4 +1,4 @@
-import { IconSearch, IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import { IconSearch, IconChevronDown, IconChevronUp } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { carMakes, bodyTypes, conditions, transmissions, africanCities, bikeMakes, bikeTypes, ccRanges, commercialTypes, cityToCountry } from "@/data/mockData";
 import { useNavigate } from "react-router-dom";

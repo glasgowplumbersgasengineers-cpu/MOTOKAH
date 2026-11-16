@@ -1,3 +1,4 @@
+import { Checks } from "@phosphor-icons/react";
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
@@ -11,7 +12,7 @@ import {
   IconMenu2, IconHome, IconSpeakerphone, IconPlus, IconMail, IconLock,
   IconSend, IconRefresh, IconTrash, IconCamera, IconAlertTriangle,
   IconShieldCheck, IconCopy, IconBrandFacebook, IconBrandTwitter,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { type LangCode } from "@/contexts/LanguageContext";
 
@@ -835,7 +836,7 @@ function ChatDiagram() {
               <div className={`text-[9px] mt-1 ${
                 msg.sender === "me" ? "text-primary-foreground/70" : "text-muted-foreground"
               }`}>
-                {msg.time} {msg.sender === "me" && <span>✓✓</span>}
+                {msg.time} {msg.sender === "me" && <Checks size={12} weight="bold" className="inline-block align-[-1px]" />}
               </div>
             </div>
           </motion.div>

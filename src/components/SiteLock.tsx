@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconLock, IconEye, IconEyeOff } from "@tabler/icons-react";
+import { IconLock, IconEye, IconEyeOff } from "@/components/icons";
 
 const PASSWORD = "MOTO2026";
 const SESSION_KEY = "motokah_unlocked";

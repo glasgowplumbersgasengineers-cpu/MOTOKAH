@@ -11,7 +11,7 @@ import FuelPriceSection from "@/components/FuelPriceSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
 import { Link } from "react-router-dom";
-import { IconArrowRight, IconMotorbike, IconAnchor, IconTruck, IconHelpCircle, IconChevronRight } from "@tabler/icons-react";
+import { IconArrowRight, IconMotorbike, IconAnchor, IconTruck, IconHelpCircle, IconChevronRight } from "@/components/icons";
 import { useState } from "react";
 import HelpGuide from "@/components/HelpGuide";
 import { useLanguage } from "@/contexts/LanguageContext";

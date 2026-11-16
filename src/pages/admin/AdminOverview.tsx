@@ -28,7 +28,7 @@ import {
   IconWorld,
   IconExternalLink,
   IconMapPin,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 import {
   AreaChart,
   Area,
@@ -770,9 +770,9 @@ export default function AdminOverview() {
             <div className="bg-muted/40 p-3 rounded-xl border border-border space-y-2 text-xs">
               <p className="font-bold text-foreground">Alerts Included:</p>
               <div className="space-y-1 text-muted-foreground text-[11px]">
-                <p>✔ <strong>New User Sign-Up:</strong> Name, email, seller type, and join date.</p>
-                <p>✔ <strong>New Vehicle Ad:</strong> Title, price, seller phone, and moderation link.</p>
-                <p>✔ <strong>Dealer Application:</strong> Showroom name and registration request.</p>
+                <p><strong>New User Sign-Up:</strong> Name, email, seller type, and join date.</p>
+                <p><strong>New Vehicle Ad:</strong> Title, price, seller phone, and moderation link.</p>
+                <p><strong>Dealer Application:</strong> Showroom name and registration request.</p>
               </div>
             </div>
           </div>

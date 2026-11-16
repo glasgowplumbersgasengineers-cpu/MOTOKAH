@@ -1,4 +1,4 @@
-import { IconGauge, IconCalendar, IconManualGearbox, IconGasStation, IconPaint, IconCar, IconMapPin, IconEngine, IconCircleCheck, IconClock, IconBolt, IconArmchair } from "@tabler/icons-react";
+import { IconGauge, IconCalendar, IconManualGearbox, IconGasStation, IconPaint, IconCar, IconMapPin, IconEngine, IconCircleCheck, IconClock, IconBolt, IconArmchair } from "@/components/icons";
 import { type Listing } from "@/data/mockData";
 
 interface SpecsTableProps {

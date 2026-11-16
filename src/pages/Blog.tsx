@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconCalendar, IconArrowRight } from "@tabler/icons-react";
+import { IconCalendar, IconArrowRight } from "@/components/icons";
 import { format } from "date-fns";
 
 type BlogPost = {

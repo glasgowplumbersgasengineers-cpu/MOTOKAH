@@ -11,7 +11,7 @@ import {
   IconBuildingStore, IconShieldCheck, IconCar, IconEye, IconClock,
   IconCheck, IconTrash, IconExternalLink, IconPlus, IconChartBar,
   IconStarFilled, IconMapPin, IconPhone, IconAlertCircle,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 import { mockDealers } from "@/data/mockData";
 import type { Listing } from "@/data/mockData";
 

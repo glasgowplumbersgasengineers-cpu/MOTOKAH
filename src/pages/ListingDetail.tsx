@@ -7,7 +7,7 @@ import SpecsTable from "@/components/SpecsTable";
 import SellerCard from "@/components/SellerCard";
 import SimilarListings from "@/components/SimilarListings";
 import { useListing } from "@/hooks/useListing";
-import { IconHeart, IconShare, IconFlag, IconChevronRight, IconBrandWhatsapp, IconBrandFacebook, IconBrandTwitter, IconCopy, IconX, IconCalendar, IconGauge, IconManualGearbox, IconMapPin, IconPhone, IconArrowLeft, IconUserOff } from "@tabler/icons-react";
+import { IconHeart, IconShare, IconFlag, IconChevronRight, IconBrandWhatsapp, IconBrandFacebook, IconBrandTwitter, IconCopy, IconX, IconCalendar, IconGauge, IconManualGearbox, IconMapPin, IconPhone, IconArrowLeft, IconUserOff } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useSEO } from "@/hooks/useSEO";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";

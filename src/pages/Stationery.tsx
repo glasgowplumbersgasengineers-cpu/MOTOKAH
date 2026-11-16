@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, createRef } from 'react';
-import { Download, FileImage, FileCode, Eye, EyeOff, Loader2, Images, Info } from 'lucide-react';
+import { Download, FileImage, FileCode, Eye, EyeOff, Loader2, Images, Info } from "@/components/icons";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { usePageTitle } from '@/hooks/usePageTitle';

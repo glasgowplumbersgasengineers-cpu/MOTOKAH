@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { Phone, Mail, Globe, MapPin } from 'lucide-react';
+import { Phone, Mail, Globe, MapPin } from "@/components/icons";
 import icon from '@/assets/motokah-icon-transparent.png';
 
 const BusinessCardBack = forwardRef<HTMLDivElement>((_, ref) => {

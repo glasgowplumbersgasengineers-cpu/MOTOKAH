@@ -15,7 +15,7 @@ import {
   IconFileTypePdf,
   IconPhoto,
   IconSearch,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 
 export function DownloadLink({ href, children, variant = "dark" }: { href: string; children: string; variant?: "dark" | "light" }) {
   return (

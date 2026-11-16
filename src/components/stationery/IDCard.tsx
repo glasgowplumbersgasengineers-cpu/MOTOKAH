@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { Phone, MapPin, User } from 'lucide-react';
+import { Phone, MapPin, User } from "@/components/icons";
 import icon from '@/assets/motokah-icon-transparent.png';
 
 const IDCardFront = forwardRef<HTMLDivElement>((_, ref) => {

@@ -1,4 +1,4 @@
-import { IconClock } from "@tabler/icons-react";
+import { IconClock } from "@/components/icons";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useLocation } from "@/contexts/LocationContext";

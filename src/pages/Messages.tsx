@@ -1,3 +1,4 @@
+import { Check, Checks } from "@phosphor-icons/react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
@@ -6,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { IconSend, IconMessageCircle, IconArrowLeft, IconSearch, IconCheck, IconChecks } from "@tabler/icons-react";
+import { IconSend, IconMessageCircle, IconArrowLeft, IconSearch, IconCheck, IconChecks } from "@/components/icons";
 import { createNotification } from "@/lib/notifications";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Capacitor } from "@capacitor/core";
@@ -551,7 +552,7 @@ export default function Messages() {
                           <div className="flex items-center justify-end gap-1 mt-1">
                             <p className="text-[10px] opacity-60">{new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</p>
                             {m.sender_id === user?.id && (
-                              <span className="text-[10px] opacity-60">{m.read ? "✓✓" : "✓"}</span>
+                              <span className="opacity-60">{m.read ? <Checks size={12} weight="bold" /> : <Check size={12} weight="bold" />}</span>
                             )}
                           </div>
                         </div>

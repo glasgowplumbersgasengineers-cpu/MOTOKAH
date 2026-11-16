@@ -1,4 +1,4 @@
-import { IconDotsVertical, IconFlag, IconBan } from "@tabler/icons-react";
+import { IconDotsVertical, IconFlag, IconBan } from "@/components/icons";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";

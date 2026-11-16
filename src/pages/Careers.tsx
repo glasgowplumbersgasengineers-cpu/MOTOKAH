@@ -1,7 +1,8 @@
+import { CheckCircle } from "@phosphor-icons/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconMapPin, IconBriefcase, IconExternalLink } from "@tabler/icons-react";
+import { IconMapPin, IconBriefcase, IconExternalLink } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 
 const openings = [
@@ -42,7 +43,7 @@ export default function Careers() {
           <div className="grid sm:grid-cols-2 gap-2">
             {perks.map((perk, i) => (
               <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="text-success">✓</span> {perk}
+                <CheckCircle size={16} weight="fill" className="text-success shrink-0" /> {perk}
               </div>
             ))}
           </div>

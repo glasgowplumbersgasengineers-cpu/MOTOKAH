@@ -24,7 +24,7 @@ import {
   IconShieldCheck,
   IconArrowLeft,
   IconInfoCircle,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { africanCities, cityToCountry, currencies } from "@/data/mockData";
 import { notifyAdminsOnNewListing } from "@/lib/sendEmail";
@@ -448,12 +448,18 @@ export default function SellCar() {
       // Upload Images — new ones append after any existing photos (edit mode),
       // so display_order never collides with an already-saved image.
       const displayOrderOffset = existingImages.length;
+      let failedPhotos = 0;
       for (let i = 0; i < images.length; i++) {
         const file = images[i];
-        const path = `${user.id}/${listing.id}/${displayOrderOffset + i}-${file.name}`;
-        const { error: uploadErr } = await supabase.storage.from("listing-images").upload(path, file);
+        // Storage rejects some characters iOS puts in photo names, so keep the key plain.
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-") || "photo.jpg";
+        const path = `${user.id}/${listing.id}/${displayOrderOffset + i}-${Date.now()}-${safeName}`;
+        const { error: uploadErr } = await supabase.storage.from("listing-images").upload(path, file, {
+          contentType: file.type || "image/jpeg",
+        });
         if (uploadErr) {
           console.error("Image upload failed:", uploadErr.message);
+          failedPhotos++;
           continue;
         }
         const { data: urlData } = supabase.storage.from("listing-images").getPublicUrl(path);
@@ -502,9 +508,15 @@ export default function SellCar() {
       localStorage.removeItem("sellCarDraft");
       localStorage.removeItem("sellCarFeatures");
       toast(
-        editId
-          ? { title: "Listing updated", description: "Your changes are saved and back in review." }
-          : { title: "Listing submitted! 🎉", description: "Your vehicle is uploaded and ready for review. It will go live once verified." }
+        failedPhotos > 0
+          ? {
+              title: editId ? "Listing updated" : "Listing submitted",
+              description: `${failedPhotos} photo${failedPhotos > 1 ? "s" : ""} didn't upload. Open the listing from My Ads, tap Edit and add ${failedPhotos > 1 ? "them" : "it"} again.`,
+              variant: "destructive",
+            }
+          : editId
+            ? { title: "Listing updated", description: "Your changes are saved and back in review." }
+            : { title: "Listing submitted", description: "Your vehicle is uploaded and ready for review. It will go live once verified." }
       );
       navigate("/profile");
     } catch (err) {

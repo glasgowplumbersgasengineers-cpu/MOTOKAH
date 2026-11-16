@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
-import { IconAlertTriangle, IconX } from "@tabler/icons-react";
+import { IconAlertTriangle, IconX } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 

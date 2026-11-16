@@ -1,7 +1,8 @@
+import Flag from "@/components/Flag";
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck, IconHelpCircle } from "@tabler/icons-react";
+import { IconMapPin, IconGlobe, IconChevronRight, IconLoader2, IconCheck, IconHelpCircle } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { useLocationDetection, type Country } from "@/hooks/useLocationDetection";
 import { type LangCode, LANGUAGES } from "@/contexts/LanguageContext";
@@ -313,9 +314,9 @@ export default function Welcome() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-              className="w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20"
+              className="w-20 h-20 bg-[#014DC5] rounded-[22px] flex items-center justify-center mx-auto mb-4 shadow-lg shadow-primary/20"
             >
-              <span className="text-3xl font-black text-primary-foreground">M</span>
+              <img src="/brand-2026/motokah-symbol-white.svg" alt="Motokah" className="h-14 w-auto" />
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 10 }}
@@ -415,7 +416,7 @@ export default function Welcome() {
                             : "border-border hover:border-primary/50 hover:bg-muted/30"
                         }`}
                       >
-                        <span className="text-2xl">{c.flag}</span>
+                        <Flag code={c.flag} className="h-6 w-9" />
                         <span className="font-medium text-sm">{c.name}</span>
                         {selectedCountry === c.code && (
                           <motion.div
@@ -450,7 +451,7 @@ export default function Welcome() {
                       ← {t.change}
                     </button>
                     <span className="text-sm text-muted-foreground">
-                      {countries.find(c => c.code === selectedCountry)?.flag} {selectedCountry}
+                      <Flag code={countries.find(c => c.code === selectedCountry)?.flag ?? ""} className="h-3.5 w-5 mr-1 align-[-2px]" />{selectedCountry}
                     </span>
                   </div>
                   
@@ -528,7 +529,7 @@ export default function Welcome() {
                     <div className="flex items-center gap-2 text-sm">
                       <IconGlobe size={16} className="text-primary" />
                       <span className="font-medium text-foreground">
-                        {countries.find(c => c.code === selectedCountry)?.flag} {selectedCity}, {selectedCountry}
+                        <Flag code={countries.find(c => c.code === selectedCountry)?.flag ?? ""} className="h-3.5 w-5 mr-1 align-[-2px]" />{selectedCity}, {selectedCountry}
                       </span>
                     </div>
                   </motion.div>
@@ -561,7 +562,7 @@ export default function Welcome() {
                             : "border-border hover:border-primary/50 hover:bg-muted/30"
                         }`}
                       >
-                        <span className="text-2xl">{l.flag}</span>
+                        <Flag code={l.flag} className="h-6 w-9" />
                         <div className="text-left flex-1">
                           <div className="font-medium">{l.name}</div>
                           <div className="text-xs text-muted-foreground">

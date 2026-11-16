@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
-import { IconLoader2 } from "@tabler/icons-react";
+import { IconLoader2 } from "@/components/icons";
 import { Helmet } from "react-helmet-async";
 import { jsonLdScript, breadcrumbJsonLd } from "@/lib/structuredData";
 import { robotsContentForCount } from "@/lib/pageListingCounts";

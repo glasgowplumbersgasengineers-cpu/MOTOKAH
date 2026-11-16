@@ -1,4 +1,4 @@
-import { IconCar, IconUsers, IconMapPin, IconShieldCheck } from "@tabler/icons-react";
+import { IconCar, IconUsers, IconMapPin, IconShieldCheck } from "@/components/icons";
 
 const stats = [
   { icon: IconCar, value: "Fresh", label: "Dealer Listings" },

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { IconMapPin } from "@tabler/icons-react";
+import { IconMapPin } from "@/components/icons";
 
 const locations = [
   { city: "Dar es Salaam", country: "Tanzania" },

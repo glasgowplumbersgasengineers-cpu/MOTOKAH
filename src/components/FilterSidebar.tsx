@@ -1,4 +1,4 @@
-import { IconX } from "@tabler/icons-react";
+import { IconX } from "@/components/icons";
 import { bodyTypes, conditions, transmissions, fuelTypes, carMakes, africanCities, cityToCountry } from "@/data/mockData";
 
 export interface Filters {

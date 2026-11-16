@@ -15,7 +15,7 @@ import {
   IconUsers,
   IconMapPin,
   IconPhoto,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 interface Post {
   shortcode: string;
   date: string;

@@ -1,4 +1,4 @@
-import { IconClockPlus, IconTrophy, IconDiamond } from "@tabler/icons-react";
+import { IconClockPlus, IconTrophy, IconDiamond } from "@/components/icons";
 import VehicleCard from "./VehicleCard";
 import { useListings } from "@/hooks/useListings";
 import { useEffect, useState } from "react";

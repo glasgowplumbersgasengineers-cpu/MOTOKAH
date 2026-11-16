@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation as useRouterLocation, useNavigate } from "react-router-dom";
-import { IconArrowLeft, IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown, IconHelpCircle, IconShieldCheck } from "@tabler/icons-react";
+import { IconArrowLeft, IconMenu2, IconSun, IconMoon, IconUser, IconMapPin, IconChevronDown, IconHelpCircle, IconShieldCheck } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { useTheme } from "@/contexts/ThemeContext";

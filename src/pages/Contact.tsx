@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconMail, IconMapPin, IconClock } from "@tabler/icons-react";
+import { IconMail, IconMapPin, IconClock } from "@/components/icons";
 
 export default function Contact() {
   usePageTitle("Contact Us");

@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { IconSend } from "@tabler/icons-react";
+import { IconSend } from "@/components/icons";
 
 export default function AdminNewsletter() {
   const [subject, setSubject] = useState("");

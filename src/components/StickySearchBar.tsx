@@ -1,7 +1,7 @@
 import { getSearchSuggestions } from "@/lib/searchSuggestions";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IconSearch } from "@tabler/icons-react";
+import { IconSearch } from "@/components/icons";
 
 const tabs = [
   { label: "Used Cars", href: "/search" },

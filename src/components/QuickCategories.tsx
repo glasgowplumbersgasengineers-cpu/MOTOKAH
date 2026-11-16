@@ -1,4 +1,4 @@
-import { IconCar, IconTruck, IconBus, IconMotorbike, IconCrown, IconBolt, IconLayoutGrid, IconSailboat } from "@tabler/icons-react";
+import { IconCar, IconTruck, IconBus, IconMotorbike, IconCrown, IconBolt, IconLayoutGrid, IconSailboat } from "@/components/icons";
 import { useNavigate } from "react-router-dom";
 
 const staticCategories = [

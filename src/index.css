@@ -250,3 +250,12 @@ html.translated-rtl {
 @supports not (overflow-x: clip) {
   html { overflow-x: hidden; }
 }
+
+/* Pop-up messages (sonner) must clear the Dynamic Island / notch at the top and the
+   tab bar at the bottom of the phone. */
+[data-sonner-toaster][data-y-position="top"] {
+  top: calc(env(safe-area-inset-top) + 12px) !important;
+}
+[data-sonner-toaster][data-y-position="bottom"] {
+  bottom: calc(env(safe-area-inset-bottom) + 88px) !important;
+}

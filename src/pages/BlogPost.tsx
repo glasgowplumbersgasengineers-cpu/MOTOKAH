@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconCalendar, IconArrowLeft } from "@tabler/icons-react";
+import { IconCalendar, IconArrowLeft } from "@/components/icons";
 import { format } from "date-fns";
 import { sanitizeCalloutPricingText } from "@/lib/seoText";
 import { renderBlogMarkdown } from "@/lib/blogMarkdown";

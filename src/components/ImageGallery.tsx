@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconCar, IconChevronLeft, IconChevronRight, IconZoomIn } from "@tabler/icons-react";
+import { IconCar, IconChevronLeft, IconChevronRight, IconZoomIn } from "@/components/icons";
 import { fullImageUrl, galleryImageUrl, normalizeImageUrl } from "@/lib/imageUrls";
 
 interface ImageGalleryProps {

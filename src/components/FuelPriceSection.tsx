@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconGasStation, IconTrendingUp, IconTrendingDown, IconInfoCircle } from "@tabler/icons-react";
+import { IconGasStation, IconTrendingUp, IconTrendingDown, IconInfoCircle } from "@/components/icons";
 import { useLocation } from "@/contexts/LocationContext";
 import fuelPricesData from "@/data/fuelPrices.json";
 

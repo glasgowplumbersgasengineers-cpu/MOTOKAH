@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconScale, IconCheck } from "@tabler/icons-react";
+import { IconScale, IconCheck } from "@/components/icons";
 import { useListings } from "@/hooks/useListings";
 import { useLocation } from "@/contexts/LocationContext";
 import { Button } from "@/components/ui/button";

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { IconBell, IconX } from "@tabler/icons-react";
+import { IconBell, IconX } from "@/components/icons";
 
 interface Notification {
   id: string;

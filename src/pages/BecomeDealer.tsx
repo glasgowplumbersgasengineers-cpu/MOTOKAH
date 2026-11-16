@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconBuildingStore, IconCheck, IconLoader } from "@tabler/icons-react";
+import { IconBuildingStore, IconCheck, IconLoader } from "@/components/icons";
 import { Link, Navigate } from "react-router-dom";
 import { getAdminNotificationEmails, sendEmail } from "@/lib/sendEmail";
 import { trackEvent } from "@/lib/analytics";

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { IconStarFilled, IconStar, IconCircleCheck } from "@tabler/icons-react";
+import { IconStarFilled, IconStar, IconCircleCheck } from "@/components/icons";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";

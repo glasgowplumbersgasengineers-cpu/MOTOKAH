@@ -1,7 +1,8 @@
+import { Envelope, MapPin } from "@phosphor-icons/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconCar, IconUsers, IconShieldCheck, IconMapPin, IconTargetArrow, IconEye, IconHeart } from "@tabler/icons-react";
+import { IconCar, IconUsers, IconShieldCheck, IconMapPin, IconTargetArrow, IconEye, IconHeart } from "@/components/icons";
 
 const stats = [
   { label: "Dealer Listings", value: "Fresh", icon: IconCar },
@@ -96,8 +97,8 @@ export default function About() {
           <h2 className="text-2xl font-bold mb-2">Have Questions?</h2>
           <p className="text-primary-foreground/80 mb-4">We'd love to hear from you.</p>
           <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <span>📧 info@motokah.com</span>
-            <span>📍 Dar es Salaam, Tanzania</span>
+            <span className="inline-flex items-center gap-1.5"><Envelope size={16} weight="duotone" /> info@motokah.com</span>
+            <span className="inline-flex items-center gap-1.5"><MapPin size={16} weight="duotone" /> Dar es Salaam, Tanzania</span>
           </div>
         </div>
       </section>

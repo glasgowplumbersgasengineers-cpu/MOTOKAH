@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Capacitor } from "@capacitor/core";
-import { IconBell } from "@tabler/icons-react";
+import { IconBell } from "@/components/icons";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/hooks/useAuth";
 import { getMarketingOptIn, setMarketingOptIn } from "@/lib/pushPrefs";

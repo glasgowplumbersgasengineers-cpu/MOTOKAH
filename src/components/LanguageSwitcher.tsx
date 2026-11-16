@@ -1,4 +1,5 @@
-import { IconCheck, IconChevronDown, IconLanguage } from "@tabler/icons-react";
+import Flag from "@/components/Flag";
+import { IconCheck, IconChevronDown, IconLanguage } from "@/components/icons";
 import { useEffect, useRef, useState } from "react";
 import { LANGUAGES, type LangCode, useLanguage } from "@/contexts/LanguageContext";
 
@@ -29,7 +30,7 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
           {LANGUAGES.map((item) => (
             <button key={item.code} onClick={() => select(item.code)}
               className={`flex min-h-10 items-center justify-between rounded-lg border px-3 text-sm ${lang === item.code ? "border-primary bg-primary/10 text-primary" : "border-border"}`}>
-              <span>{item.flag} {item.name}</span>
+              <span className="flex items-center gap-2"><Flag code={item.flag} />{item.name}</span>
               {lang === item.code && <IconCheck size={14} />}
             </button>
           ))}
@@ -44,7 +45,7 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
         className="flex h-8 items-center gap-1 rounded-md px-2 text-xs font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
         title="Change language">
         <IconLanguage size={15} />
-        <span>{active.flag} {active.code.toUpperCase()}</span>
+        <span className="flex items-center gap-1.5"><Flag code={active.flag} />{active.code.toUpperCase()}</span>
         <IconChevronDown size={12} />
       </button>
       {open && (
@@ -52,7 +53,7 @@ export default function LanguageSwitcher({ mobile = false }: { mobile?: boolean 
           {LANGUAGES.map((item) => (
             <button key={item.code} onClick={() => select(item.code)}
               className={`flex w-full items-center justify-between px-3 py-2 text-sm hover:bg-muted ${lang === item.code ? "font-semibold text-primary" : "text-foreground"}`}>
-              <span>{item.flag} {item.name}</span>
+              <span className="flex items-center gap-2"><Flag code={item.flag} />{item.name}</span>
               {lang === item.code && <IconCheck size={14} />}
             </button>
           ))}

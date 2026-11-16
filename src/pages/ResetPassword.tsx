@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { IconLock } from "@tabler/icons-react";
+import { IconLock } from "@/components/icons";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");

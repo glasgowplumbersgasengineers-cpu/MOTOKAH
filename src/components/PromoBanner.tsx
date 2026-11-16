@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { IconArrowRight } from "@tabler/icons-react";
+import { IconArrowRight } from "@/components/icons";
 
 export default function PromoBanner() {
   return (

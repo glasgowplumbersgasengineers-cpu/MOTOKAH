@@ -1,3 +1,4 @@
+import { Check } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import Header from "@/components/Header";
@@ -5,7 +6,7 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { type Listing, mockListings } from "@/data/mockData";
 import { isRealUuid } from "@/lib/uuid";
-import { IconX, IconScale } from "@tabler/icons-react";
+import { IconX, IconScale } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
@@ -189,7 +190,7 @@ export default function Compare() {
                         return (
                           <td key={car.id} className={`p-3 text-sm ${isWinner ? "text-success font-semibold" : "text-muted-foreground"}`}>
                             {formatValue(spec.key, car)}
-                            {isWinner && <span className="ml-1.5 text-[10px] bg-success/15 text-success px-1.5 py-0.5 rounded-full font-semibold">✓</span>}
+                            {isWinner && <span className="ml-1.5 text-[10px] bg-success/15 text-success px-1.5 py-0.5 rounded-full font-semibold inline-flex"><Check size={10} weight="bold" /></span>}
                           </td>
                         );
                       })}

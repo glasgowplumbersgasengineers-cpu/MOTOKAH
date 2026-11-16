@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { IconMail, IconLock, IconUser, IconArrowLeft, IconLink, IconBuildingStore } from "@tabler/icons-react";
+import { IconMail, IconLock, IconUser, IconArrowLeft, IconLink, IconBuildingStore } from "@/components/icons";
 import { useToast } from "@/hooks/use-toast";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { getAppUrl } from "@/lib/app-url";
@@ -71,7 +71,7 @@ export default function Auth() {
     const params = new URLSearchParams(routeLocation.search);
     if (params.get("verified") === "1") {
       toast({
-        title: "Email Verified! 🎉",
+        title: "Email verified",
         description: "Your email has been confirmed. You can now sign in.",
       });
     }

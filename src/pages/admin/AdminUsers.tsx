@@ -15,7 +15,7 @@ import {
   IconBuildingStore,
   IconUser,
   IconRefresh,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 
 interface AdminUserItem {
   id: string;

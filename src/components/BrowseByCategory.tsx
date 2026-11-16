@@ -1,4 +1,4 @@
-import { IconCar, IconTruck, IconBus, IconMotorbike, IconCrown, IconBolt, IconCurrencyDollar } from "@tabler/icons-react";
+import { IconCar, IconTruck, IconBus, IconMotorbike, IconCrown, IconBolt, IconCurrencyDollar } from "@/components/icons";
 import { useNavigate } from "react-router-dom";
 
 const cats = [

@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconSearch, IconMessageCircle, IconHandGrab, IconCar, IconCamera, IconChecklist, IconCurrencyDollar, IconRocket } from "@tabler/icons-react";
+import { IconSearch, IconMessageCircle, IconHandGrab, IconCar, IconCamera, IconChecklist, IconCurrencyDollar, IconRocket } from "@/components/icons";
 
 // Remotion + the animated composition are heavy — lazy-loaded so they never
 // ship in the main bundle for pages that aren't this one.

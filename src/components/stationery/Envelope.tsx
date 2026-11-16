@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { Phone, Globe, MapPin } from 'lucide-react';
+import { Phone, Globe, MapPin } from "@/components/icons";
 import icon from '@/assets/motokah-icon-transparent.png';
 
 const Envelope = forwardRef<HTMLDivElement>((_, ref) => {

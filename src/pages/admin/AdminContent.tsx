@@ -12,7 +12,7 @@ import {
   IconClock,
   IconEye,
   IconTrash,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 
 type Status = "draft" | "pending" | "approved" | "published" | "rejected";
 

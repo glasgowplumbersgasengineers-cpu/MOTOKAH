@@ -6,7 +6,7 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { supabase } from "@/integrations/supabase/client";
 import { mockListings } from "@/data/mockData";
 import { isRealUuid } from "@/lib/uuid";
-import { IconHeart, IconTrash } from "@tabler/icons-react";
+import { IconHeart, IconTrash } from "@/components/icons";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 

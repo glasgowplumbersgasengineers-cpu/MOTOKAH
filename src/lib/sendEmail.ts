@@ -57,7 +57,7 @@ export async function notifyAdminsOnNewListing(params: {
   const html = `
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
   <div style="background: #0284c7; padding: 20px 24px; color: #ffffff;">
-    <h1 style="margin: 0; font-size: 20px; font-weight: 700;">🚗 New Vehicle Ad Awaiting Review</h1>
+    <h1 style="margin: 0; font-size: 20px; font-weight: 700;">New Vehicle Ad Awaiting Review</h1>
     <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Motokah Marketplace Admin Alert</p>
   </div>
   <div style="padding: 24px;">
@@ -93,7 +93,7 @@ export async function notifyAdminsOnNewListing(params: {
 
   const results = await Promise.all(adminEmails.map((email) => sendEmail({
       toEmail: email,
-      subject: `🚗 New Listing Pending Approval: ${params.title}`,
+      subject: `New Listing Pending Approval: ${params.title}`,
       html,
     })));
   return results.some(Boolean);
@@ -109,7 +109,7 @@ export async function notifyAdminsOnNewSignup(params: {
   const html = `
 <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
   <div style="background: #16a34a; padding: 20px 24px; color: #ffffff;">
-    <h1 style="margin: 0; font-size: 20px; font-weight: 700;">👤 New User Registered on Motokah</h1>
+    <h1 style="margin: 0; font-size: 20px; font-weight: 700;">New User Registered on Motokah</h1>
     <p style="margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">Motokah Community Growth Alert</p>
   </div>
   <div style="padding: 24px;">
@@ -141,7 +141,7 @@ export async function notifyAdminsOnNewSignup(params: {
 
   const results = await Promise.all(adminEmails.map((email) => sendEmail({
       toEmail: email,
-      subject: `👤 New Motokah User Sign-Up: ${params.displayName || params.email}`,
+      subject: `New Motokah User Sign-Up: ${params.displayName || params.email}`,
       html,
     })));
   return results.some(Boolean);
@@ -152,7 +152,7 @@ export async function notifyAdminsOnNewSignup(params: {
 export function listingApprovedEmail(title: string): string {
   return `
 <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:24px">
-  <h2 style="color:#16a34a">Your listing has been approved! 🎉</h2>
+  <h2 style="color:#16a34a">Your listing has been approved</h2>
   <p>Great news — your listing <strong>"${escHtml(title)}"</strong> has been approved and is now live on Motokah.</p>
   <p>Potential buyers can now find your vehicle in search results.</p>
   <p style="margin-top:32px;font-size:12px;color:#888">
@@ -176,7 +176,7 @@ export function listingRejectedEmail(title: string): string {
 export function dealerApprovedEmail(businessName: string): string {
   return `
 <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:24px">
-  <h2 style="color:#16a34a">Dealer application approved! 🏪</h2>
+  <h2 style="color:#16a34a">Dealer application approved</h2>
   <p>Congratulations! Your dealer application for <strong>"${escHtml(businessName)}"</strong> has been approved.</p>
   <p>You now have dealer status on Motokah and can list vehicles under your dealership profile.</p>
   <p style="margin-top:32px;font-size:12px;color:#888">

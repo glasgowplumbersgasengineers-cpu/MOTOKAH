@@ -1,3 +1,4 @@
+import { Car } from "@phosphor-icons/react";
 import { Component, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -30,7 +31,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen bg-background flex items-center justify-center px-4">
           <div className="text-center max-w-md">
-            <div className="text-6xl mb-4">🚗</div>
+            <div className="mb-4 flex justify-center text-primary"><Car size={56} weight="duotone" /></div>
             <h1 className="text-2xl font-bold text-foreground mb-2">Something went wrong</h1>
             <p className="text-muted-foreground mb-6">
               An unexpected error occurred. Our team has been notified.

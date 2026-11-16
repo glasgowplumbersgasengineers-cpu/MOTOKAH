@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { IconMotorbike, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { IconMotorbike, IconChevronLeft, IconChevronRight } from "@/components/icons";
 import { supabase } from "@/integrations/supabase/client";
 import VehicleCard from "./VehicleCard";
 import { type Listing } from "@/data/mockData";

@@ -1,3 +1,4 @@
+import { Camera } from "@phosphor-icons/react";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,7 +29,7 @@ import {
   IconAlertCircle,
   IconArrowLeft,
   IconRefresh,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 import {
   Dialog,
   DialogContent,
@@ -191,7 +192,7 @@ export default function AdminListings() {
           );
           await sendEmail({
             toUserId: sellerId,
-            subject: approved ? `Your vehicle listing "${title}" is now LIVE! 🎉` : `Update on your listing "${title}"`,
+            subject: approved ? `Your vehicle listing "${title}" is now live` : `Update on your listing "${title}"`,
             html: approved ? listingApprovedEmail(title) : listingRejectedEmail(title),
           });
         }
@@ -202,7 +203,7 @@ export default function AdminListings() {
       qc.invalidateQueries({ queryKey: ["admin-stats"] });
       toast.success(
         vars.status === "approved"
-          ? `Listing approved & published live! 🚀`
+          ? `Listing approved and published`
           : vars.status === "rejected"
           ? `Listing marked as rejected`
           : `Listing status updated to ${vars.status}`
@@ -555,7 +556,7 @@ export default function AdminListings() {
                     {statusBadge(l.status)}
                     {l.images && l.images.length > 1 && (
                       <span className="bg-black/60 text-white font-bold text-[10px] px-2 py-0.5 rounded-md backdrop-blur-xs">
-                        📷 {l.images.length} photos
+                        <Camera size={12} weight="bold" className="inline-block align-[-1px]" /> {l.images.length} photos
                       </span>
                     )}
                   </div>

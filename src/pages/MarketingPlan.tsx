@@ -25,7 +25,7 @@ import {
   IconFileText,
   IconUserCheck,
   IconMail,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 const PASSWORD = "MOTO2026";

@@ -1,4 +1,4 @@
-import { IconBrandWhatsapp, IconShieldCheck, IconInfoCircle, IconSearch } from "@tabler/icons-react";
+import { IconBrandWhatsapp, IconShieldCheck, IconInfoCircle, IconSearch } from "@/components/icons";
 
 const trustItems = [
   { icon: IconBrandWhatsapp, title: "Direct Seller Contact", desc: "Call or WhatsApp sellers from the listing page", stat: "No middleman" },

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { IconStarFilled, IconQuote } from "@tabler/icons-react";
+import { IconStarFilled, IconQuote } from "@/components/icons";
 
 interface Review {
   id: string;

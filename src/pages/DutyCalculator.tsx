@@ -8,7 +8,7 @@ import { usePageTitle } from "@/hooks/usePageTitle";
 import {
   IconCalculator, IconSearch, IconCar, IconAlertCircle,
   IconCheck, IconExternalLink, IconCurrencyDollar,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 
 const USD_TO_TZS = 2600;
 

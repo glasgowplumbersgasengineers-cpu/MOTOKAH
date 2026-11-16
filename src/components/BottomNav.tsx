@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { IconHome, IconSpeakerphone, IconPlus, IconMessage, IconMenu2 } from "@tabler/icons-react";
+import { IconHome, IconSpeakerphone, IconPlus, IconMessage, IconMenu2 } from "@/components/icons";
 import { useAuth } from "@/hooks/useAuth";
 
 const tabs = [

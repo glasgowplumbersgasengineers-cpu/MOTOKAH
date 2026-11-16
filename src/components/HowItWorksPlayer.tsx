@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
-import { IconPlayerPlay, IconPlayerPause, IconRotateClockwise } from "@tabler/icons-react";
+import { IconPlayerPlay, IconPlayerPause, IconRotateClockwise } from "@/components/icons";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { HowItWorksReel, CHAPTERS, TOTAL_DURATION, FPS, COMPOSITION_WIDTH, COMPOSITION_HEIGHT } from "@/remotion/howitworks/HowItWorksReel";
 

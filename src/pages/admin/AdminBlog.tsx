@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { IconPlus, IconEdit, IconTrash, IconBold, IconItalic, IconH1, IconH2, IconList, IconListNumbers, IconQuote, IconEye, IconCode } from "@tabler/icons-react";
+import { IconPlus, IconEdit, IconTrash, IconBold, IconItalic, IconH1, IconH2, IconList, IconListNumbers, IconQuote, IconEye, IconCode } from "@/components/icons";
 import { renderBlogMarkdown } from "@/lib/blogMarkdown";
 
 type Post = {

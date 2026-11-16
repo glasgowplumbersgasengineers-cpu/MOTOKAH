@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import VehicleCard from "@/components/VehicleCard";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { useSEO } from "@/hooks/useSEO";
-import { IconMapPin, IconPhone, IconBuildingStore, IconShieldCheck, IconMail, IconStarFilled, IconBrandWhatsapp } from "@tabler/icons-react";
+import { IconMapPin, IconPhone, IconBuildingStore, IconShieldCheck, IconMail, IconStarFilled, IconBrandWhatsapp } from "@/components/icons";
 import { mockDealers, mockListings, getShowroomListings, type Listing } from "@/data/mockData";
 
 type DealerData = {

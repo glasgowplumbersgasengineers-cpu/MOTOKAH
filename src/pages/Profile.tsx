@@ -1,3 +1,4 @@
+import { SealCheck } from "@phosphor-icons/react";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -34,7 +35,7 @@ import {
   IconSearch,
   IconStarFilled,
   IconMapPin,
-} from "@tabler/icons-react";
+} from "@/components/icons";
 import ReviewsSection from "@/components/ReviewsSection";
 import { Link, useNavigate } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
@@ -214,7 +215,7 @@ function ChangePasswordSection() {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
       toast({
-        title: "Password updated! 🔒",
+        title: "Password updated",
         description: "Your account password has been changed successfully.",
       });
       setNewPassword("");
@@ -485,7 +486,7 @@ export default function Profile() {
               <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${profile?.seller_type === "dealer" ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
                 {profile?.seller_type === "dealer" ? "Dealer" : "Private Seller"}
               </span>
-              {profile?.verified_at && <span className="text-success text-xs">✓ Verified</span>}
+              {profile?.verified_at && <span className="text-success text-xs inline-flex items-center gap-1"><SealCheck size={14} weight="fill" /> Verified</span>}
               {profile?.city && <span>• {profile.city}</span>}
             </div>
           </div>
@@ -598,7 +599,7 @@ export default function Profile() {
             {/* Welcome banner */}
             <div className="bg-gradient-to-r from-primary/10 via-accent/5 to-background border border-border rounded-xl p-5">
               <h2 className="text-lg font-bold text-foreground mb-0.5">
-                Welcome back, {profile?.display_name?.split(" ")[0] || "there"} 👋
+                Welcome back, {profile?.display_name?.split(" ")[0] || "there"}
               </h2>
               <p className="text-sm text-muted-foreground">Here's a summary of your Motokah activity</p>
             </div>

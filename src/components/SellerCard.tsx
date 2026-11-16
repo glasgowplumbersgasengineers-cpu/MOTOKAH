@@ -1,4 +1,4 @@
-import { IconPhone, IconMessage, IconStarFilled, IconShieldCheck, IconUser, IconBuildingStore, IconExternalLink } from "@tabler/icons-react";
+import { IconPhone, IconMessage, IconStarFilled, IconShieldCheck, IconUser, IconBuildingStore, IconExternalLink } from "@/components/icons";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, Link } from "react-router-dom";

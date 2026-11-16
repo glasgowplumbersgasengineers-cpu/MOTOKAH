@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconSearch, IconMapPin, IconStarFilled, IconBuildingStore, IconShieldCheck } from "@tabler/icons-react";
+import { IconSearch, IconMapPin, IconStarFilled, IconBuildingStore, IconShieldCheck } from "@/components/icons";
 import { mockDealers, getShowroomListings } from "@/data/mockData";
 
 type DealerProfile = {

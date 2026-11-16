@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { IconCamera, IconFileText, IconUpload, IconMessageCircle } from "@tabler/icons-react";
+import { IconCamera, IconFileText, IconUpload, IconMessageCircle } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 
 const steps = [

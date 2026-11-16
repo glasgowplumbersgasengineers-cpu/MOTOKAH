@@ -7,7 +7,7 @@ import VehicleCard from "@/components/VehicleCard";
 import FilterSidebar, { type Filters, defaultFilters } from "@/components/FilterSidebar";
 import MobileFilterDrawer from "@/components/MobileFilterDrawer";
 import { useSearchListings, type SearchFilters, type SortOption } from "@/hooks/useSearchListings";
-import { IconFilter, IconX, IconSortDescending, IconSearch, IconLoader2, IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
+import { IconFilter, IconX, IconSortDescending, IconSearch, IconLoader2, IconBookmark, IconBookmarkFilled } from "@/components/icons";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Helmet } from "react-helmet-async";
 import { cityToCountry } from "@/data/mockData";

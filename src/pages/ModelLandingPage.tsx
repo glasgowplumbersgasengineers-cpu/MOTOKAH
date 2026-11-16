@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
 import { Button } from "@/components/ui/button";
-import { IconLoader2, IconChevronRight } from "@tabler/icons-react";
+import { IconLoader2, IconChevronRight } from "@/components/icons";
 import { jsonLdScript, breadcrumbJsonLd, collectionPageJsonLd, faqJsonLd } from "@/lib/structuredData";
 import { robotsContentForCount } from "@/lib/pageListingCounts";
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconCertificate, IconScale, IconBuildingStore, IconCar, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
+import { IconHeart, IconEye, IconMapPin, IconGauge, IconCalendar, IconManualGearbox, IconStarFilled, IconFlame, IconCertificate, IconScale, IconBuildingStore, IconCar, IconChevronLeft, IconChevronRight } from "@/components/icons";
 import { toast } from "sonner";
 import { type Listing } from "@/data/mockData";
 import { useAuth } from "@/hooks/useAuth";

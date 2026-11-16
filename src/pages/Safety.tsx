@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { IconShieldCheck, IconAlertTriangle, IconMapPin, IconUsers, IconFileCheck, IconPhoneCall, IconCash, IconDeviceMobile } from "@tabler/icons-react";
+import { IconShieldCheck, IconAlertTriangle, IconMapPin, IconUsers, IconFileCheck, IconPhoneCall, IconCash, IconDeviceMobile } from "@/components/icons";
 
 const buyerTips = [
   { icon: IconMapPin, title: "Meet in Public Places", desc: "Always meet the seller in a well-lit, busy public area. Police stations and bank parking lots are ideal." },
