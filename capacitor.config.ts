@@ -4,6 +4,8 @@ const config: CapacitorConfig = {
   appId: 'com.motokah.app',
   appName: 'Motokah',
   webDir: 'dist',
+  zoomEnabled: false,
+  zoomEnabled: false,
   server: {
     androidScheme: 'https',
   },

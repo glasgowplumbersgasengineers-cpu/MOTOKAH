@@ -123,7 +123,7 @@ function AnimatedRoutes() {
         exit={{ opacity: 0, y: -6 }}
         transition={{ duration: 0.18, ease: "easeInOut" }}
         style={{ minHeight: "100vh" }}
-        className="overflow-x-hidden"
+        className="overflow-x-clip"
       >
         <Suspense fallback={<RouteLoader />}>
         <Routes location={location}>

@@ -126,3 +126,39 @@ export function searchVehiclePresets(query: string, limit = 6): VehiclePreset[] 
     })
     .slice(0, limit);
 }
+
+const LUXURY_MAKES = new Set(["Lexus", "Mercedes-Benz", "BMW", "Audi", "Land Rover", "Porsche", "Jaguar", "Volvo", "Infiniti", "Tesla"]);
+const ELECTRIC = /^(leaf|model [3sxy]|atto 3|dolphin|seal|i3)$/i;
+const HYBRID = /^(prius|aqua|insight|ioniq)$/i;
+// Work vans and light trucks: manual diesel. Family MPVs (Noah, Alphard, Serena...) stay automatic petrol.
+const WORK_VAN = /^(hiace|townace|caravan|nv350|nv200|vanette|ad van|bongo|hijet|every|carry|sprinter|vito|transit|transporter|caddy|h-1|starex|partner|view|delica)$/i;
+const OFFROAD = /^(land cruiser|prado|patrol|pajero|defender|discovery|g-class|wrangler|fj cruiser|hilux surf|fortuner|everest|land cruiser 70 series|jimny|terrano|trooper|bighorn|mu-x)/i;
+
+/**
+ * Full typical specs for any car in the catalog: the hand-checked preset when there is one,
+ * otherwise a sensible guess from the make, model and body type. The seller can change anything.
+ */
+export function specsFor(make: string, model: string, bodyType: VehiclePreset["bodyType"]): VehiclePreset {
+  const known = vehiclePresets.find((v) => v.make === make && v.model === model);
+  if (known) return known;
+
+  let transmission: VehiclePreset["transmission"] = "Automatic";
+  let fuelType: VehiclePreset["fuelType"] = "Petrol";
+  if (ELECTRIC.test(model)) fuelType = "Electric";
+  else if (HYBRID.test(model)) fuelType = "Hybrid";
+  if (bodyType === "Truck" || bodyType === "Pickup" || WORK_VAN.test(model)) {
+    transmission = "Manual";
+    fuelType = "Diesel";
+  }
+
+  const luxury = LUXURY_MAKES.has(make);
+  let features: string[];
+  if (bodyType === "Truck" || WORK_VAN.test(model)) features = BASIC;
+  else if (luxury) features = PREMIUM;
+  else if (bodyType === "SUV" || bodyType === "Van") features = [...COMFORT, "Alloy Wheels", "Reverse Camera"];
+  else features = COMFORT;
+  if (bodyType === "Pickup" || OFFROAD.test(model)) features = [...features, FOUR_BY_FOUR];
+  if (bodyType === "SUV") features = [...features, "Roof Rails"];
+
+  return { make, model, bodyType, transmission, fuelType, features: [...new Set(features)] };
+}

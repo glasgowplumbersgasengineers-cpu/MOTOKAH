@@ -39,6 +39,11 @@ if (typeof Node === "function" && Node.prototype) {
 // visualViewport resize, which iOS also fires while typing (the suggestion bar
 // shows and hides), and the shrunk height clamped the scroll so forms jumped to the top.
 if (Capacitor.isNativePlatform()) {
+  // Inside the app the page must never zoom (pinch, double-tap or focusing a field).
+  // The website keeps pinch-zoom for accessibility.
+  document
+    .querySelector('meta[name="viewport"]')
+    ?.setAttribute("content", "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content");
   import("@capacitor/keyboard").then(({ Keyboard }) => {
     Keyboard.addListener("keyboardDidHide", () => {
       const y = window.scrollY;

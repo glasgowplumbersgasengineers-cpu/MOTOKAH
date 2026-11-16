@@ -279,7 +279,7 @@ export default function SearchResults() {
   const paged = filtered.slice((page - 1) * perPage, page * perPage);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background">
+    <div className="min-h-screen overflow-x-clip bg-background">
       <Helmet>
         <title>{seoTitle}</title>
         <meta name="description" content={seoDesc} />

@@ -30,7 +30,7 @@ import { africanCities, cityToCountry, currencies } from "@/data/mockData";
 import { notifyAdminsOnNewListing } from "@/lib/sendEmail";
 import { trackEvent } from "@/lib/analytics";
 import { downscaleImage } from "@/lib/downscaleImage";
-import { vehiclePresets } from "@/data/vehiclePresets";
+import { specsFor } from "@/data/vehiclePresets";
 import { catalogMakes, searchCarCatalog, type CatalogModel } from "@/data/carCatalog";
 
 const topEastAfricaMakes = [
@@ -268,6 +268,21 @@ export default function SellCar() {
     localStorage.setItem("sellCarDraft", JSON.stringify(next));
   };
 
+  const [hasDraft, setHasDraft] = useState(() => !editId && !!localStorage.getItem("sellCarDraft"));
+  const startOver = () => {
+    localStorage.removeItem("sellCarDraft");
+    localStorage.removeItem("sellCarFeatures");
+    setForm({
+      ...defaultForm,
+      currency: countryCurrencyMap[country] || defaultForm.currency,
+      city: city || "Dar es Salaam",
+      registeredIn: city || "Dar es Salaam",
+    });
+    setSelectedFeatures(["Air Conditioning", "Alloy Wheels", "Power Windows & Mirrors"]);
+    setFilledFrom(null);
+    setHasDraft(false);
+  };
+
   const [modelFocused, setModelFocused] = useState(false);
   const [filledFrom, setFilledFrom] = useState<string | null>(null);
   const modelSuggestions = useMemo(() => {
@@ -281,20 +296,17 @@ export default function SellCar() {
   }, [form.model, form.make]);
 
   const applyPreset = (c: CatalogModel) => {
-    // Popular models carry full typical specs; the rest of the catalog fills make, model and body type.
-    const p = vehiclePresets.find((v) => v.make === c.make && v.model === c.model);
-    const next = p
-      ? { ...form, make: p.make, model: p.model, bodyType: p.bodyType, transmission: p.transmission, fuelType: p.fuelType }
-      : { ...form, make: c.make, model: c.model, bodyType: c.bodyType };
+    // Every catalog car fills make, model, body type, gearbox, fuel and typical features.
+    const p = specsFor(c.make, c.model, c.bodyType);
+    const next = { ...form, make: p.make, model: p.model, bodyType: p.bodyType, transmission: p.transmission, fuelType: p.fuelType };
     setForm(next);
     localStorage.setItem("sellCarDraft", JSON.stringify(next));
-    if (p) {
-      setSelectedFeatures(p.features);
-      localStorage.setItem("sellCarFeatures", JSON.stringify(p.features));
-    }
+    setSelectedFeatures(p.features);
+    localStorage.setItem("sellCarFeatures", JSON.stringify(p.features));
     setFilledFrom(`${c.make} ${c.model}`);
     setModelFocused(false);
-    (document.activeElement as HTMLElement | null)?.blur();
+    const active = document.activeElement as HTMLElement | null;
+    if (active?.tagName === "INPUT") active.blur();
   };
 
   const toggleFeature = (feat: string) => {
@@ -534,6 +546,15 @@ export default function SellCar() {
           </div>
         </div>
 
+        {hasDraft && (
+          <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3">
+            <p className="text-xs text-muted-foreground">You're continuing a saved draft.</p>
+            <button type="button" onClick={startOver} className="text-xs font-bold text-primary shrink-0">
+              Start over
+            </button>
+          </div>
+        )}
+
         <div className="space-y-6">
           {/* CARD 1: PHOTOS & MEDIA */}
           <div className="bg-card border border-border rounded-2xl p-5 md:p-6 shadow-sm">
@@ -710,7 +731,15 @@ export default function SellCar() {
                         window.scrollTo({ top: y, behavior: "smooth" });
                       }, 350);
                     }}
-                    onBlur={() => setTimeout(() => setModelFocused(false), 150)}
+                    onBlur={() => {
+                      setTimeout(() => setModelFocused(false), 150);
+                      // Typed the full name without tapping a suggestion: fill it anyway.
+                      if (filledFrom) return;
+                      const typed = form.model.trim().toLowerCase();
+                      const exact = searchCarCatalog(form.model, 12).filter((c) => c.model.toLowerCase() === typed);
+                      const pick = exact.find((c) => c.make === form.make) || (exact.length === 1 ? exact[0] : undefined);
+                      if (pick) applyPreset(pick);
+                    }}
                     placeholder="Type the car name, e.g. Harrier"
                     autoComplete="off"
                     autoCorrect="off"
