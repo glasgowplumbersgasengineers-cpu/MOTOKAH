@@ -1,5 +1,6 @@
 import { Checks } from "@phosphor-icons/react";
 import { useRef, useState, useEffect } from "react";
+import TutorialVideos from "@/components/TutorialVideos";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   IconSearch, IconFilter, IconHeart, IconScale, IconShare, IconFlag,
@@ -926,22 +927,10 @@ function AccountDiagram() {
 
 const diagrams = [SearchDiagram, FilterDiagram, WishlistDiagram, ContactDiagram, PostAdDiagram, ChatDiagram, AccountDiagram];
 
+
 export default function HelpGuide({ isOpen, onClose, lang }: HelpGuideProps) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeSection, setActiveSection] = useState(0);
   const t = translations[lang];
   const isRTL = lang === "ar";
-
-  const handleScroll = () => {
-    if (!scrollRef.current) return;
-    const scrollTop = scrollRef.current.scrollTop;
-    const sectionHeight = scrollRef.current.scrollHeight / t.sections.length;
-    const newActive = Math.min(
-      Math.floor(scrollTop / sectionHeight + 0.5),
-      t.sections.length - 1
-    );
-    setActiveSection(newActive);
-  };
 
   if (!isOpen) return null;
 
@@ -955,144 +944,42 @@ export default function HelpGuide({ isOpen, onClose, lang }: HelpGuideProps) {
         onClick={onClose}
       >
         <motion.div
-          initial={{ scale: 0.9, opacity: 0, y: 30 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.9, opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 30 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="absolute inset-4 md:inset-10 lg:inset-20 bg-background rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+          className="absolute inset-0 md:inset-10 lg:inset-20 bg-background md:rounded-2xl shadow-2xl overflow-hidden flex flex-col pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] md:pt-0 md:pb-0"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
-            <div className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <IconHelpCircle size={22} className="text-primary" />
+          <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-border shrink-0">
+            <div className={`flex items-center gap-3 min-w-0 ${isRTL ? "flex-row-reverse" : ""}`}>
+              <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <IconHelpCircle size={20} className="text-primary" />
               </div>
-              <div className={isRTL ? "text-right" : ""}>
-                <h2 className="text-lg font-bold">{t.title}</h2>
-                <p className="text-xs text-muted-foreground">{t.subtitle}</p>
+              <div className={`min-w-0 ${isRTL ? "text-right" : ""}`}>
+                <h2 className="text-base font-bold leading-tight truncate">{t.title}</h2>
+                <p className="text-xs text-muted-foreground truncate">{t.subtitle}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+              aria-label="Close"
+              className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0"
             >
-              <IconX size={16} />
+              <IconX size={18} />
             </button>
           </div>
 
-          {/* Content */}
-          <div
-            ref={scrollRef}
-            onScroll={handleScroll}
-            className="flex-1 overflow-y-auto overscroll-contain"
-          >
-            <div className="max-w-2xl mx-auto px-6 py-8 space-y-12">
-              {t.sections.map((section, index) => {
-                const DiagramComponent = diagrams[index];
-                return (
-                  <motion.section
-                    key={section.title}
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-50px" }}
-                    transition={{ duration: 0.5 }}
-                    className="space-y-6"
-                  >
-                    {/* Section header */}
-                    <div className={`flex items-center gap-4 ${isRTL ? "flex-row-reverse" : ""}`}>
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        whileInView={{ scale: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ type: "spring", delay: 0.2 }}
-                        className={`w-14 h-14 rounded-2xl ${section.bgColor} flex items-center justify-center shrink-0`}
-                      >
-                        <section.icon size={28} className={section.color} />
-                      </motion.div>
-                      <div className={isRTL ? "text-right" : ""}>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-bold text-primary">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <h3 className="text-xl font-bold">{section.title}</h3>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{section.description}</p>
-                      </div>
-                    </div>
-
-                    {/* Diagram */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.2 }}
-                      className="py-4"
-                    >
-                      <DiagramComponent />
-                    </motion.div>
-
-                    {/* Features list */}
-                    <div className={`space-y-3 ${isRTL ? "text-right" : ""}`}>
-                      {section.features.map((feature, fi) => (
-                        <motion.div
-                          key={fi}
-                          initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.1 * fi }}
-                          className={`flex items-start gap-3 ${isRTL ? "flex-row-reverse" : ""}`}
-                        >
-                          <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-                            <IconCheck size={12} className="text-primary" />
-                          </div>
-                          <span className="text-sm text-muted-foreground">{feature}</span>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    {/* Divider */}
-                    {index < t.sections.length - 1 && (
-                      <div className="h-px bg-border mt-8" />
-                    )}
-                  </motion.section>
-                );
-              })}
-
-              {/* Bottom CTA */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="pt-8 pb-4 text-center"
-              >
-                <Button onClick={onClose} className="h-12 px-8 font-semibold">
-                  {t.gotIt}
-                </Button>
-                <p className="text-xs text-muted-foreground mt-4">{t.swipeToExplore}</p>
-              </motion.div>
-            </div>
+          {/* Tutorial video, English or Swahili */}
+          <div className="flex-1 min-h-0 px-4 pt-4">
+            <TutorialVideos />
           </div>
 
-          {/* Section dots indicator */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-            {t.sections.map((_, i) => (
-              <motion.button
-                key={i}
-                onClick={() => {
-                  if (scrollRef.current) {
-                    const sectionHeight = scrollRef.current.scrollHeight / t.sections.length;
-                    scrollRef.current.scrollTo({
-                      top: sectionHeight * i,
-                      behavior: "smooth",
-                    });
-                  }
-                }}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  i === activeSection ? "bg-primary w-6" : "bg-muted-foreground/30"
-                }`}
-              />
-            ))}
+          <div className="px-4 py-3 shrink-0">
+            <Button onClick={onClose} className="w-full h-12 font-semibold">
+              {t.gotIt}
+            </Button>
           </div>
         </motion.div>
       </motion.div>
