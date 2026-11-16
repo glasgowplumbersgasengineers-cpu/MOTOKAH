@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Capacitor } from "@capacitor/core";
 import { PushNotifications } from "@capacitor/push-notifications";
+import { App } from "@capacitor/app";
 import { useAuth } from "./useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +26,9 @@ export function usePushNotifications() {
   const userId = user?.id;
 
   useEffect(() => {
-    if (!userId || userId.startsWith("demo-") || !Capacitor.isNativePlatform()) return;
+    // iOS only: Android has no Firebase config (google-services.json), and
+    // PushNotifications.register() crashes the app there without it.
+    if (!userId || userId.startsWith("demo-") || Capacitor.getPlatform() !== "ios") return;
 
     const handles = [
       PushNotifications.addListener("registration", async (token) => {
@@ -57,8 +60,21 @@ export function usePushNotifications() {
       if (perm.receive === "granted") await PushNotifications.register();
     })().catch((e) => console.warn("Push setup failed:", e));
 
+    // If notifications were off at launch and the user turns them on in iOS
+    // Settings, register as soon as they come back to the app (no relaunch needed).
+    const resume = App.addListener("appStateChange", async ({ isActive }) => {
+      if (!isActive) return;
+      try {
+        const perm = await PushNotifications.checkPermissions();
+        if (perm.receive === "granted") await PushNotifications.register();
+      } catch (e) {
+        console.warn("Push re-register failed:", e);
+      }
+    });
+
     return () => {
       handles.forEach((h) => h.then((l) => l.remove()));
+      resume.then((l) => l.remove());
     };
   }, [userId]);
 }
