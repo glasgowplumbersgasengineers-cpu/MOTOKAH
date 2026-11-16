@@ -6,6 +6,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const ADMIN_INBOX = "motokahafrica@gmail.com";
+
 interface EmailPayload {
   /** Pass either a user_id (we look up the email) or a direct email address */
   to_user_id?: string;
@@ -30,6 +32,32 @@ serve(async (req) => {
       );
     }
 
+    // Who may send to whom. Without this anyone with the public anon key could send
+    // arbitrary mail from noreply@motokah.com.
+    //  - server senders (x-internal-secret) and signed-in admins: any recipient
+    //  - everyone else (signup / new listing / dealer application alerts): only the Motokah inbox
+    const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const internalSecret = Deno.env.get("INTERNAL_PUSH_SECRET");
+    let privileged = !!internalSecret && req.headers.get("x-internal-secret") === internalSecret;
+    if (!privileged) {
+      const jwt = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+      const { data: caller } = jwt ? await admin.auth.getUser(jwt) : { data: { user: null } };
+      if (caller?.user) {
+        const { data: roles } = await admin
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", caller.user.id)
+          .eq("role", "admin");
+        privileged = Array.isArray(roles) && roles.length > 0;
+      }
+    }
+    if (!privileged && (to_user_id || (to_email || "").trim().toLowerCase() !== ADMIN_INBOX)) {
+      return new Response(JSON.stringify({ error: "Not allowed to send to this recipient" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const resendKey = Deno.env.get("RESEND_API_KEY");
     if (!resendKey) {
       // Log and return success so the rest of the action (notification etc.) still completes
@@ -42,11 +70,7 @@ serve(async (req) => {
     let recipientEmail = to_email;
 
     if (to_user_id && !recipientEmail) {
-      const supabase = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-      );
-      const { data: userData } = await supabase.auth.admin.getUserById(to_user_id);
+      const { data: userData } = await admin.auth.admin.getUserById(to_user_id);
       recipientEmail = userData?.user?.email;
     }
 
