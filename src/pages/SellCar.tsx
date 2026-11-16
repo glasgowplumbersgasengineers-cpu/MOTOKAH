@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "@/contexts/LocationContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,11 +26,12 @@ import {
   IconInfoCircle,
 } from "@tabler/icons-react";
 import { usePageTitle } from "@/hooks/usePageTitle";
-import { africanCities, carMakes, cityToCountry, currencies } from "@/data/mockData";
+import { africanCities, cityToCountry, currencies } from "@/data/mockData";
 import { notifyAdminsOnNewListing } from "@/lib/sendEmail";
 import { trackEvent } from "@/lib/analytics";
 import { downscaleImage } from "@/lib/downscaleImage";
-import { searchVehiclePresets, type VehiclePreset } from "@/data/vehiclePresets";
+import { vehiclePresets } from "@/data/vehiclePresets";
+import { catalogMakes, searchCarCatalog, type CatalogModel } from "@/data/carCatalog";
 
 const topEastAfricaMakes = [
   "Toyota",
@@ -256,8 +258,8 @@ export default function SellCar() {
   }, [country]);
 
   const filteredMakes = useMemo(() => {
-    if (!searchMakeQuery.trim()) return carMakes;
-    return carMakes.filter((m) => m.toLowerCase().includes(searchMakeQuery.toLowerCase()));
+    if (!searchMakeQuery.trim()) return catalogMakes;
+    return catalogMakes.filter((m) => m.toLowerCase().includes(searchMakeQuery.toLowerCase()));
   }, [searchMakeQuery]);
 
   const update = (key: keyof FormData, val: string | boolean) => {
@@ -271,20 +273,26 @@ export default function SellCar() {
   const modelSuggestions = useMemo(() => {
     const typed = form.model.trim();
     if (typed.length < 2) return [];
-    const found = searchVehiclePresets(typed, 12);
+    const found = searchCarCatalog(typed, 12);
     // A make already picked above goes first.
     const sorted = [...found].sort((a, b) => Number(b.make === form.make) - Number(a.make === form.make));
     const exact = sorted.length === 1 && sorted[0].model.toLowerCase() === typed.toLowerCase() && sorted[0].make === form.make;
     return exact ? [] : sorted.slice(0, 6);
   }, [form.model, form.make]);
 
-  const applyPreset = (p: VehiclePreset) => {
-    const next = { ...form, make: p.make, model: p.model, bodyType: p.bodyType, transmission: p.transmission, fuelType: p.fuelType };
+  const applyPreset = (c: CatalogModel) => {
+    // Popular models carry full typical specs; the rest of the catalog fills make, model and body type.
+    const p = vehiclePresets.find((v) => v.make === c.make && v.model === c.model);
+    const next = p
+      ? { ...form, make: p.make, model: p.model, bodyType: p.bodyType, transmission: p.transmission, fuelType: p.fuelType }
+      : { ...form, make: c.make, model: c.model, bodyType: c.bodyType };
     setForm(next);
     localStorage.setItem("sellCarDraft", JSON.stringify(next));
-    setSelectedFeatures(p.features);
-    localStorage.setItem("sellCarFeatures", JSON.stringify(p.features));
-    setFilledFrom(`${p.make} ${p.model}`);
+    if (p) {
+      setSelectedFeatures(p.features);
+      localStorage.setItem("sellCarFeatures", JSON.stringify(p.features));
+    }
+    setFilledFrom(`${c.make} ${c.model}`);
     setModelFocused(false);
     (document.activeElement as HTMLElement | null)?.blur();
   };
@@ -693,7 +701,15 @@ export default function SellCar() {
                   <Input
                     value={form.model}
                     onChange={(e) => { update("model", e.target.value); setModelFocused(true); setFilledFrom(null); }}
-                    onFocus={() => setModelFocused(true)}
+                    onFocus={(e) => {
+                      setModelFocused(true);
+                      // Lift the field to the top so the suggestions sit above the iPhone keyboard.
+                      const el = e.currentTarget;
+                      setTimeout(() => {
+                        const y = el.getBoundingClientRect().top + window.scrollY - 80;
+                        window.scrollTo({ top: y, behavior: "smooth" });
+                      }, 350);
+                    }}
                     onBlur={() => setTimeout(() => setModelFocused(false), 150)}
                     placeholder="Type the car name, e.g. Harrier"
                     autoComplete="off"
@@ -702,7 +718,7 @@ export default function SellCar() {
                     required
                   />
                   {modelFocused && modelSuggestions.length > 0 && (
-                    <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-popover border border-border rounded-xl shadow-lg overflow-hidden">
+                    <div className="absolute left-0 right-0 top-full mt-1 z-30 bg-popover border border-border rounded-xl shadow-lg overflow-y-auto max-h-72">
                       {modelSuggestions.map((p) => (
                         <button
                           key={`${p.make}-${p.model}`}
@@ -711,7 +727,7 @@ export default function SellCar() {
                           className="w-full px-3 py-2.5 text-left flex items-center justify-between gap-2 hover:bg-muted/60 border-b border-border last:border-b-0"
                         >
                           <span className="text-sm font-semibold text-foreground">{p.make} {p.model}</span>
-                          <span className="text-[11px] text-muted-foreground shrink-0">{p.bodyType} · {p.fuelType}</span>
+                          <span className="text-[11px] text-muted-foreground shrink-0">{p.bodyType}</span>
                         </button>
                       ))}
                     </div>
@@ -719,7 +735,7 @@ export default function SellCar() {
                 </div>
                 {filledFrom && (
                   <p className="text-[11px] font-medium text-primary mt-1.5 flex items-start gap-1">
-                    <IconCheck size={13} className="shrink-0 mt-px" /> Filled in typical {filledFrom} specs and features below. Check them and change anything that's different on your car.
+                    <IconCheck size={13} className="shrink-0 mt-px" /> Filled in {filledFrom} details below. Check them and change anything that's different on your car.
                   </p>
                 )}
               </div>
@@ -1100,72 +1116,63 @@ export default function SellCar() {
       </main>
 
       {/* Modal / Bottom Drawer for Make / City Selection */}
-      {sheet && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setSheet(null)}>
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-xs" />
-          <div
-            className="relative bg-card w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl max-h-[80vh] overflow-hidden flex flex-col shadow-2xl border border-border"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-              <h3 className="font-bold text-foreground text-base">
-                {sheet === "make" ? "Select Vehicle Make" : "Select City / Location"}
-              </h3>
-              <button
-                onClick={() => setSheet(null)}
-                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80 text-foreground"
-              >
-                <IconX size={16} />
-              </button>
-            </div>
+      <Sheet open={sheet === "make" || sheet === "city"} onOpenChange={(open) => { if (!open) { setSheet(null); setSearchMakeQuery(""); } }}>
+        <SheetContent
+          side="bottom"
+          className="h-[75dvh] p-0 flex flex-col rounded-t-3xl safe-bottom"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <SheetHeader className="px-5 pt-5 pb-3 border-b border-border text-left">
+            <SheetTitle className="text-base">{sheet === "make" ? "Select Vehicle Make" : "Select City / Location"}</SheetTitle>
+          </SheetHeader>
 
-            {sheet === "make" && (
-              <div className="p-3 border-b border-border bg-muted/20">
-                <Input
-                  value={searchMakeQuery}
-                  onChange={(e) => setSearchMakeQuery(e.target.value)}
-                  placeholder="Search brand (e.g. Toyota, Subaru...)"
-                  className="h-10 bg-background"
-                  autoFocus
-                />
-              </div>
+          {sheet === "make" && (
+            <div className="p-3 border-b border-border bg-muted/20">
+              <Input
+                value={searchMakeQuery}
+                onChange={(e) => setSearchMakeQuery(e.target.value)}
+                placeholder="Search brand (e.g. Toyota, Subaru...)"
+                className="h-11 bg-background text-base"
+              />
+            </div>
+          )}
+
+          <div className="overflow-y-auto flex-1 p-2 divide-y divide-border/50 overscroll-contain">
+            {sheet === "make" ? (
+              filteredMakes.map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  className="w-full flex items-center justify-between px-4 py-3.5 text-base text-left hover:bg-muted/50 rounded-lg transition-colors font-medium text-foreground"
+                  onClick={() => {
+                    update("make", m);
+                    setSheet(null);
+                    setSearchMakeQuery("");
+                  }}
+                >
+                  <span>{m}</span>
+                  {form.make === m && <IconCheck size={16} className="text-primary font-bold" />}
+                </button>
+              ))
+            ) : (
+              availableCities.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className="w-full flex items-center justify-between px-4 py-3.5 text-base text-left hover:bg-muted/50 rounded-lg transition-colors font-medium text-foreground"
+                  onClick={() => {
+                    update("city", c);
+                    setSheet(null);
+                  }}
+                >
+                  <span>{c}</span>
+                  {form.city === c && <IconCheck size={16} className="text-primary font-bold" />}
+                </button>
+              ))
             )}
-
-            <div className="overflow-y-auto flex-1 p-2 divide-y divide-border/50">
-              {sheet === "make" ? (
-                filteredMakes.map((m) => (
-                  <button
-                    key={m}
-                    className="w-full flex items-center justify-between px-4 py-3 text-sm text-left hover:bg-muted/50 rounded-lg transition-colors font-medium text-foreground"
-                    onClick={() => {
-                      update("make", m);
-                      setSheet(null);
-                      setSearchMakeQuery("");
-                    }}
-                  >
-                    <span>{m}</span>
-                    {form.make === m && <IconCheck size={16} className="text-primary font-bold" />}
-                  </button>
-                ))
-              ) : (
-                availableCities.map((c) => (
-                  <button
-                    key={c}
-                    className="w-full flex items-center justify-between px-4 py-3 text-sm text-left hover:bg-muted/50 rounded-lg transition-colors font-medium text-foreground"
-                    onClick={() => {
-                      update("city", c);
-                      setSheet(null);
-                    }}
-                  >
-                    <span>{c}</span>
-                    {form.city === c && <IconCheck size={16} className="text-primary font-bold" />}
-                  </button>
-                ))
-              )}
-            </div>
           </div>
-        </div>
-      )}
+        </SheetContent>
+      </Sheet>
 
       <Footer />
     </div>

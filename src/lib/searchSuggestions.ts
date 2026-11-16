@@ -1,3 +1,5 @@
+import { searchCarCatalog } from "@/data/carCatalog";
+
 export interface SearchSuggestion {
   text: string;
   type: "make" | "model" | "city";
@@ -99,11 +101,19 @@ export const POPULAR_SEARCH_ITEMS: SearchSuggestion[] = [
   { text: "Zanzibar", type: "city" },
 ];
 
-export function getSearchSuggestions(query: string, limit = 6): SearchSuggestion[] {
+export function getSearchSuggestions(query: string, limit = 8): SearchSuggestion[] {
   const q = query.trim().toLowerCase();
   if (!q || q.length < 1) return [];
 
-  return POPULAR_SEARCH_ITEMS.filter((item) => {
+  const popular = POPULAR_SEARCH_ITEMS.filter((item) => {
     return item.text.toLowerCase().includes(q) || (item.category && item.category.toLowerCase().includes(q));
-  }).slice(0, limit);
+  });
+  if (popular.length >= limit || q.length < 2) return popular.slice(0, limit);
+
+  // Fill up with the full make/model catalog so any car typed gets a suggestion.
+  const seen = new Set(popular.map((p) => p.text.toLowerCase()));
+  const more = searchCarCatalog(q, limit * 2)
+    .map((c) => ({ text: `${c.make} ${c.model}`, type: "model" as const, category: c.make }))
+    .filter((c) => !seen.has(c.text.toLowerCase()));
+  return [...popular, ...more].slice(0, limit);
 }

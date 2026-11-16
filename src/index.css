@@ -234,3 +234,13 @@ html.translated-rtl {
     word-break: break-word;
   }
 }
+
+/* iOS zooms the page when a field with text under 16px is focused (Description, phone, price...).
+   Keep every typing field at 16px on touch screens so tapping a field never zooms. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
