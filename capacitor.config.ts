@@ -5,14 +5,13 @@ const config: CapacitorConfig = {
   appName: 'Motokah',
   webDir: 'dist',
   zoomEnabled: false,
-  zoomEnabled: false,
   server: {
     androidScheme: 'https',
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 2000,
-      backgroundColor: '#0F0F0F',
+      backgroundColor: '#014DC5',
       showSpinner: false,
     },
     StatusBar: {
