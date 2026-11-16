@@ -26,9 +26,9 @@ export function usePushNotifications() {
   const userId = user?.id;
 
   useEffect(() => {
-    // iOS only: Android has no Firebase config (google-services.json), and
-    // PushNotifications.register() crashes the app there without it.
-    if (!userId || userId.startsWith("demo-") || Capacitor.getPlatform() !== "ios") return;
+    // Native only. Android needs android/app/google-services.json (Firebase project
+    // motokah-507507); PushNotifications.register() crashes the app without it.
+    if (!userId || userId.startsWith("demo-") || !Capacitor.isNativePlatform()) return;
 
     const handles = [
       PushNotifications.addListener("registration", async (token) => {

@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { sendApns } from "../_shared/apns.ts";
+import { sendFcm } from "../_shared/fcm.ts";
 
 // Called every 15 minutes by pg_cron. Sends approved campaigns that are due, only to devices
 // that opted in to marketing pushes, matching the campaign's language and country.
@@ -30,7 +31,7 @@ serve(async (req) => {
       continue;
     }
 
-    let q = sb.from("device_tokens").select("id, token").eq("platform", "ios").eq("marketing_opt_in", true);
+    let q = sb.from("device_tokens").select("id, token, platform").in("platform", ["ios", "android"]).eq("marketing_opt_in", true);
     // English campaigns also reach users who picked a language we don't write campaigns in yet.
     q = c.language === "sw" ? q.eq("language", "sw") : q.neq("language", "sw");
     if (c.country) q = q.eq("country", c.country);
@@ -42,7 +43,7 @@ serve(async (req) => {
     for (let i = 0; i < list.length; i += 20) {
       const chunk = list.slice(i, i + 20);
       const out = await Promise.all(
-        chunk.map((t) => sendApns(t.token, c.title, c.body, { type: "campaign", link: c.link }).catch(() => "failed" as const)),
+        chunk.map((t) => (t.platform === "android" ? sendFcm : sendApns)(t.token, c.title, c.body, { type: "campaign", link: c.link }).catch(() => "failed" as const)),
       );
       out.forEach((r, j) => {
         if (r === "sent") sent++;

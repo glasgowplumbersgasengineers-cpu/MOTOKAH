@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { sendApns } from "../_shared/apns.ts";
+import { sendFcm } from "../_shared/fcm.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -65,12 +66,11 @@ serve(async (req) => {
     const staleIds: string[] = [];
 
     for (const t of tokens) {
-      if (t.platform === "ios") {
-        const result = await sendApns(t.token, title, body ?? "", data);
-        if (result === "sent") sent++;
-        else if (result === "stale") staleIds.push(t.id);
-      }
-      // else if (t.platform === "android") { await sendFcm(...); }
+      const send = t.platform === "ios" ? sendApns : t.platform === "android" ? sendFcm : null;
+      if (!send) continue;
+      const result = await send(t.token, title, body ?? "", data).catch(() => "failed" as const);
+      if (result === "sent") sent++;
+      else if (result === "stale") staleIds.push(t.id);
     }
 
     // Clean up stale/invalid tokens

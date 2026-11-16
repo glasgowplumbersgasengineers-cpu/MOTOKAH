@@ -343,7 +343,7 @@ export default function SearchResults() {
               <IconSortDescending size={16} stroke={2.5} className="shrink-0 text-muted-foreground" />
               <select value={sort} onChange={e => { setSort(e.target.value as SortOption); setPage(1); }}
                 className="h-9 w-[126px] rounded-md border border-input bg-background px-2 text-base md:text-sm sm:w-auto">
-                <option value="newest">Newest First</option>
+                <option value="newest">Newest</option>
                 <option value="price-low">Price: Low → High</option>
                 <option value="price-high">Price: High → Low</option>
                 <option value="views">Most Viewed</option>

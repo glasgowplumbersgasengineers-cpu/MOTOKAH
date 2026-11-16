@@ -480,9 +480,9 @@ export default function Profile() {
               }} />
             </label>
           </div>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-foreground">{profile?.display_name || user?.email}</h1>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl font-bold text-foreground truncate">{profile?.display_name || user?.email}</h1>
+            <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${profile?.seller_type === "dealer" ? "bg-primary/20 text-primary" : "bg-muted text-muted-foreground"}`}>
                 {profile?.seller_type === "dealer" ? "Dealer" : "Private Seller"}
               </span>
@@ -950,9 +950,9 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-sm">
-                  <div className="p-3 rounded-xl bg-muted/30 border border-border">
+                  <div className="min-w-0 p-3 rounded-xl bg-muted/30 border border-border">
                     <p className="text-[11px] font-semibold text-muted-foreground uppercase">Email Address</p>
-                    <p className="font-medium text-foreground mt-0.5 truncate">{user?.email}</p>
+                    <p className="font-medium text-foreground mt-0.5 break-all">{user?.email}</p>
                   </div>
                   <div className="p-3 rounded-xl bg-muted/30 border border-border">
                     <p className="text-[11px] font-semibold text-muted-foreground uppercase">Full Name</p>

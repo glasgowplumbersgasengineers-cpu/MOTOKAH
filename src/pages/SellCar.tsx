@@ -121,7 +121,7 @@ interface FormData {
 const defaultForm: FormData = {
   make: "",
   model: "",
-  year: new Date().getFullYear().toString(),
+  year: "",
   bodyType: "SUV",
   transmission: "Automatic",
   fuelType: "Petrol",
@@ -365,6 +365,11 @@ export default function SellCar() {
     }
     if (!form.make || !form.model) {
       toast({ title: "Required", description: "Please enter the Vehicle Make and Model.", variant: "destructive" });
+      return;
+    }
+    const yearNum = parseInt(form.year);
+    if (!yearNum || yearNum < 1950 || yearNum > new Date().getFullYear() + 1) {
+      toast({ title: "Required", description: "Please enter the year your car was made.", variant: "destructive" });
       return;
     }
     if (!form.price || Number(form.price) <= 0) {
