@@ -43,7 +43,7 @@ function scrollAt(b: Beat, msInBeat: number, beatLen: number) {
   return from + (to - from) * t;
 }
 
-function Screen({ beat, msInBeat, beatLen }: { beat: Beat; msInBeat: number; beatLen: number }) {
+export function Screen({ beat, msInBeat, beatLen }: { beat: Beat; msInBeat: number; beatLen: number }) {
   const maxScroll = Math.max(0, beat.h - VIEW_H);
   const y = Math.min(maxScroll, scrollAt(beat, msInBeat, beatLen));
   const zoom = beat.zoom
