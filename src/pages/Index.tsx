@@ -7,6 +7,7 @@ import LatestListingsGrid from "@/components/LatestListingsGrid";
 import CategorySection from "@/components/CategorySection";
 import SellCTA from "@/components/SellCTA";
 import PopularModelsSection from "@/components/PopularModelsSection";
+import BrandCatalogSection from "@/components/BrandCatalogSection";
 import FuelPriceSection from "@/components/FuelPriceSection";
 import Footer from "@/components/Footer";
 import { jsonLdScript, organizationJsonLd, websiteJsonLd } from "@/lib/structuredData";
@@ -63,6 +64,7 @@ const Index = () => {
           was either empty (auto-hidden) or showed nothing worth calling a category. */}
       <CategorySection title="Boats" icon={<IconAnchor size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BOAT_TYPES} viewAllHref="/search?vehicleType=boat" />
       <PopularModelsSection />
+      <BrandCatalogSection />
       <FuelPriceSection />
       <SellCTA />
       <section className="container mx-auto px-4 py-6">
