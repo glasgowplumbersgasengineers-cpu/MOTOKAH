@@ -87,6 +87,8 @@ const PromoVideo = lazy(() => import("./pages/PromoVideo.tsx"));
 const ModelLandingPage = lazy(() => import("./pages/ModelLandingPage.tsx"));
 const BrandPage = lazy(() => import("./pages/BrandPage.tsx"));
 const CatalogModelPage = lazy(() => import("./pages/CatalogModelPage.tsx"));
+const NewCars = lazy(() => import("./pages/NewCars.tsx"));
+const NewCarModelPage = lazy(() => import("./pages/NewCarModelPage.tsx"));
 const BrandCentre = lazy(() => import("./pages/BrandCentre.tsx"));
 const CityMakeLandingPage = lazy(() => import("./pages/CityMakeLandingPage.tsx"));
 const ModelCityLandingPage = lazy(() => import("./pages/ModelCityLandingPage.tsx"));
@@ -190,6 +192,8 @@ function AnimatedRoutes() {
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />
               <Route path="/brands/:brand" element={<BrandPage />} />
               <Route path="/brands/:brand/:model" element={<CatalogModelPage />} />
+              <Route path="/new-cars" element={<NewCars />} />
+              <Route path="/new-cars/toyota/:model" element={<NewCarModelPage />} />
               <Route path="*" element={<NotFound />} />
         </Routes>
         </Suspense>
