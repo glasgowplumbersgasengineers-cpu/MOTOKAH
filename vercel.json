@@ -39,6 +39,30 @@
         }
       ]
     }
+    {
+      "source": "/duty-calculator",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' capacitor://localhost https://localhost" }
+      ]
+    },
+    {
+      "source": "/:country/duty-calculator",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' capacitor://localhost https://localhost" }
+      ]
+    },
+    {
+      "source": "/:country/new-cars",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' capacitor://localhost https://localhost" }
+      ]
+    },
+    {
+      "source": "/:country/new-cars/:brand/:model",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors 'self' capacitor://localhost https://localhost" }
+      ]
+    }
   ],
   "rewrites": [
     {
