@@ -20,7 +20,7 @@ export default function NewCarsSection() {
           </Link>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
-          Brand new Toyota models and their official starting prices in Tanzania.
+          Brand new models and their official prices in Tanzania, starting with Toyota.
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {featured.map((m) => (

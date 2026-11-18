@@ -194,7 +194,7 @@ function AnimatedRoutes() {
               <Route path="/brands/:brand" element={<WebContentGate><BrandPage /></WebContentGate>} />
               <Route path="/brands/:brand/:model" element={<WebContentGate><CatalogModelPage /></WebContentGate>} />
               <Route path="/new-cars" element={<WebContentGate><NewCars /></WebContentGate>} />
-              <Route path="/new-cars/toyota/:model" element={<WebContentGate><NewCarModelPage /></WebContentGate>} />
+              <Route path="/new-cars/:brand/:model" element={<WebContentGate><NewCarModelPage /></WebContentGate>} />
               <Route path="*" element={<NotFound />} />
         </Routes>
         </Suspense>
