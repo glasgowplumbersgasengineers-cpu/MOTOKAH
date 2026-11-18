@@ -51,12 +51,14 @@ async function fetchUsdRates(): Promise<Record<string, number>> {
   return data.rates as Record<string, number>;
 }
 
-function convertPrice(amount: number, fromCurrency: string, toCurrency: string, rates: Record<string, number>) {
+export function convertPrice(amount: number, fromCurrency: string, toCurrency: string, rates: Record<string, number>) {
   const fromRate = rates[fromCurrency];
   const toRate = rates[toCurrency];
   if (!amount || amount <= 0 || !fromRate || !toRate) return null;
   return Math.round((amount / fromRate) * toRate);
 }
+
+export { FALLBACK_USD_RATES };
 
 export function currencyForCountry(country: Country): string | null {
   if (country === "All") return null;

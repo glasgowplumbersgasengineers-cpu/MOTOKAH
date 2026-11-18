@@ -32,6 +32,8 @@ import { trackEvent } from "@/lib/analytics";
 import { downscaleImage } from "@/lib/downscaleImage";
 import { specsFor } from "@/data/vehiclePresets";
 import { catalogMakes, searchCarCatalog, type CatalogModel } from "@/data/carCatalog";
+import { checkPriceAgainstMarket, type PriceCheckResult } from "@/lib/priceGuard";
+import { FALLBACK_USD_RATES, formatVehiclePrice } from "@/lib/prices";
 
 const topEastAfricaMakes = [
   "Toyota",
@@ -188,6 +190,9 @@ export default function SellCar() {
   const [video, setVideo] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [priceCheck, setPriceCheck] = useState<PriceCheckResult | null>(null);
+  const [priceConfirmed, setPriceConfirmed] = useState(false);
+  const [checkingPrice, setCheckingPrice] = useState(false);
   const [sheet, setSheet] = useState<SheetKey>(null);
   const [searchMakeQuery, setSearchMakeQuery] = useState("");
   const { user, profile } = useAuth();
@@ -266,6 +271,11 @@ export default function SellCar() {
     const next = { ...form, [key]: val };
     setForm(next);
     localStorage.setItem("sellCarDraft", JSON.stringify(next));
+    // Price/model changed after a price check ran, so it needs to run again.
+    if (key === "price" || key === "currency" || key === "make" || key === "model") {
+      setPriceCheck(null);
+      setPriceConfirmed(false);
+    }
   };
 
   const [hasDraft, setHasDraft] = useState(() => !editId && !!localStorage.getItem("sellCarDraft"));
@@ -375,6 +385,17 @@ export default function SellCar() {
     if (!form.price || Number(form.price) <= 0) {
       toast({ title: "Required", description: "Please enter a valid asking price.", variant: "destructive" });
       return;
+    }
+
+    // Catch typo-level and order-of-magnitude mispricing (e.g. a zero dropped or
+    // added) by comparing against other approved listings for the same make and
+    // model, before letting the seller through. Skipped once they've confirmed.
+    if (!priceConfirmed) {
+      setCheckingPrice(true);
+      const result = await checkPriceAgainstMarket(form.make, form.model, Number(form.price), form.currency, FALLBACK_USD_RATES);
+      setCheckingPrice(false);
+      setPriceCheck(result);
+      if (result.status === "unusual") return;
     }
 
     const activePhone = phoneInput.trim() || sellerPhone;
@@ -868,6 +889,31 @@ export default function SellCar() {
                 <p className="text-xs font-semibold text-primary mt-1.5 flex items-center gap-1">
                   <IconCoin size={14} /> Formatted: {formattedPrice} {form.currency}
                 </p>
+              )}
+              {checkingPrice && (
+                <p className="text-xs text-muted-foreground mt-1.5">Checking this price against other {form.make} {form.model} listings...</p>
+              )}
+              {priceCheck?.status === "unusual" && (
+                <div className="mt-2 p-3 rounded-xl bg-destructive/10 border border-destructive/30 flex gap-2.5">
+                  <IconInfoCircle size={18} className="text-destructive shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-destructive">
+                      This price looks unusual for a {form.make} {form.model}.
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Other {form.make} {form.model} cars on Motokah are typically priced around{" "}
+                      {formatVehiclePrice(priceCheck.medianUsd ?? 0, "USD")}. Double check your price and currency are
+                      correct before posting.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setPriceConfirmed(true)}
+                      className="text-xs font-bold text-destructive underline mt-1.5"
+                    >
+                      My price is correct, post anyway
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
 
