@@ -38,7 +38,7 @@
           "value": "camera=(), microphone=(), geolocation=(self)"
         }
       ]
-    }
+    },
     {
       "source": "/duty-calculator",
       "headers": [
