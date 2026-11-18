@@ -1,24 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { trackEvent } from "@/lib/analytics";
+import { DUTY_COUNTRIES, DUTY_COUNTRY_SLUGS, type DutyCountry } from "@/data/dutyRates";
 import {
   IconCalculator, IconSearch, IconCar, IconAlertCircle,
   IconCheck, IconExternalLink, IconCurrencyDollar,
 } from "@/components/icons";
-
-const USD_TO_TZS = 2600;
-
-// TRA excise duty by engine CC
-function exciseDutyRate(cc: number): number {
-  if (cc <= 1000) return 0.05;
-  if (cc <= 2000) return 0.10;
-  if (cc <= 3000) return 0.20;
-  return 0.25;
-}
 
 interface VehicleInfo {
   make: string;
@@ -32,40 +24,49 @@ interface VehicleInfo {
 
 interface DutyResult {
   cif: number;
-  importDuty: number;
-  exciseDuty: number;
-  vat: number;
-  infraLevy: number;
-  portHandling: number;
+  rows: { label: string; note: string; amount: number }[];
   total: number;
 }
 
-function calcDuties(cifUSD: number, engineCC: number): DutyResult {
-  const importDuty = cifUSD * 0.25;
-  const exciseDuty = cifUSD * exciseDutyRate(engineCC);
-  const vat = (cifUSD + importDuty + exciseDuty) * 0.18;
-  const infraLevy = cifUSD * 0.015;
-  const portHandling = 800;
-  const total = importDuty + exciseDuty + vat + infraLevy + portHandling;
-  return { cif: cifUSD, importDuty, exciseDuty, vat, infraLevy, portHandling, total };
+function calcDuties(country: DutyCountry, cifUSD: number, engineCC: number): DutyResult {
+  const rows: { label: string; note: string; amount: number }[] = [];
+  let dutySoFar = 0;
+  for (const levy of country.levies) {
+    const amount = levy.compute(cifUSD, engineCC, dutySoFar);
+    rows.push({ label: levy.label, note: levy.note, amount });
+    dutySoFar += amount;
+  }
+  return { cif: cifUSD, rows, total: dutySoFar };
 }
 
-function fmt(n: number, currency = "USD"): string {
+function fmt(n: number, currency: "USD" | "LOCAL", usdRate: number, localCode: string): string {
   return currency === "USD"
     ? `$${n.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
-    : `TZS ${(n * USD_TO_TZS).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+    : `${localCode} ${(n * usdRate).toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 }
 
 export default function DutyCalculator() {
-  usePageTitle("TRA Vehicle Duty Calculator Tanzania | Car Import Tax — Motokah");
+  const { country: countrySlugParam } = useParams<{ country?: string }>();
+  const navigate = useNavigate();
+  const countrySlug = countrySlugParam && DUTY_COUNTRIES[countrySlugParam] ? countrySlugParam : "tanzania";
+  const country = DUTY_COUNTRIES[countrySlug];
+
+  usePageTitle(
+    countrySlug === "tanzania"
+      ? "TRA Vehicle Duty Calculator Tanzania | Car Import Tax — Motokah"
+      : `${country.authorityName} Vehicle Duty Calculator ${country.name} | Car Import Tax — Motokah`,
+  );
 
   const [vin, setVin] = useState("");
   const [cif, setCif] = useState("");
   const [vehicle, setVehicle] = useState<VehicleInfo | null>(null);
+  const browseParams = new URLSearchParams({ country: country.name });
+  if (vehicle?.make) browseParams.set("make", vehicle.make);
+  if (vehicle?.model) browseParams.set("model", vehicle.model);
   const [decoding, setDecoding] = useState(false);
   const [decodeError, setDecodeError] = useState("");
   const [result, setResult] = useState<DutyResult | null>(null);
-  const [currency, setCurrency] = useState<"USD" | "TZS">("USD");
+  const [currency, setCurrency] = useState<"USD" | "LOCAL">("USD");
 
   const decodeVin = async () => {
     const v = vin.trim().toUpperCase();
@@ -109,17 +110,13 @@ export default function DutyCalculator() {
     const cifVal = parseFloat(cif.replace(/,/g, ""));
     if (!cifVal || cifVal <= 0) return;
     const cc = vehicle?.engineCC || 1500;
-    setResult(calcDuties(cifVal, cc));
+    setResult(calcDuties(country, cifVal, cc));
   };
 
-  const rows: { label: string; key: keyof DutyResult; note: string }[] = [
-    { label: "CIF Value",            key: "cif",          note: "Your cost + insurance + freight to Dar es Salaam" },
-    { label: "Import Duty (25%)",    key: "importDuty",   note: "Tanzania Customs tariff on CIF" },
-    { label: `Excise Duty (${vehicle ? Math.round(exciseDutyRate(vehicle.engineCC) * 100) : "–"}%)`, key: "exciseDuty", note: "Based on engine displacement (CC)" },
-    { label: "VAT (18%)",            key: "vat",          note: "On CIF + Import Duty + Excise Duty" },
-    { label: "Infrastructure Levy (1.5%)", key: "infraLevy", note: "Roads and infrastructure fund" },
-    { label: "Port & Handling (est.)", key: "portHandling", note: "Dar es Salaam port handling estimate" },
-  ];
+  const switchCountry = (slug: string) => {
+    setResult(null);
+    navigate(slug === "tanzania" ? "/duty-calculator" : `/${slug}/duty-calculator`);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
@@ -133,9 +130,24 @@ export default function DutyCalculator() {
               <IconCalculator size={22} className="text-primary" />
             </div>
             <div>
-              <h1 className="text-2xl font-extrabold text-foreground">Tanzania Import Duty Calculator</h1>
-              <p className="text-sm text-muted-foreground">Estimate TRA duties before shipping your vehicle</p>
+              <h1 className="text-2xl font-extrabold text-foreground">{country.name} Import Duty Calculator</h1>
+              <p className="text-sm text-muted-foreground">Estimate {country.authorityName} duties before shipping your vehicle</p>
             </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {DUTY_COUNTRY_SLUGS.map((slug) => (
+              <button
+                key={slug}
+                onClick={() => switchCountry(slug)}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-full border ${
+                  slug === countrySlug
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "border-border text-muted-foreground hover:border-primary"
+                }`}
+              >
+                {DUTY_COUNTRIES[slug].name}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -187,7 +199,7 @@ export default function DutyCalculator() {
             Enter CIF Value (USD)
           </h2>
           <p className="text-xs text-muted-foreground mb-4">
-            CIF = Cost of vehicle + Insurance + Freight to Dar es Salaam port. This is the value TRA uses to calculate duties.
+            CIF = Cost of vehicle + Insurance + Freight to {country.cifHint}. This is the value {country.authorityName} uses to calculate duties.
           </p>
           <div className="flex gap-2">
             <div className="relative flex-1">
@@ -212,36 +224,43 @@ export default function DutyCalculator() {
             <div className="flex items-center justify-between px-5 py-4 border-b border-border">
               <h2 className="font-bold text-foreground">Duty Breakdown</h2>
               <div className="flex gap-1 text-xs">
-                {(["USD", "TZS"] as const).map(c => (
+                {(["USD", "LOCAL"] as const).map(c => (
                   <button
                     key={c}
                     onClick={() => setCurrency(c)}
                     className={`px-2.5 py-1 rounded-md font-semibold transition-colors ${currency === c ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                   >
-                    {c}
+                    {c === "USD" ? "USD" : country.currency}
                   </button>
                 ))}
               </div>
             </div>
 
             <div className="divide-y divide-border">
-              {rows.map(({ label, key, note }) => (
-                <div key={key} className="flex items-center justify-between px-5 py-3">
+              <div className="flex items-center justify-between px-5 py-3">
+                <div>
+                  <p className="text-sm font-medium text-foreground">CIF Value</p>
+                  <p className="text-xs text-muted-foreground">Your cost + insurance + freight to {country.cifHint}</p>
+                </div>
+                <p className="text-sm font-semibold text-foreground tabular-nums">{fmt(result.cif, currency, country.usdRate, country.currency)}</p>
+              </div>
+              {result.rows.map(({ label, note, amount }) => (
+                <div key={label} className="flex items-center justify-between px-5 py-3">
                   <div>
                     <p className="text-sm font-medium text-foreground">{label}</p>
                     <p className="text-xs text-muted-foreground">{note}</p>
                   </div>
-                  <p className="text-sm font-semibold text-foreground tabular-nums">{fmt(result[key], currency)}</p>
+                  <p className="text-sm font-semibold text-foreground tabular-nums">{fmt(amount, currency, country.usdRate, country.currency)}</p>
                 </div>
               ))}
             </div>
 
             <div className="px-5 py-4 bg-primary/5 border-t border-border flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">Total Payable to TRA</p>
-                <p className="text-2xl font-extrabold text-primary">{fmt(result.total, currency)}</p>
+                <p className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">Total Payable to {country.authorityName}</p>
+                <p className="text-2xl font-extrabold text-primary">{fmt(result.total, currency, country.usdRate, country.currency)}</p>
                 {currency === "USD" && (
-                  <p className="text-xs text-muted-foreground">≈ TZS {(result.total * USD_TO_TZS).toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground">≈ {country.currency} {(result.total * country.usdRate).toLocaleString()}</p>
                 )}
               </div>
               <div className="text-right">
@@ -256,9 +275,9 @@ export default function DutyCalculator() {
         <div className="flex gap-2 p-4 rounded-lg bg-accent/10 border border-accent/20 mb-6">
           <IconAlertCircle size={16} className="text-accent shrink-0 mt-0.5" />
           <p className="text-xs text-muted-foreground leading-relaxed">
-            <span className="font-semibold text-foreground">Estimates only.</span> Rates based on TRA tariff schedule effective 2026.
-            Actual duties may vary by vehicle age, origin, and current TRA rulings.
-            Always verify with <a href="https://www.tra.go.tz" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">TRA</a> or a licensed clearing agent before shipping.
+            <span className="font-semibold text-foreground">Estimates only.</span> {country.effectiveNote}
+            Actual duties may vary by vehicle age, origin, and current {country.authorityName} rulings.
+            Always verify with <a href={country.authorityUrl} target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">{country.authorityName}</a> or a licensed clearing agent before shipping.
           </p>
         </div>
 
@@ -268,13 +287,18 @@ export default function DutyCalculator() {
             <div className="flex items-center gap-3">
               <IconSearch size={22} className="text-primary shrink-0" />
               <div>
-                <p className="font-semibold text-foreground">Browse cars already landed in Tanzania</p>
-                <p className="text-xs text-muted-foreground">Skip the import — buy direct from local sellers, no duty hassle</p>
+                <p className="font-semibold text-foreground">
+                  {vehicle?.make ? `Compare ${vehicle.make}${vehicle.model ? ` ${vehicle.model}` : ""} listings in ${country.name}` : `Browse cars already landed in ${country.name}`}
+                </p>
+                <p className="text-xs text-muted-foreground">Skip the import, buy direct from local sellers, no duty hassle</p>
               </div>
             </div>
-            <Link to="/search?country=Tanzania">
+            <Link
+              to={`/search?${browseParams}`}
+              onClick={() => trackEvent("duty_calculator_browse_click", { make: vehicle?.make || null, model: vehicle?.model || null })}
+            >
               <Button className="gap-1.5 shrink-0">
-                <IconSearch size={15} /> Browse Cars
+                <IconSearch size={15} /> {vehicle?.make ? "Compare Cars" : "Browse Cars"}
               </Button>
             </Link>
           </div>
@@ -286,7 +310,7 @@ export default function DutyCalculator() {
             <IconCar size={22} className="text-primary shrink-0" />
             <div>
               <p className="font-semibold text-foreground">Ready to list this vehicle?</p>
-              <p className="text-xs text-muted-foreground">Post your ad on Motokah — Tanzania's largest car marketplace</p>
+              <p className="text-xs text-muted-foreground">Post your ad on Motokah and reach buyers searching in {country.name}.</p>
             </div>
           </div>
           <Link to="/sell">
@@ -299,9 +323,9 @@ export default function DutyCalculator() {
         {/* Info cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
           {[
-            { label: "Import Duty", value: "25%", note: "of CIF value" },
-            { label: "VAT", value: "18%", note: "on dutiable value" },
-            { label: "Exchange Rate", value: "2,600", note: "TZS per USD (est.)" },
+            { label: "Import Duty", value: `${country.importDutyRatePct}%`, note: "of CIF value" },
+            { label: country.authorityName, value: country.name, note: "customs authority" },
+            { label: "Exchange Rate", value: country.usdRate.toLocaleString(), note: `${country.currency} per USD (est.)` },
           ].map(item => (
             <div key={item.label} className="bg-card border border-border rounded-lg p-4 text-center">
               <p className="text-2xl font-extrabold text-primary">{item.value}</p>

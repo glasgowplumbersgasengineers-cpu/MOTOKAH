@@ -7,8 +7,8 @@ import { getBrandsForCountry } from "@/data/newCarsByCountry";
 import { IconCar } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
-function fmt(tzs: number | null) {
-  return tzs ? `TZS ${tzs.toLocaleString()}` : "Contact dealer for price";
+function fmt(price: number | null, currency?: string) {
+  return price ? `${currency ?? "TZS"} ${price.toLocaleString()}` : "Contact dealer for price";
 }
 
 export default function NewCars() {
@@ -77,7 +77,7 @@ export default function NewCars() {
                     <div className="p-3">
                       <h3 className="font-bold text-foreground text-sm">{brand.name} {m.name}</h3>
                       <p className="text-[11px] text-muted-foreground mt-0.5">{m.bodyType}</p>
-                      <p className="text-sm font-extrabold text-primary mt-1.5">{fmt(m.priceTzs)}</p>
+                      <p className="text-sm font-extrabold text-primary mt-1.5">{fmt(m.priceTzs, m.currency)}</p>
                     </div>
                   </Link>
                 ))}

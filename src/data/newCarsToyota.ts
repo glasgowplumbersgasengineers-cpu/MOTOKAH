@@ -15,10 +15,15 @@ export interface NewCarModel {
   engine: string | null;
   fuelPer100km: string | null;
   priceTzs: number | null;
+  // Set only when this model's real price is in a currency other than TZS
+  // (e.g. a Kenya model priced in KES). When absent, priceTzs is assumed to
+  // be TZS, which is true for every pre-existing Tanzania entry.
+  currency?: string;
   img: string;
   officialUrl: string;
   description: string | null;
   gallery: string[];
+  sourceNote?: string;
 }
 
 export const TOYOTA_NEW_CARS: NewCarModel[] = [

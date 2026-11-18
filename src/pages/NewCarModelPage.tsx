@@ -7,8 +7,8 @@ import { getBrandsForCountry } from "@/data/newCarsByCountry";
 import { IconChevronRight, IconExternalLink, IconCar } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
-function fmt(tzs: number | null) {
-  return tzs ? `TZS ${tzs.toLocaleString()}` : "Contact dealer for price";
+function fmt(price: number | null, currency?: string) {
+  return price ? `${currency ?? "TZS"} ${price.toLocaleString()}` : "Contact dealer for price";
 }
 
 export default function NewCarModelPage() {
@@ -107,7 +107,10 @@ export default function NewCarModelPage() {
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                 {model.priceTzs ? "Starting from" : "Price"}
               </p>
-              <p className="text-2xl font-extrabold text-primary">{fmt(model.priceTzs)}</p>
+              <p className="text-2xl font-extrabold text-primary">{fmt(model.priceTzs, model.currency)}</p>
+              {model.sourceNote && (
+                <p className="text-[10px] text-muted-foreground mt-2 italic">{model.sourceNote}</p>
+              )}
               <p className="text-[11px] text-muted-foreground mt-2">
                 {model.priceTzs
                   ? "Excludes registration, insurance and accessories. Confirm with the dealer before buying, prices can change without notice."

@@ -180,6 +180,7 @@ function AnimatedRoutes() {
               <Route path="/content" element={<Navigate to="/admin/content" replace />} />
               <Route path="/marketing-plan" element={<Navigate to="/" replace />} />
               <Route path="/duty-calculator" element={<DutyCalculator />} />
+              <Route path="/:country/duty-calculator" element={<DutyCalculator />} />
               <Route path="/dealer-leads" element={<Navigate to="/dealers" replace />} />
               <Route path="/city/:slug" element={<CityLandingPage />} />
               <Route path="/country/:slug" element={<CountryLandingPage />} />
