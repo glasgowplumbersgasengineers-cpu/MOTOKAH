@@ -25,7 +25,7 @@ export default function CatalogModelPage() {
   const quickSpecs = [model.bodyType, model.transmission, model.fuelType].filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-20 lg:pb-0">
       <Helmet>
         <title>{brand.name} {model.name} Price and Specs | Motokah</title>
         <meta

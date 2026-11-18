@@ -18,12 +18,12 @@ export default function NewCarModelPage() {
   if (!model) return <Navigate to="/new-cars" replace />;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-20 lg:pb-0">
       <Helmet>
         <title>Toyota {model.name} Price in Tanzania | Motokah</title>
         <meta
           name="description"
-          content={`Toyota ${model.name} official starting price in Tanzania: ${fmt(model.priceTzs)}. Specs and dealer details.`}
+          content={model.description ?? `Toyota ${model.name} official starting price in Tanzania: ${fmt(model.priceTzs)}. Specs and dealer details.`}
         />
       </Helmet>
       <Header />
@@ -44,8 +44,20 @@ export default function NewCarModelPage() {
               </div>
             </div>
 
+            {model.gallery.length > 0 && (
+              <div className="flex gap-2 overflow-x-auto pb-1 mb-5 -mt-2">
+                {model.gallery.map((src) => (
+                  <img key={src} src={src} alt={`Toyota ${model.name}`} className="h-20 w-28 object-cover rounded-lg border border-border shrink-0" loading="lazy" />
+                ))}
+              </div>
+            )}
+
             <h1 className="text-xl font-extrabold text-foreground mb-1">Toyota {model.name}</h1>
             <p className="text-sm text-muted-foreground mb-5">{model.bodyType}, new, Tanzania</p>
+
+            {model.description && (
+              <p className="text-sm text-foreground leading-relaxed mb-6">{model.description}</p>
+            )}
 
             <h2 className="text-base font-bold text-foreground mb-2">Specifications</h2>
             <div className="bg-card border border-border rounded-2xl divide-y divide-border mb-6">

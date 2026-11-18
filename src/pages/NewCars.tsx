@@ -13,7 +13,7 @@ export default function NewCars() {
   usePageTitle("New Cars");
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-20 lg:pb-0">
       <Helmet>
         <title>New Cars in Tanzania | Motokah</title>
         <meta

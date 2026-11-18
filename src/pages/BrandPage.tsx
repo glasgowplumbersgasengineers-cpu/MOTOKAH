@@ -15,7 +15,7 @@ export default function BrandPage() {
   if (!brand) return <Navigate to="/" replace />;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pb-20 lg:pb-0">
       <Helmet>
         <title>{brand.name} Cars in East Africa | Motokah</title>
         <meta
