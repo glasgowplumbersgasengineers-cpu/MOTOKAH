@@ -32,20 +32,20 @@
       {
         "name": "Super Petrol",
         "price": 225.5,
-        "trend": "up",
-        "change": "+6.1%"
+        "trend": "stable",
+        "change": "+0.0%"
       },
       {
         "name": "Diesel",
         "price": 226.43,
-        "trend": "up",
-        "change": "+4.6%"
+        "trend": "stable",
+        "change": "+0.0%"
       },
       {
         "name": "Kerosene",
         "price": 218.55,
-        "trend": "up",
-        "change": "+15.0%"
+        "trend": "stable",
+        "change": "+0.0%"
       }
     ]
   },
@@ -120,15 +120,15 @@
     "fuels": [
       {
         "name": "Premium Motor Spirit (PMS)",
-        "price": 1255.5,
+        "price": 1161.75,
         "trend": "down",
-        "change": "-3.7%"
+        "change": "-13.8%"
       },
       {
         "name": "Automotive Gas Oil (AGO)",
-        "price": 1730,
-        "trend": "up",
-        "change": "+0.8%"
+        "price": 1675,
+        "trend": "down",
+        "change": "-6.4%"
       }
     ]
   }
