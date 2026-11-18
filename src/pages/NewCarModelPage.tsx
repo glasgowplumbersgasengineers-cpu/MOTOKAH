@@ -2,7 +2,8 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { NEW_CAR_BRANDS } from "@/data/newCarBrands";
+import { getCountry } from "@/data/countries";
+import { getBrandsForCountry } from "@/data/newCarsByCountry";
 import { IconChevronRight, IconExternalLink, IconCar } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -11,12 +12,15 @@ function fmt(tzs: number | null) {
 }
 
 export default function NewCarModelPage() {
-  const { brand: brandSlug = "", model: modelSlug = "" } = useParams<{ brand: string; model: string }>();
-  const brand = NEW_CAR_BRANDS[brandSlug.toLowerCase()];
+  const { country: countrySlug = "", brand: brandSlug = "", model: modelSlug = "" } = useParams<{ country: string; brand: string; model: string }>();
+  const country = getCountry(countrySlug);
+  const brands = country ? getBrandsForCountry(country.slug) : {};
+  const brand = brands[brandSlug?.toLowerCase()];
   const model = brand?.models.find((m) => m.slug === modelSlug.toLowerCase());
   usePageTitle(brand && model ? `${brand.name} ${model.name}` : "New Car");
 
-  if (!brand || !model) return <Navigate to="/new-cars" replace />;
+  if (!country) return <Navigate to="/tanzania/new-cars" replace />;
+  if (!brand || !model) return <Navigate to={`/${country.slug}/new-cars`} replace />;
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-20 lg:pb-0">
@@ -24,7 +28,7 @@ export default function NewCarModelPage() {
         <title>{brand.name} {model.name} Price in Tanzania | Motokah</title>
         <meta
           name="description"
-          content={model.description ?? `${brand.name} ${model.name} official starting price in Tanzania: ${fmt(model.priceTzs)}. Specs and dealer details.`}
+          content={model.description ?? `${brand.name} ${model.name} in ${country.name}. Specs, photos and dealer details.`}
         />
       </Helmet>
       <Header />
@@ -32,7 +36,7 @@ export default function NewCarModelPage() {
         <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
           <Link to="/" className="hover:text-primary">Home</Link>
           <IconChevronRight size={12} />
-          <Link to="/new-cars" className="hover:text-primary">New Cars</Link>
+          <Link to={`/${country.slug}/new-cars`} className="hover:text-primary">New Cars in {country.name}</Link>
           <IconChevronRight size={12} />
           <span className="text-foreground font-medium">{brand.name} {model.name}</span>
         </div>
@@ -58,7 +62,7 @@ export default function NewCarModelPage() {
             )}
 
             <h1 className="text-xl font-extrabold text-foreground mb-1">{brand.name} {model.name}</h1>
-            <p className="text-sm text-muted-foreground mb-5">{model.bodyType}, new, Tanzania</p>
+            <p className="text-sm text-muted-foreground mb-5">{model.bodyType}, new, {country.name}</p>
 
             {model.description && (
               <p className="text-sm text-foreground leading-relaxed mb-6">{model.description}</p>
@@ -78,17 +82,24 @@ export default function NewCarModelPage() {
               ))}
               {!model.engine && !model.fuelPer100km && !model.bodyType && (
                 <p className="px-4 py-2.5 text-sm text-muted-foreground">
-                  {brand.name} doesn't publish detailed specs for this model on its Tanzania site. Contact the dealer for specifications.
+                  Detailed specs for this model aren't confirmed for {country.name} yet. Contact the dealer for specifications.
                 </p>
               )}
             </div>
 
-            <p className="text-xs text-muted-foreground">
-              {model.priceTzs ? "These specs and this price come" : "This listing comes"} directly from{" "}
-              <a href={model.officialUrl} target="_blank" rel="noopener noreferrer" className="text-primary font-medium inline-flex items-center gap-1">
-                {brand.name} Tanzania's own page{model.officialUrl.includes("://") && !model.officialUrl.endsWith(".com/") ? ` for the ${model.name}` : ""} <IconExternalLink size={12} />
-              </a>. Motokah does not sell new vehicles, this page links you to the real dealer.
-            </p>
+            {model.officialUrl ? (
+              <p className="text-xs text-muted-foreground">
+                {model.priceTzs ? "These specs and this price come" : "Specs and photos come"} directly from{" "}
+                <a href={model.officialUrl} target="_blank" rel="noopener noreferrer" className="text-primary font-medium inline-flex items-center gap-1">
+                  {brand.name} {country.name}'s own site <IconExternalLink size={12} />
+                </a>. Motokah does not sell new vehicles, this page links you to the real dealer.
+              </p>
+            ) : (
+              <p className="text-xs text-muted-foreground">
+                No official {brand.name} distributor website could be confirmed for {country.name} yet. Motokah does
+                not sell new vehicles, contact an authorized {brand.name} dealer in {country.name} directly for pricing.
+              </p>
+            )}
           </div>
 
           <aside className="space-y-4">
@@ -100,17 +111,19 @@ export default function NewCarModelPage() {
               <p className="text-[11px] text-muted-foreground mt-2">
                 {model.priceTzs
                   ? "Excludes registration, insurance and accessories. Confirm with the dealer before buying, prices can change without notice."
-                  : `${brand.name} does not publish a price for this model online. Contact an authorized dealer for a current quote.`}
+                  : `${brand.name} does not publish a price for this model online in ${country.name} yet. Contact an authorized dealer for a current quote.`}
               </p>
             </div>
-            <a
-              href={model.officialUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-center bg-primary text-primary-foreground font-semibold rounded-xl py-3"
-            >
-              View on {brand.name} Tanzania
-            </a>
+            {model.officialUrl && (
+              <a
+                href={model.officialUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center bg-primary text-primary-foreground font-semibold rounded-xl py-3"
+              >
+                View on {brand.name} {country.name}
+              </a>
+            )}
           </aside>
         </div>
       </div>
