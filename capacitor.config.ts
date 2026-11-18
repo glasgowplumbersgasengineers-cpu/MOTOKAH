@@ -7,6 +7,7 @@ const config: CapacitorConfig = {
   zoomEnabled: false,
   server: {
     androidScheme: 'https',
+    allowNavigation: ['www.motokah.com'],
   },
   plugins: {
     SplashScreen: {
