@@ -5,13 +5,20 @@ const OLD_SUPABASE_LISTING_IMAGES_BASE = "https://eiofmomywxcsezbyzjth.supabase.
 const SUPABASE_STORAGE_OBJECT_PREFIX = "/storage/v1/object/public/";
 const SUPABASE_STORAGE_RENDER_PREFIX = "/storage/v1/render/image/public/";
 
-export const IMAGE_CDN_BASE = (import.meta.env.VITE_IMAGE_CDN_BASE || "https://pub-cc57e4688ac040d4bd2525d4db978c41.r2.dev").replace(/\/$/, "");
+// images.motokah.com is the same R2 bucket on a Cloudflare custom domain (cached at the edge).
+// The old r2.dev address is rate-limited by Cloudflare, so any URL still pointing there
+// (saved in the database or baked into older builds) is rewritten to the custom domain.
+export const IMAGE_CDN_BASE = (import.meta.env.VITE_IMAGE_CDN_BASE || "https://images.motokah.com").replace(/\/$/, "");
 const IMAGE_VARIANTS_ENABLED = import.meta.env.VITE_IMAGE_VARIANTS_ENABLED === "true";
+const LEGACY_IMAGE_BASES = [
+  OLD_SUPABASE_LISTING_IMAGES_BASE,
+  "https://pub-cc57e4688ac040d4bd2525d4db978c41.r2.dev",
+].filter((base) => base !== IMAGE_CDN_BASE);
 
 export function normalizeImageUrl(image: string): string {
   if (!image) return image;
-  if (image.startsWith(`${OLD_SUPABASE_LISTING_IMAGES_BASE}/`)) {
-    return `${IMAGE_CDN_BASE}/${image.slice(OLD_SUPABASE_LISTING_IMAGES_BASE.length + 1)}`;
+  for (const base of LEGACY_IMAGE_BASES) {
+    if (image.startsWith(`${base}/`)) return `${IMAGE_CDN_BASE}/${image.slice(base.length + 1)}`;
   }
   return image;
 }

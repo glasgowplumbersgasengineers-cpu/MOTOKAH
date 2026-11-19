@@ -240,7 +240,7 @@ function _postImages(username: string, post: { shortcode?: string; images?: stri
   if (sourceImages.length > 0) {
     return _preferStorageCopies(sourceImages.map((image, imageIndex) => {
       if (image.includes("supabase.co/storage")) return normalizeImageUrl(image);
-      if (/^https?:\/\//i.test(image)) return image;
+      if (/^https?:\/\//i.test(image)) return normalizeImageUrl(image);
       if (LOCAL_SHOWROOM_IMAGE_USERS.has(username) && image.startsWith("/")) return image;
       return _supabaseImage(username, `${prefix}_${imageIndex + 1}.jpg`);
     }));
