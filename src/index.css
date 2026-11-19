@@ -213,6 +213,21 @@
     display: none;
   }
 
+  /* Reserve room for the fixed mobile tab bar on every page (height set by BottomNav).
+     The extra 1rem clears the raised Sell button. Desktop (lg) has no tab bar. */
+  @media (max-width: 1023.98px) {
+    body[data-bottom-nav="true"]:not([data-chat-open="true"]) {
+      padding-bottom: calc(var(--bottom-nav-h, 72px) + 1rem);
+    }
+    /* Any other floating bottom bar (e.g. listing contact bar) sits on top of the tab bar,
+       not behind it. The tab bar already covers the safe area, so drop the bar's own. */
+    body[data-bottom-nav="true"]:not([data-chat-open="true"]) .above-bottom-nav {
+      bottom: var(--bottom-nav-h, 72px);
+      /* extra room so the raised Sell button only overlaps empty space */
+      padding-bottom: 1.5rem;
+    }
+  }
+
   html:has(body[data-chat-open="true"]),
   body[data-chat-open="true"] {
     overflow: hidden;

@@ -415,7 +415,9 @@ export default function ListingDetail() {
         </div>
       </main>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 shadow-2xl backdrop-blur lg:hidden safe-bottom">
+      {/* Spacer so the page can scroll clear of the floating contact bar below. */}
+      <div className="h-24 lg:hidden" aria-hidden="true" />
+      <div className="above-bottom-nav fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 shadow-2xl backdrop-blur lg:hidden safe-bottom">
         <div className="flex items-center gap-2">
           <div className="min-w-0 flex-1">
             <p className="text-[11px] text-muted-foreground">Asking price</p>

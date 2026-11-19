@@ -4,7 +4,7 @@ import fs from "fs";
 const PACKAGE = "com.motokah.app";
 const KEY_FILE = "D:/MOTOKAH/secrets/google-play-service-account.json";
 const AAB_PATH = "D:/motokah-android-wt/android/app/build/outputs/bundle/release/app-release.aab";
-const VERSION_CODE = 19;
+const VERSION_CODE = 20;
 
 const auth = new GoogleAuth({ keyFile: KEY_FILE, scopes: ["https://www.googleapis.com/auth/androidpublisher"] });
 const client = await auth.getClient();
@@ -46,11 +46,11 @@ const trackRes = await req(`${api}/applications/${PACKAGE}/edits/${editId}/track
     track: "internal",
     releases: [
       {
-        name: "1.18",
+        name: "1.19",
         versionCodes: [String(VERSION_CODE)],
         status: "completed",
         releaseNotes: [
-          { language: "en-GB", text: "Car photos load much faster." },
+          { language: "en-GB", text: "Car photos load much faster. Bottom bar no longer covers page content." },
         ],
       },
     ],
