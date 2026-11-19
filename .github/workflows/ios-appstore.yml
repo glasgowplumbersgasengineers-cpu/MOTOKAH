@@ -42,6 +42,8 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          VITE_IMAGE_CDN_BASE: https://images.motokah.com
+          VITE_IMAGE_VARIANTS_ENABLED: "true"
         run: npm run build
 
       - name: Install browser for layout QA
