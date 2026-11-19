@@ -50,8 +50,10 @@ export default function WebContentGate({ children }: { children: ReactNode }) {
         </div>
       );
     }
+    // The framed site's Header pads with env(safe-area-inset-top), which is always
+    // 0 inside an iframe, so the app reserves the status-bar space itself.
     return (
-      <div className="min-h-screen relative">
+      <div className="min-h-screen relative safe-top bg-card">
         {!loaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-background">
             <IconLoader2 size={28} className="animate-spin text-primary" />
