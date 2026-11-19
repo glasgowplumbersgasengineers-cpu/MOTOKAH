@@ -8,7 +8,7 @@ const SUPABASE_STORAGE_RENDER_PREFIX = "/storage/v1/render/image/public/";
 // images.motokah.com is the same R2 bucket on a Cloudflare custom domain (cached at the edge).
 // The old r2.dev address is rate-limited by Cloudflare, so any URL still pointing there
 // (saved in the database or baked into older builds) is rewritten to the custom domain.
-export const IMAGE_CDN_BASE = (import.meta.env.VITE_IMAGE_CDN_BASE || "https://images.motokah.com").replace(/\/$/, "");
+export const IMAGE_CDN_BASE = (import.meta.env.VITE_IMAGE_CDN_BASE || "https://images.motokah.com").trim().replace(/\/$/, "");
 const IMAGE_VARIANTS_ENABLED = import.meta.env.VITE_IMAGE_VARIANTS_ENABLED === "true";
 const LEGACY_IMAGE_BASES = [
   OLD_SUPABASE_LISTING_IMAGES_BASE,
