@@ -28,7 +28,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { WishlistProvider } from "@/hooks/useWishlist";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BottomNav from "@/components/BottomNav";
-import WebContentGate from "@/components/WebContentGate";
 import { usePageTracking } from "@/hooks/usePageTracking";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useDeepLinks } from "@/hooks/useDeepLinks";
@@ -192,11 +191,11 @@ function AnimatedRoutes() {
               <Route path="/cars/:make/:model/in/:city" element={<ModelCityLandingPage />} />
               <Route path="/cars/:make/in/:city" element={<CityMakeLandingPage />} />
               <Route path="/cars/:make/:model" element={<ModelLandingPage />} />
-              <Route path="/brands/:brand" element={<WebContentGate><BrandPage /></WebContentGate>} />
-              <Route path="/brands/:brand/:model" element={<WebContentGate><CatalogModelPage /></WebContentGate>} />
+              <Route path="/brands/:brand" element={<BrandPage />} />
+              <Route path="/brands/:brand/:model" element={<CatalogModelPage />} />
               <Route path="/new-cars" element={<Navigate to="/tanzania/new-cars" replace />} />
-              <Route path="/:country/new-cars" element={<WebContentGate><NewCars /></WebContentGate>} />
-              <Route path="/:country/new-cars/:brand/:model" element={<WebContentGate><NewCarModelPage /></WebContentGate>} />
+              <Route path="/:country/new-cars" element={<NewCars />} />
+              <Route path="/:country/new-cars/:brand/:model" element={<NewCarModelPage />} />
               <Route path="*" element={<NotFound />} />
         </Routes>
         </Suspense>
