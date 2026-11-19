@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
-import { OFFICIAL_CATALOG, CATALOG_BRAND_SLUGS } from "@/data/officialCatalog";
+import { useCatalog } from "@/lib/catalog";
 import { IconCar } from "@/components/icons";
 
 // The official brand section: one logo per manufacturer, into a page listing
 // their models with real market prices. Separate from "Browse by Model" above,
 // which links straight to user listings.
 export default function BrandCatalogSection() {
+  const { catalog } = useCatalog();
   return (
     <section className="py-12 border-b border-border">
       <div className="container mx-auto px-4">
@@ -14,8 +15,8 @@ export default function BrandCatalogSection() {
           Models, specs and real market prices for the manufacturers East African buyers search most.
         </p>
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-8 gap-3">
-          {CATALOG_BRAND_SLUGS.map((slug) => {
-            const brand = OFFICIAL_CATALOG[slug];
+          {Object.keys(catalog).map((slug) => {
+            const brand = catalog[slug];
             return (
               <Link
                 key={slug}

@@ -4,10 +4,11 @@ import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { IconSearch, IconMapPin, IconStarFilled, IconBuildingStore, IconShieldCheck } from "@/components/icons";
-import { mockDealers, getShowroomListings } from "@/data/mockData";
+import { mockDealers, getShowroomListings, cityToCountry } from "@/data/mockData";
+import { useLocation as useUserLocation } from "@/contexts/LocationContext";
 
 type DealerProfile = {
   user_id: string;
@@ -26,6 +27,11 @@ export default function DealerDirectory() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [cityFilter, setCityFilter] = useState("");
+  const [searchParams] = useSearchParams();
+  const { country: userCountry } = useUserLocation();
+  const [countryFilter, setCountryFilter] = useState(
+    searchParams.get("country") || (userCountry !== "All" ? userCountry : "")
+  );
 
   useEffect(() => {
     (async () => {
@@ -52,16 +58,14 @@ export default function DealerDirectory() {
         .eq("seller_type", "dealer");
 
       if (data && data.length > 0) {
-        const realDealers = await Promise.all(
-          data.map(async (dealer) => {
-            const { count } = await supabase
-              .from("listings")
-              .select("*", { count: "exact", head: true })
-              .eq("seller_id", dealer.user_id)
-              .eq("status", "approved");
-            return { ...dealer, listing_count: count || 0 };
-          })
-        );
+        const { data: rows } = await supabase
+          .from("listings")
+          .select("seller_id")
+          .eq("status", "approved")
+          .in("seller_id", data.map((d) => d.user_id));
+        const counts = new Map<string, number>();
+        for (const r of rows || []) counts.set(r.seller_id, (counts.get(r.seller_id) || 0) + 1);
+        const realDealers = data.map((dealer) => ({ ...dealer, listing_count: counts.get(dealer.user_id) || 0 }));
         // Deduplicate: real dealers take priority over IG entries with same name
         const realIds = new Set(realDealers.map(d => d.user_id));
         const merged = [...realDealers, ...igDealers.filter(d => !realIds.has(d.user_id))];
@@ -73,9 +77,12 @@ export default function DealerDirectory() {
     })();
   }, []);
 
-  const cities = [...new Set(dealers.map(d => d.city).filter(Boolean))];
+  const countryOf = (d: DealerProfile) => cityToCountry[d.city || ""] || "";
+  const countries = [...new Set([...dealers.map(countryOf), countryFilter].filter(Boolean))].sort();
+  const inCountry = dealers.filter(d => !countryFilter || countryOf(d) === countryFilter);
+  const cities = [...new Set(inCountry.map(d => d.city).filter(Boolean))];
 
-  const filtered = dealers.filter(d => {
+  const filtered = inCountry.filter(d => {
     const matchesSearch = !search || (d.display_name || "").toLowerCase().includes(search.toLowerCase());
     const matchesCity = !cityFilter || d.city === cityFilter;
     return matchesSearch && matchesCity;
@@ -102,6 +109,16 @@ export default function DealerDirectory() {
               <Input placeholder="Search dealers..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10" />
             </div>
             <select
+              aria-label="Country"
+              value={countryFilter}
+              onChange={e => { setCountryFilter(e.target.value); setCityFilter(""); }}
+              className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            >
+              <option value="">All Countries</option>
+              {countries.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <select
+              aria-label="City"
               value={cityFilter}
               onChange={e => setCityFilter(e.target.value)}
               className="h-10 rounded-md border border-input bg-background px-3 text-sm"
@@ -120,8 +137,16 @@ export default function DealerDirectory() {
           ) : filtered.length === 0 ? (
             <div className="text-center py-20">
               <IconBuildingStore size={48} className="mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">No dealers found</h3>
-              <p className="text-muted-foreground">Try adjusting your search or filters</p>
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                {countryFilter && inCountry.length === 0 ? `No dealers in ${countryFilter} yet` : "No dealers found"}
+              </h3>
+              {countryFilter ? (
+                <button onClick={() => { setCountryFilter(""); setCityFilter(""); }} className="text-primary font-semibold text-sm">
+                  Show dealers from all countries
+                </button>
+              ) : (
+                <p className="text-muted-foreground">Try adjusting your search or filters</p>
+              )}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -3,8 +3,8 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getCountry } from "@/data/countries";
-import { getBrandsForCountry } from "@/data/newCarsByCountry";
-import { IconChevronRight, IconExternalLink, IconCar } from "@/components/icons";
+import { useCatalog } from "@/lib/catalog";
+import { IconChevronRight, IconExternalLink, IconCar, IconLoader2 } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 function fmt(price: number | null, currency?: string) {
@@ -14,12 +14,20 @@ function fmt(price: number | null, currency?: string) {
 export default function NewCarModelPage() {
   const { country: countrySlug = "", brand: brandSlug = "", model: modelSlug = "" } = useParams<{ country: string; brand: string; model: string }>();
   const country = getCountry(countrySlug);
+  const { getBrandsForCountry, ready } = useCatalog();
   const brands = country ? getBrandsForCountry(country.slug) : {};
   const brand = brands[brandSlug?.toLowerCase()];
   const model = brand?.models.find((m) => m.slug === modelSlug.toLowerCase());
   usePageTitle(brand && model ? `${brand.name} ${model.name}` : "New Car");
 
   if (!country) return <Navigate to="/tanzania/new-cars" replace />;
+  if ((!brand || !model) && !ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <IconLoader2 size={28} className="animate-spin text-primary" />
+      </div>
+    );
+  }
   if (!brand || !model) return <Navigate to={`/${country.slug}/new-cars`} replace />;
 
   return (

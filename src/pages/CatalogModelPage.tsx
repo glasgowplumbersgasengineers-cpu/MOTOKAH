@@ -4,14 +4,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import VehicleCard from "@/components/VehicleCard";
 import { useSearchListings } from "@/hooks/useSearchListings";
-import { OFFICIAL_CATALOG } from "@/data/officialCatalog";
+import { useCatalog } from "@/lib/catalog";
 import { formatVehiclePrice } from "@/lib/prices";
 import { IconCar, IconChevronRight, IconLoader2 } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 export default function CatalogModelPage() {
   const { brand: brandSlug = "", model: modelSlug = "" } = useParams<{ brand: string; model: string }>();
-  const brand = OFFICIAL_CATALOG[brandSlug.toLowerCase()];
+  const { catalog, ready } = useCatalog();
+  const brand = catalog[brandSlug.toLowerCase()];
   const model = brand?.models.find((m) => m.slug === modelSlug.toLowerCase());
   usePageTitle(brand && model ? `${brand.name} ${model.name}` : "Model");
 
@@ -20,6 +21,13 @@ export default function CatalogModelPage() {
     "newest",
   );
 
+  if ((!brand || !model) && !ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <IconLoader2 size={28} className="animate-spin text-primary" />
+      </div>
+    );
+  }
   if (!brand || !model) return <Navigate to="/" replace />;
 
   const quickSpecs = [model.bodyType, model.transmission, model.fuelType].filter(Boolean);

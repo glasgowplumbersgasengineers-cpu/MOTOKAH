@@ -2,16 +2,24 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { OFFICIAL_CATALOG } from "@/data/officialCatalog";
+import { useCatalog } from "@/lib/catalog";
 import { formatVehiclePrice } from "@/lib/prices";
-import { IconCar, IconChevronRight } from "@/components/icons";
+import { IconCar, IconChevronRight, IconLoader2 } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 export default function BrandPage() {
   const { brand: slug = "" } = useParams<{ brand: string }>();
-  const brand = OFFICIAL_CATALOG[slug.toLowerCase()];
+  const { catalog, ready } = useCatalog();
+  const brand = catalog[slug.toLowerCase()];
   usePageTitle(brand ? `${brand.name} Models` : "Brand");
 
+  if (!brand && !ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <IconLoader2 size={28} className="animate-spin text-primary" />
+      </div>
+    );
+  }
   if (!brand) return <Navigate to="/" replace />;
 
   return (

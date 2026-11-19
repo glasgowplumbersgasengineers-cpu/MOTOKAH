@@ -85,3 +85,4 @@ public/instagram-cars/mgayamotors/DY*.jpg
 # Private WhatsApp audit workspace (not for commit)
 .audit/
 .claude/worktrees/
+public/data/catalog.json

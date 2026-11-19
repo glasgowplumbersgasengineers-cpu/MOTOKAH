@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getCountry, COUNTRIES } from "@/data/countries";
-import { getBrandsForCountry } from "@/data/newCarsByCountry";
+import { useCatalog } from "@/lib/catalog";
 import { IconCar } from "@/components/icons";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
@@ -14,6 +14,7 @@ function fmt(price: number | null, currency?: string) {
 export default function NewCars() {
   const { country: countrySlug = "" } = useParams<{ country: string }>();
   const country = getCountry(countrySlug);
+  const { getBrandsForCountry } = useCatalog();
   usePageTitle(country ? `New Cars in ${country.name}` : "New Cars");
 
   if (!country) return <Navigate to="/tanzania/new-cars" replace />;
