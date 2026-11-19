@@ -40,25 +40,31 @@
       ]
     },
     {
-      "source": "/duty-calculator",
+      "source": "/duty-calculator/:path*",
       "headers": [
         { "key": "Content-Security-Policy", "value": "frame-ancestors *" }
       ]
     },
     {
-      "source": "/:country/duty-calculator",
+      "source": "/:country/duty-calculator/:path*",
       "headers": [
         { "key": "Content-Security-Policy", "value": "frame-ancestors *" }
       ]
     },
     {
-      "source": "/:country/new-cars",
+      "source": "/brands/:path*",
       "headers": [
         { "key": "Content-Security-Policy", "value": "frame-ancestors *" }
       ]
     },
     {
-      "source": "/:country/new-cars/:brand/:model",
+      "source": "/new-cars/:path*",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "frame-ancestors *" }
+      ]
+    },
+    {
+      "source": "/:country/new-cars/:path*",
       "headers": [
         { "key": "Content-Security-Policy", "value": "frame-ancestors *" }
       ]
