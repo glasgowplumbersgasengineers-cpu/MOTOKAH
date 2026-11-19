@@ -30,9 +30,9 @@ export const priorityCategoryLinks: SeoLink[] = [
   { label: "Pickup trucks in Tanzania", to: "/search?country=Tanzania&bodyType=Pickup" },
   { label: "Commercial vehicles in Tanzania", to: "/search?country=Tanzania&vehicleType=commercial" },
   { label: "Bikes in Tanzania", to: "/search?country=Tanzania&vehicleType=bike" },
-  { label: "Boats in Tanzania", to: "/search?country=Tanzania&vehicleType=boat" },
-  { label: "Dealer showrooms in Tanzania", to: "/dealer-leads?country=Tanzania" },
-  { label: "Dealer showrooms in Kenya", to: "/dealer-leads?country=Kenya" },
+  { label: "Marine in Tanzania", to: "/search?country=Tanzania&vehicleType=boat" },
+  { label: "Dealer showrooms in Tanzania", to: "/dealers?country=Tanzania" },
+  { label: "Dealer showrooms in Kenya", to: "/dealers?country=Kenya" },
 ];
 
 export const priorityModelLinks: SeoLink[] = [

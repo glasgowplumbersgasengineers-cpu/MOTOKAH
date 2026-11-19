@@ -9,7 +9,7 @@ const staticCategories = [
   { name: "Vans & Wagons", icon: IconBus, query: "?bodyType=Van" },
   { name: "Bikes & Motorcycles", icon: IconMotorbike, query: "?vehicleType=bike" },
   { name: "Commercial Vehicles", icon: IconTruck, query: "?vehicleType=commercial" },
-  { name: "Boats & Marine", icon: IconSailboat, query: "?vehicleType=boat" },
+  { name: "Marine", icon: IconSailboat, query: "?vehicleType=boat" },
   { name: "Luxury & Sports", icon: IconCrown, query: "?bodyType=Coupe" },
   { name: "Electric Vehicles", icon: IconBolt, query: "?fuelType=Electric" },
   { name: "View All", icon: IconLayoutGrid, query: "" },

@@ -55,7 +55,7 @@ export default function SearchResults() {
     : seoVehicleType === "commercial"
     ? "Commercial Vehicles"
     : seoVehicleType === "boat"
-    ? "Boats"
+    ? "Marine"
     : primaryBodyType
     ? `${primaryBodyType}s`
     : seoCondition === "New"
@@ -233,7 +233,7 @@ export default function SearchResults() {
     : filters.vehicleType === "commercial"
     ? `Commercial Vehicles for Sale in ${locationLabel}`
     : filters.vehicleType === "boat"
-    ? `Boats for Sale in ${locationLabel}`
+    ? `Marine for Sale in ${locationLabel}`
     : filters.bodyType[0]
     ? `${filters.bodyType[0]}s for Sale in ${locationLabel}`
     : `Used Cars for Sale in ${locationLabel}`;

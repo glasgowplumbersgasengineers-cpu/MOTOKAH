@@ -63,7 +63,7 @@ const Index = () => {
       <CategorySection title="Bikes & Scooters" icon={<IconMotorbike size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BIKE_TYPES} viewAllHref="/search?vehicleType=bike" />
       {/* Rickshaws/tuk-tuks row removed — no dealer has listed a real one yet, so it
           was either empty (auto-hidden) or showed nothing worth calling a category. */}
-      <CategorySection title="Boats" icon={<IconAnchor size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BOAT_TYPES} viewAllHref="/search?vehicleType=boat" />
+      <CategorySection title="Marine" icon={<IconAnchor size={22} stroke={2.5} className="shrink-0 text-primary" />} bodyType={BOAT_TYPES} viewAllHref="/search?vehicleType=boat" />
       <PopularModelsSection />
       <NewCarsSection />
       <BrandCatalogSection />

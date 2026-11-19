@@ -7,7 +7,7 @@ const tabs = [
   { label: "Used Cars", href: "/search" },
   { label: "New Cars",  href: "/search?condition=New" },
   { label: "Bikes",     href: "/search?vehicleType=bike" },
-  { label: "Boats",     href: "/search?vehicleType=boat" },
+  { label: "Marine",    href: "/search?vehicleType=boat" },
 ];
 
 export default function StickySearchBar() {

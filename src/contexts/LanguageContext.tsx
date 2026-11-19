@@ -23,7 +23,7 @@ const translations: Record<LangCode, Record<string, string>> = {
     "nav.newCars": "New Cars",
     "nav.commercial": "Commercial",
     "nav.bikes": "Bikes",
-    "nav.boats": "Boats",
+    "nav.boats": "Marine",
     "nav.dealers": "Dealers",
     "nav.compare": "Compare",
     "nav.blog": "Blog",

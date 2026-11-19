@@ -9,13 +9,12 @@ const columns = [
   { title: "For Buyers", links: [
     { label: "Browse Cars", to: "/search" },
     { label: "Browse Bikes", to: "/search?vehicleType=bike" },
-    { label: "Browse Boats", to: "/search?vehicleType=boat" },
+    { label: "Browse Marine", to: "/search?vehicleType=boat" },
     { label: "Advanced Search", to: "/search" },
     { label: "Compare Vehicles", to: "/compare" },
     { label: "How It Works", to: "/how-it-works" },
     { label: "Duty Calculator", to: "/duty-calculator" },
     { label: "Car Showrooms", to: "/dealers" },
-    { label: "Dealer Contacts", to: "/dealer-leads" },
   ]},
   { title: "For Sellers", links: [
     { label: "Post Your Ad", to: "/sell" },

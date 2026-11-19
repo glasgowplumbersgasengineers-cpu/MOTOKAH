@@ -82,7 +82,7 @@ export default function FilterSidebar({ filters, onChange, onClear, hideHeader }
           <option value="car">Cars</option>
           <option value="bike">Motorcycles</option>
           <option value="commercial">Commercial</option>
-          <option value="boat">Boats</option>
+          <option value="boat">Marine</option>
         </select>
       </div>
 

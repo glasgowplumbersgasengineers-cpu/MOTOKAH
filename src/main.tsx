@@ -56,6 +56,16 @@ if (Capacitor.isNativePlatform()) {
   }).catch(() => {});
 }
 
+// A lazy page chunk (e.g. DealerProfile) can 404 if the tab was already open
+// before a newer deploy replaced it with a differently-hashed filename. Vite
+// fires this event for that exact failure; the fix is a one-time reload to
+// pick up the current index.html and its correct chunk map, not an error
+// screen. Found live: "Something went wrong" on View Dealer Profile right
+// after a deploy.
+window.addEventListener("vite:preloadError", () => {
+  window.location.reload();
+});
+
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>
     <App />
