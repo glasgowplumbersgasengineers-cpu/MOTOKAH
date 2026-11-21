@@ -6,21 +6,21 @@
     "fuels": [
       {
         "name": "Super Petrol",
-        "price": 4057,
-        "trend": "stable",
-        "change": "+0.0%"
+        "price": 4083,
+        "trend": "up",
+        "change": "+0.6%"
       },
       {
         "name": "Automotive Diesel",
-        "price": 4086,
-        "trend": "stable",
-        "change": "+0.0%"
+        "price": 4128,
+        "trend": "up",
+        "change": "+1.0%"
       },
       {
         "name": "Kerosene",
-        "price": 4067,
-        "trend": "stable",
-        "change": "+0.0%"
+        "price": 4117,
+        "trend": "up",
+        "change": "+1.2%"
       }
     ]
   },
