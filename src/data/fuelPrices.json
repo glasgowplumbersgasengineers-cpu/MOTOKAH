@@ -90,7 +90,7 @@
     "fuels": [
       {
         "name": "Benzene / Petrol",
-        "price": 167.5
+        "price": 167.41
       },
       {
         "name": "Automotive Diesel",
@@ -122,13 +122,13 @@
         "name": "Premium Motor Spirit (PMS)",
         "price": 1161.75,
         "trend": "down",
-        "change": "-13.8%"
+        "change": "-12.7%"
       },
       {
         "name": "Automotive Gas Oil (AGO)",
         "price": 1675,
         "trend": "down",
-        "change": "-6.4%"
+        "change": "-9.7%"
       }
     ]
   }
