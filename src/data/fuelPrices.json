@@ -120,15 +120,15 @@
     "fuels": [
       {
         "name": "Premium Motor Spirit (PMS)",
-        "price": 1161.75,
+        "price": 1057.75,
         "trend": "down",
-        "change": "-12.7%"
+        "change": "-20.5%"
       },
       {
         "name": "Automotive Gas Oil (AGO)",
-        "price": 1675,
+        "price": 1580,
         "trend": "down",
-        "change": "-9.7%"
+        "change": "-14.8%"
       }
     ]
   }
